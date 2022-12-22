@@ -1,12 +1,11 @@
-package com.greenUs.server.domain.post.api;
+package com.greenUs.server.post.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.greenUs.server.domain.post.dto.User;
+import com.greenUs.server.post.dto.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
