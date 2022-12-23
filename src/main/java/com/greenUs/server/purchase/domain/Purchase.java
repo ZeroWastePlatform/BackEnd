@@ -1,4 +1,4 @@
-package com.greenUs.server.order.domain;
+package com.greenUs.server.purchase.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.delivery.domain.Delivery;
@@ -7,17 +7,17 @@ import com.greenUs.server.member.domain.Member;
 import javax.persistence.*;
 
 @Entity
-public class Order extends BaseEntity {
+public class Purchase extends BaseEntity {
 
     @Id
-    @GeneratedValue
-    @Column(name = "order_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "purchase_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "purchase")
     private Delivery delivery;
 }
