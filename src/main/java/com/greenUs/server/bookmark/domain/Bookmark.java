@@ -8,7 +8,8 @@ import javax.persistence.*;
 @Entity
 public class Bookmark extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bookmark_id")
     private Long id;
 

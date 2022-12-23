@@ -7,7 +7,8 @@ import javax.persistence.*;
 @Entity
 public class PostHashtag {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_hashtag_id")
     private Long id;
 
