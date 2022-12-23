@@ -14,6 +14,8 @@ public class Delivery extends BaseEntity {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "purchase_id")
     private Purchase purchase;
+
+    private String deliverDate;
 }
