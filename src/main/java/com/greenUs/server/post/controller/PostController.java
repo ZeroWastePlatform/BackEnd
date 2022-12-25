@@ -22,18 +22,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class PostController {
 
 	private final PostService postService;
-
 	public PostController(PostService postService) {
 		this.postService = postService;
 	}
+
 
 	@Operation(summary = "게시글 목록 조회", description = "게시글 목록 조회 메서드")
 	@GetMapping("/lists/{kind}") // 게시글 목록 조회
 	public List<PostDto> list(@PathVariable("kind") @Min(1) @Max(3) Integer kind) {
 
 		List<PostDto> postDtoList = postService.getPostList(kind);
-		System.out.println("postDtoList = " + postDtoList);
 		return postDtoList;
 	}
+
+	
 
 }
