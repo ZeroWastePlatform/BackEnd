@@ -15,15 +15,34 @@ import com.greenUs.server.post.repository.PostRepository;
 public class PostService {
 
 	private final PostRepository postRepository;
-
 	public PostService(PostRepository postRepository) {
 		this.postRepository = postRepository;
 	}
 
+	// 게시글 목록 조회
 	@Transactional
 	public List<PostDto> getPostList(Integer kind) {
 
-		List<Post> postList = postRepository.findAll(PostSpecs.withTitle(kind));
+		List<Post> postList = postRepository.findAll(PostSpecs.withKind(kind));
+		List<PostDto> postDtoList = new ArrayList<>();
+
+		for(Post post : postList) {
+			PostDto postDto = PostDto.builder()
+				.id(post.getId())
+				.kind(post.getKind())
+				.title(post.getTitle())
+				.content(post.getContent())
+				.build();
+			postDtoList.add(postDto);
+		}
+		return postDtoList;
+	}
+
+	// 게시글 내용 불러오기
+	@Transactional
+	public List<PostDto> getPostDetail(Integer id) {
+
+		List<Post> postList = postRepository.findAll(PostSpecs.withId(id));
 		List<PostDto> postDtoList = new ArrayList<>();
 
 		for(Post post : postList) {

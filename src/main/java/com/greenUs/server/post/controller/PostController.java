@@ -35,6 +35,19 @@ public class PostController {
 		return postDtoList;
 	}
 
-	
+	@Operation(summary = "게시글 상세 내용 조회", description = "게시글 상세 내용 조회 메서드")
+	@GetMapping("/{id}") // 게시글 목록 조회
+	public List<PostDto> detail(@PathVariable("id") Integer id) {
 
+		List<PostDto> postDtoList = postService.getPostDetail(id);
+		return postDtoList;
+	}
+
+	// @Operation(summary = "게시글 작성", description = "게시글 작성 메서드")
+	// @GetMapping("/{id}") // 게시글 작성 조회
+	// public List<PostDto> detail(@PathVariable("id") Integer id) {
+	//
+	// 	List<PostDto> postDtoList = postService.getPostDetail(id);
+	// 	return postDtoList;
+	// }
 }
