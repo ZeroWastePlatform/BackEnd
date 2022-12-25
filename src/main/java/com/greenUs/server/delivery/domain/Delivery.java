@@ -1,7 +1,7 @@
 package com.greenUs.server.delivery.domain;
 
 import com.greenUs.server.common.BaseEntity;
-import com.greenUs.server.order.domain.Order;
+import com.greenUs.server.order.domain.Purchase;
 
 import javax.persistence.*;
 
@@ -14,5 +14,5 @@ public class Delivery extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Purchase purchase;
 }

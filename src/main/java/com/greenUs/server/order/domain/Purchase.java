@@ -7,7 +7,7 @@ import com.greenUs.server.member.domain.Member;
 import javax.persistence.*;
 
 @Entity
-public class Order extends BaseEntity {
+public class Purchase extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -18,6 +18,6 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "purchase")
     private Delivery delivery;
 }

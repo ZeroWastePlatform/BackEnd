@@ -1,7 +1,7 @@
 package com.greenUs.server.product.domain;
 
 import com.greenUs.server.common.BaseEntity;
-import com.greenUs.server.order.domain.Order;
+import com.greenUs.server.order.domain.Purchase;
 
 import javax.persistence.*;
 
@@ -15,7 +15,7 @@ public class OrderProduct extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Purchase purchase;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
