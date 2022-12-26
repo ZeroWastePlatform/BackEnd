@@ -9,8 +9,7 @@ import javax.persistence.*;
 @Entity
 public class Basket extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     @Column(name = "basket_id")
     private Long id;
 

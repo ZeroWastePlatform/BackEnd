@@ -9,8 +9,7 @@ import javax.persistence.*;
 @Entity
 public class Comment extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     @Column(name = "comment_id")
     private Long id;
 

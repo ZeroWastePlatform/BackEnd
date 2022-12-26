@@ -8,8 +8,7 @@ import javax.persistence.*;
 @Entity
 public class Post extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     @Column(name = "post_id")
     private Long id;
 

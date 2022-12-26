@@ -8,8 +8,7 @@ import javax.persistence.*;
 @Entity
 public class Attachment extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     @Column(name = "attachment_id")
     private Long id;
 

@@ -13,8 +13,7 @@ import java.util.List;
 @Getter
 public class Purchase extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     @Column(name = "purchase_id")
     private Long id;
 
