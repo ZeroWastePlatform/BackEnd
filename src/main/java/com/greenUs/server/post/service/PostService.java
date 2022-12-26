@@ -2,6 +2,7 @@ package com.greenUs.server.post.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +69,27 @@ public class PostService {
 			.title(post.getTitle())
 			.content(post.getContent())
 			.build();
+
+		return result;
+	}
+
+	// 게시글 수정
+	@Transactional
+	public Optional<Post> setPostModification(Long id, PostDto postDto) {
+
+		Optional<Post> result = postRepository.findById(id);
+
+		result.ifPresent(t ->{
+			if (postDto.getKind() != null) {
+				t.setKind(postDto.getKind());
+			}
+			if (postDto.getTitle() != null) {
+				t.setTitle(postDto.getTitle());
+			}
+			if (postDto.getContent() != null) {
+				t.setContent(postDto.getContent());
+			}
+		});
 
 		return result;
 	}

@@ -1,6 +1,7 @@
 package com.greenUs.server.post.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +34,6 @@ public class PostController {
 		this.postService = postService;
 	}
 
-
 	@Operation(summary = "게시글 목록 조회", description = "게시글 목록 조회 메서드")
 	@GetMapping("/lists/{kind}") // 게시글 목록 조회
 	public List<PostDto> list(@PathVariable("kind") @Min(1) @Max(3) Integer kind) {
@@ -42,7 +43,7 @@ public class PostController {
 	}
 
 	@Operation(summary = "게시글 상세 내용 조회", description = "게시글 상세 내용 조회 메서드")
-	@GetMapping("/{id}") // 게시글 목록 조회
+	@GetMapping("/{id}") // 게시글 상세 내용 조회
 	public List<PostDto> detail(@PathVariable("id") Integer id) {
 
 		List<PostDto> postDtoList = postService.getPostDetail(id);
@@ -55,6 +56,15 @@ public class PostController {
 	public ResponseEntity<PostDto> write(@RequestBody PostDto postDto) {
 
 		PostDto result = postService.setPostWriting(postDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(result);
+	}
+
+	// -> 201 created와 함께 내용반환(ID, KIND는 꼭 필요) -> 변경사항 있으면 추후 수정하기
+	@Operation(summary = "게시글 수정", description = "게시글 수정 메서드")
+	@PutMapping("/{id}") // 게시글 수정
+	public ResponseEntity<Optional<Post>> modify(@PathVariable("id") Long id, @RequestBody PostDto postDto) {
+
+		Optional<Post> result = postService.setPostModification(id, postDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}
 }
