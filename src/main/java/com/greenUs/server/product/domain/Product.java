@@ -16,7 +16,7 @@ public class Product extends BaseEntity {
     @Column(name = "product_id")
     private Long id;
 
-    @OneToOne(mappedBy = "product")
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
