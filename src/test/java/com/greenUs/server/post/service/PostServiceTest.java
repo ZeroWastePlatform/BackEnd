@@ -44,4 +44,17 @@ class PostServiceTest {
 		postService.getPostList(2);
 		System.out.println("postService = " + postService);
 	}
+
+	@Test
+	@Transactional
+	@Rollback(value = false)
+	void setPostWriting() {
+		PostDto postDto = PostDto.builder()
+			.kind(1)
+			.title("글 작성 제목")
+			.content("글 내용")
+			.build();
+
+		postService.setPostWriting(postDto);
+	}
 }

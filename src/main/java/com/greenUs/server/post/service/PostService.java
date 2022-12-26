@@ -56,4 +56,20 @@ public class PostService {
 		}
 		return postDtoList;
 	}
+
+	// 게시글 작성
+	@Transactional
+	public PostDto setPostWriting(PostDto postDto) {
+
+		Post post = postRepository.save(postDto.toEntity());
+		PostDto result = PostDto.builder()
+			.id(post.getId())
+			.kind(post.getKind())
+			.title(post.getTitle())
+			.content(post.getContent())
+			.build();
+
+		return result;
+	}
+
 }
