@@ -22,7 +22,7 @@ public class ProductQueryService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public Page<ProductForm> getHomeProducts(Pageable pageable){
+    public Page<ProductForm> getProducts(Pageable pageable){
         Page<Product> products = productRepository.findAll(pageable);
         Page<ProductForm> productForms = products.map(product -> makeProductForm(product));
         return productForms;
