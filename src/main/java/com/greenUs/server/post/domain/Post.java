@@ -6,6 +6,7 @@ import com.greenUs.server.member.domain.Member;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -16,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @DynamicUpdate
 @Entity
@@ -42,10 +43,13 @@ public class Post extends BaseEntity {
 
     private Integer price;
 
+    @ColumnDefault("0")
     private Integer view_cnt;
 
+    @ColumnDefault("0")
     private Integer reply_cnt;
 
+    @ColumnDefault("0")
     private Integer recommend_cnt;
 
     @Builder
@@ -57,6 +61,13 @@ public class Post extends BaseEntity {
     }
 
     public void update (Integer kind, String title, String content, Integer price) {
+        this.kind = kind;
+        this.title = title;
+        this.content = content;
+        this.price = price;
+    }
+
+    public void insert (Integer kind, String title, String content, Integer price) {
         this.kind = kind;
         this.title = title;
         this.content = content;

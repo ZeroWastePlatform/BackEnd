@@ -2,6 +2,8 @@ package com.greenUs.server.post.repository;
 
 import java.util.List;
 
+import javax.lang.model.element.Element;
+
 import com.greenUs.server.post.domain.Post;
 
 import org.springframework.data.jpa.repository.JpaRepository;
