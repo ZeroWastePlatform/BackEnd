@@ -1,15 +1,12 @@
 package com.greenUs.server.post.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.dto.PostDto;
+import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.repository.PostRepository;
 
 @SpringBootTest
@@ -45,16 +42,16 @@ class PostServiceTest {
 		System.out.println("postService = " + postService);
 	}
 
-	@Test
-	@Transactional
-	@Rollback(value = false)
-	void setPostWriting() {
-		PostDto postDto = PostDto.builder()
-			.kind(1)
-			.title("글 작성 제목")
-			.content("글 내용")
-			.build();
-
-		postService.setPostWriting(postDto);
-	}
+	// @Test
+	// @Transactional
+	// @Rollback(value = false)
+	// void setPostWriting() {
+	// 	PostRequestDto postDto = PostRequestDto.builder()
+	// 		.kind(1)
+	// 		.title("글 작성 제목")
+	// 		.content("글 내용")
+	// 		.build();
+	//
+	// 	postService.setPostWriting(postDto);
+	// }
 }

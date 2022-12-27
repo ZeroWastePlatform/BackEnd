@@ -1,15 +1,15 @@
 package com.greenUs.server.post.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.dto.PostDto;
-import com.greenUs.server.post.dto.PostSpecs;
+import com.greenUs.server.post.dto.PostRequestDto;
+import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
 
 @Service
@@ -21,77 +21,60 @@ public class PostService {
 	}
 
 	// 게시글 목록 조회
-	@Transactional
-	public List<PostDto> getPostList(Integer kind) {
+	@Transactional(readOnly = true)
+	public List<PostResponseDto> getPostList(Integer kind) {
 
-		List<Post> postList = postRepository.findAll(PostSpecs.withKind(kind));
-		List<PostDto> postDtoList = new ArrayList<>();
-
-		for(Post post : postList) {
-			PostDto postDto = PostDto.builder()
-				.id(post.getId())
-				.kind(post.getKind())
-				.title(post.getTitle())
-				.content(post.getContent())
-				.build();
-			postDtoList.add(postDto);
-		}
-		return postDtoList;
+		return postRepository.findAllKindDesc(kind).stream()
+			.map(PostResponseDto::new)
+			.collect(Collectors.toList());
 	}
 
 	// 게시글 내용 불러오기
-	@Transactional
-	public List<PostDto> getPostDetail(Integer id) {
+	@Transactional(readOnly = true)
+	public PostResponseDto getPostDetail(Long id) {
 
-		List<Post> postList = postRepository.findAll(PostSpecs.withId(id));
-		List<PostDto> postDtoList = new ArrayList<>();
+		Post post = postRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재 하지 않습니다."));
 
-		for(Post post : postList) {
-			PostDto postDto = PostDto.builder()
-				.id(post.getId())
-				.kind(post.getKind())
-				.title(post.getTitle())
-				.content(post.getContent())
-				.build();
-			postDtoList.add(postDto);
-		}
-		return postDtoList;
+		return new PostResponseDto(post);
 	}
 
 	// 게시글 작성
 	@Transactional
-	public PostDto setPostWriting(PostDto postDto) {
+	public Integer setPostWriting(PostRequestDto postRequestDto) {
 
-		Post post = postRepository.save(postDto.toEntity());
-		PostDto result = PostDto.builder()
-			.id(post.getId())
-			.kind(post.getKind())
-			.title(post.getTitle())
-			.content(post.getContent())
-			.build();
-
-		return result;
+		return postRepository.save(postRequestDto.toEntity()).getKind();
 	}
 
 	// 게시글 수정
 	@Transactional
-	public Optional<Post> setPostModification(Long id, PostDto postDto) {
+	public Integer setPostModification(Long id, PostRequestDto postRequestDto) {
 
-		Optional<Post> result = postRepository.findById(id);
+		Post post = postRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재 하지 않습니다."));
 
-		result.ifPresent(t ->{
-			if (postDto.getKind() != null) {
-				t.setKind(postDto.getKind());
-			}
-			if (postDto.getTitle() != null) {
-				t.setTitle(postDto.getTitle());
-			}
-			if (postDto.getContent() != null) {
-				t.setContent(postDto.getContent());
-			}
-		});
+		post.update(
+			postRequestDto.getKind(),
+			postRequestDto.getTitle(),
+			postRequestDto.getContent(),
+			postRequestDto.getPrice());
 
-		return result;
+		return postRequestDto.getKind();
 	}
+		// Optional<Post> result = postRepository.findById(id);
+		//
+		// result.ifPresent(t ->{
+		// 	if (postRequestDto.getKind() != null) {
+		// 		t.setKind(postRequestDto.getKind());
+		// 	}
+		// 	if (postRequestDto.getTitle() != null) {
+		// 		t.setTitle(postRequestDto.getTitle());
+		// 	}
+		// 	if (postRequestDto.getContent() != null) {
+		// 		t.setContent(postRequestDto.getContent());
+		// 	}
+		// });
+		//
+		// return result.get();
 
 }

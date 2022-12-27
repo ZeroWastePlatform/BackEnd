@@ -1,7 +1,6 @@
 package com.greenUs.server.post.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -9,7 +8,6 @@ import javax.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.dto.PostDto;
+import com.greenUs.server.post.dto.PostRequestDto;
+import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.service.PostService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,35 +35,35 @@ public class PostController {
 
 	@Operation(summary = "게시글 목록 조회", description = "게시글 목록 조회 메서드")
 	@GetMapping("/lists/{kind}") // 게시글 목록 조회
-	public List<PostDto> list(@PathVariable("kind") @Min(1) @Max(3) Integer kind) {
+	public ResponseEntity<List<PostResponseDto>> list(@PathVariable @Min(1) @Max(3) Integer kind) {
 
-		List<PostDto> postDtoList = postService.getPostList(kind);
-		return postDtoList;
+		List<PostResponseDto> postResponseDto = postService.getPostList(kind);
+		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "게시글 상세 내용 조회", description = "게시글 상세 내용 조회 메서드")
 	@GetMapping("/{id}") // 게시글 상세 내용 조회
-	public List<PostDto> detail(@PathVariable("id") Integer id) {
+	public ResponseEntity<PostResponseDto> detail(@PathVariable Long id) {
 
-		List<PostDto> postDtoList = postService.getPostDetail(id);
-		return postDtoList;
+		PostResponseDto postResponseDto = postService.getPostDetail(id);
+		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
-	// -> 201 created와 함께 내용반환(ID, KIND는 꼭 필요) -> 변경사항 있으면 추후 수정하기
+	// -> 201 created와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 작성", description = "게시글 작성 메서드")
 	@PostMapping("/writing") // 게시글 작성
-	public ResponseEntity<PostDto> write(@RequestBody PostDto postDto) {
+	public ResponseEntity<Integer> write(@RequestBody PostRequestDto postRequestDto) {
 
-		PostDto result = postService.setPostWriting(postDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(result);
+		Integer kind = postService.setPostWriting(postRequestDto);
+		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 
-	// -> 201 created와 함께 내용반환(ID, KIND는 꼭 필요) -> 변경사항 있으면 추후 수정하기
+	// -> 201 created와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 수정", description = "게시글 수정 메서드")
 	@PutMapping("/{id}") // 게시글 수정
-	public ResponseEntity<Optional<Post>> modify(@PathVariable("id") Long id, @RequestBody PostDto postDto) {
+	public ResponseEntity<Integer> modify(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto) {
 
-		Optional<Post> result = postService.setPostModification(id, postDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(result);
+		Integer kind = postService.setPostModification(id, postRequestDto);
+		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 }

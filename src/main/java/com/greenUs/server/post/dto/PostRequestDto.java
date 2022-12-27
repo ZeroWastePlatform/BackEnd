@@ -2,37 +2,30 @@ package com.greenUs.server.post.dto;
 
 import com.greenUs.server.post.domain.Post;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
-@ToString
-@NoArgsConstructor
-public class PostDto {
+@ToString // 컨트롤러 인자 테스트용
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class PostRequestDto {
 
-	private Long id;
 	private Integer kind;
 	private String title;
 	private String content;
+	private Integer price;
 
 	public Post toEntity() {
 		return Post.builder()
 			.kind(kind)
 			.title(title)
 			.content(content)
+			.price(price)
 			.build();
 	}
-
-	@Builder
-	public PostDto(Long id, Integer kind, String title, String content) {
-		this.id = id;
-		this.kind = kind;
-		this.title = title;
-		this.content = content;
-	}
-
 }
 
 
