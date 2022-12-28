@@ -3,7 +3,6 @@ package com.greenUs.server.post.dto;
 import com.greenUs.server.post.domain.Post;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

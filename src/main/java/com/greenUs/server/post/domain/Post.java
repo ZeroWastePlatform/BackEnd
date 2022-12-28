@@ -4,18 +4,14 @@ import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
@@ -30,9 +26,10 @@ public class Post extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @OnDelete(action = OnDeleteAction.CASCADE) // 작성자 계정 탈퇴시 게시글도 삭제
+    // @OnDelete(action = OnDeleteAction.CASCADE) // 작성자 계정 탈퇴시 게시글도 삭제
     private Member member;
 
+    @Column(nullable = false)
     private Integer kind;
 
     @Column(length = 50, nullable = false)
@@ -43,13 +40,10 @@ public class Post extends BaseEntity {
 
     private Integer price;
 
-    @ColumnDefault("0")
     private Integer view_cnt;
 
-    @ColumnDefault("0")
     private Integer reply_cnt;
 
-    @ColumnDefault("0")
     private Integer recommend_cnt;
 
     @Builder
@@ -72,5 +66,12 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.price = price;
+    }
+
+    // insert시 null값 0으로 초기화 (reply_cnt는 조인을 통해 추후 구현)
+    @PrePersist
+    public void prePersist() {
+        this.view_cnt = this.view_cnt == null ? 0 : this.view_cnt;
+        this.recommend_cnt = this.recommend_cnt == null ? 0 : this.recommend_cnt;
     }
 }

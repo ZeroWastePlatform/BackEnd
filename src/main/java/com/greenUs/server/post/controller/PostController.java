@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class PostController {
 
 	private final PostService postService;
+
 	public PostController(PostService postService) {
 		this.postService = postService;
 	}

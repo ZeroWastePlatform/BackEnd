@@ -38,7 +38,7 @@ class PostServiceTest {
 		// 	Post saved = postRepository.save(post);
 		// }
 
-		postService.getPostList(2);
+		postService.getPostLists(2);
 		System.out.println("postService = " + postService);
 	}
 

@@ -3,9 +3,12 @@ package com.greenUs.server.post.dto;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostResponseDto {
 
 	private Long id;
