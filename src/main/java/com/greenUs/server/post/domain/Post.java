@@ -5,6 +5,8 @@ import com.greenUs.server.member.domain.Member;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @DynamicUpdate
+// @DynamicInsert
 @Entity
 public class Post extends BaseEntity {
 
@@ -40,11 +43,12 @@ public class Post extends BaseEntity {
 
     private Integer price;
 
-    private Integer view_cnt;
-
-    private Integer reply_cnt;
-
-    private Integer recommend_cnt;
+    // @ColumnDefault("0")
+    private Integer viewCnt;
+    // @ColumnDefault("0")
+    private Integer replyCnt;
+    // @ColumnDefault("0")
+    private Integer recommendCnt;
 
     @Builder
     public Post(Integer kind, String title, String content, Integer price) {
@@ -71,7 +75,7 @@ public class Post extends BaseEntity {
     // insert시 null값 0으로 초기화 (reply_cnt는 조인을 통해 추후 구현)
     @PrePersist
     public void prePersist() {
-        this.view_cnt = this.view_cnt == null ? 0 : this.view_cnt;
-        this.recommend_cnt = this.recommend_cnt == null ? 0 : this.recommend_cnt;
+        this.viewCnt = this.viewCnt == null ? 0 : this.viewCnt;
+        this.recommendCnt = this.recommendCnt == null ? 0 : this.recommendCnt;
     }
 }

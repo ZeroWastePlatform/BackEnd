@@ -4,6 +4,8 @@ import com.greenUs.server.common.BaseEntity;
 
 import javax.persistence.*;
 
+import lombok.Getter;
+
 @Entity
 public class Member extends BaseEntity {
 

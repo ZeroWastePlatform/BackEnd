@@ -53,7 +53,7 @@ public class PostController {
 
 	// -> 201 created와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 작성", description = "게시글 작성 메서드")
-	@PostMapping("/writing") // 게시글 작성
+	@PostMapping // 게시글 작성
 	public ResponseEntity<Integer> write(@RequestBody PostRequestDto postRequestDto) {
 
 		Integer kind = postService.setPostWriting(postRequestDto);

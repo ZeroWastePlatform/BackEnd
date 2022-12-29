@@ -14,6 +14,7 @@ import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class PostService {
 
 	private final PostRepository postRepository;
@@ -23,7 +24,6 @@ public class PostService {
 	}
 
 	// 게시글 목록 조회
-	@Transactional(readOnly = true)
 	public List<PostResponseDto> getPostLists(Integer kind) {
 
 		// 스트림 변환 후 리스트 객체로 반환
@@ -33,7 +33,6 @@ public class PostService {
 	}
 
 	// 게시글 내용 불러오기
-	@Transactional(readOnly = true)
 	public PostResponseDto getPostDetail(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
@@ -65,6 +64,7 @@ public class PostService {
 	}
 
 	// 게시글 삭제
+	@Transactional
 	public Integer setPostdeletion(Long id) {
 
 		Post post = postRepository.findById(id)
