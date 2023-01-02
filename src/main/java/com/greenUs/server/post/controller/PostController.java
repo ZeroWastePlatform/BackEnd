@@ -23,17 +23,15 @@ import com.greenUs.server.post.service.PostService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "커뮤니티", description = "커뮤니티 API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/posts")
 public class PostController {
 
 	private final PostService postService;
-
-	public PostController(PostService postService) {
-		this.postService = postService;
-	}
 
 	@Operation(summary = "게시글 목록 조회", description = "게시글 목록 조회 메서드")
 	@GetMapping("/lists/{kind}") // 게시글 목록 조회
@@ -47,6 +45,7 @@ public class PostController {
 	@GetMapping("/{id}") // 게시글 상세 내용 조회
 	public ResponseEntity<PostResponseDto> detail(@PathVariable Long id) {
 
+		postService.updateViewCnt(id);
 		PostResponseDto postResponseDto = postService.getPostDetail(id);
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}

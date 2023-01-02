@@ -13,15 +13,14 @@ import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
 
 	private final PostRepository postRepository;
-
-	public PostService(PostRepository postRepository) {
-		this.postRepository = postRepository;
-	}
 
 	// 게시글 목록 조회
 	public List<PostResponseDto> getPostLists(Integer kind) {
@@ -72,5 +71,12 @@ public class PostService {
 
 		postRepository.delete(post);
 		return post.getKind();
+	}
+
+	// 조회수 증가
+	@Transactional
+	public void updateViewCnt(Long id) {
+
+		postRepository.updateViewCnt(id);
 	}
 }
