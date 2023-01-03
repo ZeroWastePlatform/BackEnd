@@ -1,10 +1,8 @@
 package com.greenUs.server.post.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.PrePersist;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +20,26 @@ public class PostService {
 
 	private final PostRepository postRepository;
 
-	// 게시글 목록 조회
-	public List<PostResponseDto> getPostLists(Integer kind) {
+	private static final int PAGE_POST_COUNT = 10; // 한 화면에 보일 컨텐츠 수
 
-		// 스트림 변환 후 리스트 객체로 반환
-		return postRepository.findAllKindDesc(kind).stream()
-			.map(PostResponseDto::new)
-			.collect(Collectors.toList());
+	// 게시글 목록 조회
+	public Page<Post> getPageLists(Integer kind, int page, String orderCriteria) {
+
+		// 게시판 종류(kind), 정렬 조건(condition)에 따라 게시판 내용물을 불러온 후 스트림 변환 후 리스트 객체로 반환
+		// 게시판 종류(kind) -> 1: 자유게시판, 2: 정보공유, 3: 중고거래
+		// 정렬 조건(condition) -> 1: 최신순, 2: 조회순, 3: 추천순
+
+		/* 넘겨받은 orderCriteria 를 이용해 내림차순하여 Pageable 객체 반환 */
+		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
+
+		/* category_name에 해당하는 post 페이지 객체 반환 */
+		Page<Post> postPageList = postRepository.findByKind(kind, pageRequest);
+
+		return postPageList;
+
+		// return postRepository.findKindConditionDesc(kind, condition).stream()
+		// 	.map(PostResponseDto::new)
+		// 	.collect(Collectors.toList());
 	}
 
 	// 게시글 내용 불러오기
