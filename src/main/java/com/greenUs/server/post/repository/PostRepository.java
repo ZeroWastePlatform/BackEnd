@@ -11,7 +11,7 @@ import com.greenUs.server.post.domain.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-	// 게시판 종류(kind)와 정렬조건(pageable-condition)을 파라미터로 받아 게시판 종류의 내용물을 정렬 조건순으로 가져오기
+	// 게시판 종류(kind)와 pageRequest를 파라미터로 받아 게시판 종류의 내용물을 정렬 조건순으로 가져오기
 	Page<Post> findByKind(Integer kind, Pageable pageable);
 
 	// 게시판 조회시 조회수 증가
