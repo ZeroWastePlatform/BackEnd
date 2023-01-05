@@ -16,8 +16,8 @@ springdoc:
 
 oauth:
   google:
-    client-id: client-id
-    client-secret: client-secret
+    client-id: 149983825983-ugecu51lvlnner50hcg29act7e9dnilk.apps.googleusercontent.com
+    client-secret: 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
     oauth-end-point: https://accounts.google.com/o/oauth2/v2/auth
     response-type: code
     scopes:
