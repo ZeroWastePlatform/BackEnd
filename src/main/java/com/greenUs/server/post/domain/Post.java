@@ -5,11 +5,7 @@ import com.greenUs.server.member.domain.Member;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -50,6 +46,7 @@ public class Post extends BaseEntity {
     // @ColumnDefault("0")
     private Integer recommendCnt;
 
+    // 빌더
     @Builder
     public Post(Integer kind, String title, String content, Integer price) {
         this.kind = kind;
@@ -58,6 +55,7 @@ public class Post extends BaseEntity {
         this.price = price;
     }
 
+    // 글 수정
     public void update (Integer kind, String title, String content, Integer price) {
         this.kind = kind;
         this.title = title;

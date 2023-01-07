@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.service.PostService;
@@ -74,7 +73,8 @@ public class PostController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PostMapping // 게시글 작성
-	public ResponseEntity<Integer> write(@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) {
+	public ResponseEntity<Integer> write(
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) {
 
 		Integer kind = postService.setPostWriting(postRequestDto);
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);

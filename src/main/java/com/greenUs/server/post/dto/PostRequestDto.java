@@ -25,6 +25,9 @@ public class PostRequestDto {
 	@Schema(description = "게시판 가격(중고 거래 게시판일 경우)", example = "20000", nullable = true)
 	private Integer price;
 
+	@Schema(description = "게시판 해시태그", example = "#그리너스#지구", nullable = true)
+	private String hashtag;
+
 	public Post toEntity() {
 		return Post.builder()
 			.kind(kind)
