@@ -1,6 +1,8 @@
 package com.greenUs.server.post.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -52,7 +54,18 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
 
-		return new PostResponseDto(post);
+		// post -> postResponseDto (entity->dto) 변환
+		PostResponseDto postResponseDto = new PostResponseDto(post);
+
+		List<String> hashtagList = hashtagService.getHashtagList(post);
+		for (int i = 0; i < hashtagList.size(); i++) {
+			System.out.println("i = " + i);
+			System.out.println("hashtagList.get(i) = " + hashtagList.get(i));
+			postResponseDto.insertHashtag(hashtagList.get(i));
+			
+		}
+		System.out.println("postResponseDto = " + postResponseDto);
+		return postResponseDto;
 	}
 
 	// 게시글 작성
@@ -60,11 +73,11 @@ public class PostService {
 	public Integer setPostWriting(PostRequestDto postRequestDto) {
 
 		Post post = postRepository.save(postRequestDto.toEntity());
-		System.out.println("post.getId() = " + post.getId());
+
 		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
-		System.out.println("post.getId() = " + post.getId());
+
 		PostResponseDto postResponseDto = new PostResponseDto(post);
-		System.out.println("post.getId() = " + post.getId());
+
 		return postResponseDto.getKind();
 	}
 

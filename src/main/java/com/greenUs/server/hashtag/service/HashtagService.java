@@ -1,5 +1,6 @@
 package com.greenUs.server.hashtag.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +12,6 @@ import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.hashtag.domain.Keyword;
 import com.greenUs.server.hashtag.repository.HashtagRepository;
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.dto.PostRequestDto;
-import com.greenUs.server.post.dto.PostResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,9 +27,9 @@ public class HashtagService {
 
 		// 해시태그 문자열 정리('#' 구별 -> 공백 제거 -> 빈 문자열 제거 -> 리스트 변환)
 		List<String> keywordContents = Arrays.stream(keywordContentsStr.split("#"))
-				.map(String::trim)
-				.filter(s -> s.length() > 0)
-				.collect(Collectors.toList());
+			.map(String::trim)
+			.filter(s -> s.length() > 0)
+			.collect(Collectors.toList());
 
 		// 키워드 들을 차례대로 저장하는 saveHashtag() 호출
 		keywordContents.forEach(keywordContent -> {
@@ -59,5 +58,17 @@ public class HashtagService {
 		hashtagRepository.save(hashtag);
 
 		return hashtag;
-}
+	}
+
+	// 게시판에 해당하는 키워드들 가져오는 메서드
+	public List<String> getHashtagList(Post post) {
+		List<Hashtag> hashtags = hashtagRepository.findAllByPostId(post.getId());
+		List<String> hashtagList = new ArrayList<>();
+
+		for (int i = 0; i < hashtags.size(); i++) {
+			hashtagList.add(hashtags.get(i).getKeyword().getContent());
+		}
+
+		return hashtagList;
+	}
 }

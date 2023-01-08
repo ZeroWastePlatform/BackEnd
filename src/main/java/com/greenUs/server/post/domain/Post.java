@@ -10,7 +10,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @NoArgsConstructor
 @Getter
 @DynamicUpdate
@@ -62,13 +64,6 @@ public class Post extends BaseEntity {
         this.content = content;
         this.price = price;
     }
-
-    // public void insert (Integer kind, String title, String content, Integer price) {
-    //     this.kind = kind;
-    //     this.title = title;
-    //     this.content = content;
-    //     this.price = price;
-    // }
 
     // insert시 null값 0으로 초기화 (reply_cnt는 조인을 통해 추후 구현)
     @PrePersist
