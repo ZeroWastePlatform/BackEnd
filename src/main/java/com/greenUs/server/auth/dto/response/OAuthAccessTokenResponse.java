@@ -1,14 +1,11 @@
 package com.greenUs.server.auth.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class OAuthAccessTokenResponse {
 
     private String accessToken;
-
-    public OAuthAccessTokenResponse(final String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
 }
