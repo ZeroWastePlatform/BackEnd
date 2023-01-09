@@ -8,8 +8,6 @@ import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -46,6 +44,7 @@ public class PostResponseDto {
 	@Schema(description = "게시판 추천수", example = "17", nullable = false)
 	private Integer recommendCnt;
 
+	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
 	private List<String> hashtagList = new ArrayList<>();
 
 	public PostResponseDto(Post entity) {
@@ -59,7 +58,7 @@ public class PostResponseDto {
 		this.recommendCnt = entity.getRecommendCnt();
 	}
 
-	public void insertHashtag(String hashtag) {
-		this.hashtagList.add(hashtag);
+	public void insertKeyword(String keyword) {
+		this.hashtagList.add(keyword);
 	}
 }

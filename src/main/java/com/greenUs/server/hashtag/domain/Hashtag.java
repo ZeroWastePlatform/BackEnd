@@ -1,5 +1,6 @@
 package com.greenUs.server.hashtag.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.greenUs.server.post.domain.Post;
 
 import javax.persistence.*;
@@ -10,8 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
-@NoArgsConstructor
 @ToString
+@NoArgsConstructor
 @Entity
 public class Hashtag {
 
@@ -19,11 +20,11 @@ public class Hashtag {
     @Column(name = "hashtag_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword_id")
     private Keyword keyword;
 

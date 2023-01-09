@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.dto.PostRequestDto;
@@ -54,18 +55,12 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
 
-		// post -> postResponseDto (entity->dto) 변환
 		PostResponseDto postResponseDto = new PostResponseDto(post);
 
-		List<String> hashtagList = hashtagService.getHashtagList(post);
-		for (int i = 0; i < hashtagList.size(); i++) {
-			System.out.println("i = " + i);
-			System.out.println("hashtagList.get(i) = " + hashtagList.get(i));
-			postResponseDto.insertHashtag(hashtagList.get(i));
-			
-		}
-		System.out.println("postResponseDto = " + postResponseDto);
-		return postResponseDto;
+		List<Hashtag> hashtagList = hashtagService.getHashtags(post);
+
+		// 키워드 저장 후 DTO 리턴
+		return saveKeyword(postResponseDto, hashtagList);
 	}
 
 	// 게시글 작성
@@ -113,5 +108,15 @@ public class PostService {
 	public void updateViewCnt(Long id) {
 
 		postRepository.updateViewCnt(id);
+	}
+
+	// 해시태그 내에 키워드 저장
+	private PostResponseDto saveKeyword(PostResponseDto postResponseDto, List<Hashtag> hashtagList) {
+
+		for (int i = 0; i < hashtagList.size(); i++) {
+			postResponseDto.insertKeyword(hashtagList.get(i).getKeyword().getContent());
+		}
+
+		return postResponseDto;
 	}
 }

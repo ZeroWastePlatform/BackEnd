@@ -1,6 +1,12 @@
 package com.greenUs.server.post.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.greenUs.server.common.BaseEntity;
+import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
 
 import javax.persistence.*;
@@ -16,7 +22,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @DynamicUpdate
-// @DynamicInsert
 @Entity
 public class Post extends BaseEntity {
 
@@ -41,14 +46,15 @@ public class Post extends BaseEntity {
 
     private Integer price;
 
-    // @ColumnDefault("0")
     private Integer viewCnt;
-    // @ColumnDefault("0")
+
     private Integer replyCnt;
-    // @ColumnDefault("0")
+
     private Integer recommendCnt;
 
-    // 빌더
+    // @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    // private List<Hashtag> HashtagList = new ArrayList<>();
+
     @Builder
     public Post(Integer kind, String title, String content, Integer price) {
         this.kind = kind;
