@@ -7,6 +7,7 @@ import javax.persistence.*;
 import lombok.Getter;
 
 @Entity
+@Getter
 public class Member extends BaseEntity {
 
 	@Id @GeneratedValue
@@ -37,4 +38,7 @@ public class Member extends BaseEntity {
 	@Column(name = "interest_area", nullable = false)
 	private String interestArea;
 
+	public void change(String token) {
+		this.token = token;
+	}
 }
