@@ -1,5 +1,6 @@
 package com.greenUs.server.auth.controller;
 
+import com.greenUs.server.auth.application.AuthService;
 import com.greenUs.server.auth.application.OAuthClient;
 import com.greenUs.server.auth.application.OAuthUri;
 import com.greenUs.server.auth.dto.OAuthMember;
@@ -19,6 +20,7 @@ public class AuthController {
 
     private final OAuthUri oAuthUri;
     private final OAuthClient oAuthClient;
+    private final AuthService authService;
 
     /**
      * 로그인 화면으로 가기 위한 Url 반환
@@ -32,13 +34,15 @@ public class AuthController {
         return ResponseEntity.ok(oAuthUriResponse);
     }
 
-
     @PostMapping("/{oauthProvider}/token")
-    public ResponseEntity<OAuthMember> getOauthMemberInfo(
+    public ResponseEntity<AccessRefreshTokenResponse> generateAccessRefreshToken(
             @PathVariable final String oauthProvider,
             @Valid @RequestBody final TokenRequest tokenRequest) {
 
         OAuthMember oAuthMember = oAuthClient.getOAuthMember(tokenRequest.getCode(), tokenRequest.getRedirectUri());
-        return ResponseEntity.ok(oAuthMember);
+        AccessRefreshTokenResponse accessRefreshTokenResponse = authService.generateAccessAndRefreshToken(oAuthMember);
+        return ResponseEntity.ok(accessRefreshTokenResponse);
     }
+
+
 }
