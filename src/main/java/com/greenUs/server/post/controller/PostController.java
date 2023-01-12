@@ -88,7 +88,7 @@ public class PostController {
 	})
 	@PutMapping("/{id}") // 게시글 수정
 	public ResponseEntity<Integer> modify(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id,
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) {
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) {
 
 		Integer kind = postService.setPostModification(id, postRequestDto);
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);

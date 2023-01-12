@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@ToString // 인자 테스트 용
 @Getter
+@ToString
 @NoArgsConstructor
 public class PostResponseDto {
 
@@ -56,9 +56,10 @@ public class PostResponseDto {
 		this.viewCnt = entity.getViewCnt();
 		this.replyCnt = entity.getReplyCnt();
 		this.recommendCnt = entity.getRecommendCnt();
-	}
 
-	public void insertKeyword(String keyword) {
-		this.hashtagList.add(keyword);
+		List<Hashtag> hashtags = entity.getHashtags();
+		for (int i = 0; i < hashtags.size(); i++) {
+			this.hashtagList.add(hashtags.get(i).getKeyword().getContent());
+		}
 	}
 }

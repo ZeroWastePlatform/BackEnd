@@ -1,9 +1,6 @@
 package com.greenUs.server.post.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -55,12 +52,7 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
 
-		PostResponseDto postResponseDto = new PostResponseDto(post);
-
-		List<Hashtag> hashtagList = hashtagService.getHashtags(post);
-
-		// 키워드 저장 후 DTO 리턴
-		return saveKeyword(postResponseDto, hashtagList);
+		return new PostResponseDto(post);
 	}
 
 	// 게시글 작성
@@ -71,9 +63,7 @@ public class PostService {
 
 		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
-		PostResponseDto postResponseDto = new PostResponseDto(post);
-
-		return postResponseDto.getKind();
+		return new PostResponseDto(post).getKind();
 	}
 
 	// 게시글 수정
@@ -87,12 +77,15 @@ public class PostService {
 			postRequestDto.getKind(),
 			postRequestDto.getTitle(),
 			postRequestDto.getContent(),
-			postRequestDto.getPrice());
+			postRequestDto.getPrice()
+		);
 
-		return postRequestDto.getKind();
+		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+
+		return new PostResponseDto(post).getKind();
 	}
 
-	// 게시글 삭제
+	// 게시글 삭제(수정 필요)
 	@Transactional
 	public Integer setPostdeletion(Long id) {
 
@@ -108,15 +101,5 @@ public class PostService {
 	public void updateViewCnt(Long id) {
 
 		postRepository.updateViewCnt(id);
-	}
-
-	// 해시태그 내에 키워드 저장
-	private PostResponseDto saveKeyword(PostResponseDto postResponseDto, List<Hashtag> hashtagList) {
-
-		for (int i = 0; i < hashtagList.size(); i++) {
-			postResponseDto.insertKeyword(hashtagList.get(i).getKeyword().getContent());
-		}
-
-		return postResponseDto;
 	}
 }

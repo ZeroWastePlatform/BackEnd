@@ -3,8 +3,6 @@ package com.greenUs.server.post.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
@@ -52,8 +50,8 @@ public class Post extends BaseEntity {
 
     private Integer recommendCnt;
 
-    // @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    // private List<Hashtag> HashtagList = new ArrayList<>();
+    @OneToMany(mappedBy = "post")
+    List<Hashtag> hashtags = new ArrayList<>();
 
     @Builder
     public Post(Integer kind, String title, String content, Integer price) {

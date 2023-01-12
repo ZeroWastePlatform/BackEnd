@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
-@ToString // 컨트롤러 인자 테스트용
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostRequestDto {
 
