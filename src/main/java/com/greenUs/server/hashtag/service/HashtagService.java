@@ -37,17 +37,6 @@ public class HashtagService {
 		// 삭제할 키워드 정보를 저장하는 리스트 생성
 		List<Hashtag> needToDelete = new ArrayList<>();
 
-		// // 삭제할 키워드 계산
-		// for ( Hashtag oldHashtag : oldHashtagList ) {
-		//
-		// 	boolean contains = keywordContents.stream().anyMatch(s -> s.equals(oldHashtag.getKeyword().getContent()));
-		//
-		// 	if ( contains == false ) {
-		// 		needToDelete.add(oldHashtag);
-		// 	}
-		//
-		// }
-
 		// 새롭게 추가된 키워드 들을 차례대로 저장하는 saveHashtag() 호출
 		keywordContents.forEach(keywordContent -> {
 			setHashtag(post, keywordContent);
@@ -82,18 +71,6 @@ public class HashtagService {
 
 		return hashtag;
 	}
-
-	// // 게시판에 해당하는 키워드들 가져오기
-	// public List<String> getHashtagList(Post post) {
-	// 	List<Hashtag> hashtags = hashtagRepository.findAllByPostId(post.getId());
-	// 	List<String> hashtagList = new ArrayList<>();
-	//
-	// 	for (int i = 0; i < hashtags.size(); i++) {
-	// 		hashtagList.add(hashtags.get(i).getKeyword().getContent());
-	// 	}
-	//
-	// 	return hashtagList;
-	// }
 
 	// 해시태그 정보를 불러오기
 	public List<Hashtag> getHashtags(Post post) {
