@@ -1,11 +1,11 @@
-package com.greenUs.server.product.dto;
+package com.greenUs.server.product.dto.respond;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Builder
 @AllArgsConstructor
-public class ProductForm {
+public class GetProductDto {
     private Long id;
     private String title;
     private String brand;
