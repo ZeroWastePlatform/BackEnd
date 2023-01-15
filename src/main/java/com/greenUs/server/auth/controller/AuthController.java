@@ -4,8 +4,10 @@ import com.greenUs.server.auth.application.AuthService;
 import com.greenUs.server.auth.application.OAuthClient;
 import com.greenUs.server.auth.application.OAuthUri;
 import com.greenUs.server.auth.dto.OAuthMember;
+import com.greenUs.server.auth.dto.request.TokenRenewalRequest;
 import com.greenUs.server.auth.dto.request.TokenRequest;
 import com.greenUs.server.auth.dto.response.AccessRefreshTokenResponse;
+import com.greenUs.server.auth.dto.response.AccessTokenResponse;
 import com.greenUs.server.auth.dto.response.OAuthUriResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +46,11 @@ public class AuthController {
         return ResponseEntity.ok(accessRefreshTokenResponse);
     }
 
-
+    @PostMapping("/token/access")
+    public ResponseEntity<AccessTokenResponse> generateAccessToken(
+            @Valid @RequestBody TokenRenewalRequest tokenRenewalRequest
+            ) {
+        AccessTokenResponse accessTokenResponse = authService.generateAccessToken(tokenRenewalRequest);
+        return ResponseEntity.ok(accessTokenResponse);
+    }
 }
