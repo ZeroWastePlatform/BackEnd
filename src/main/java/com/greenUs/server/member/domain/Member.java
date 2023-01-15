@@ -5,9 +5,11 @@ import com.greenUs.server.common.BaseEntity;
 import javax.persistence.*;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Entity
 @Getter
+@ToString
 public class Member extends BaseEntity {
 
 	@Id @GeneratedValue

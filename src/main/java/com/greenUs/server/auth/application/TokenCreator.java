@@ -5,4 +5,5 @@ import com.greenUs.server.auth.domain.AuthToken;
 public interface TokenCreator {
 
     AuthToken createAuthToken(Long memberId);
+    AuthToken renewAuthToken(String refreshToken);
 }

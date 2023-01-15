@@ -2,7 +2,9 @@ package com.greenUs.server.auth.application;
 
 import com.greenUs.server.auth.domain.AuthToken;
 import com.greenUs.server.auth.dto.OAuthMember;
+import com.greenUs.server.auth.dto.request.TokenRenewalRequest;
 import com.greenUs.server.auth.dto.response.AccessRefreshTokenResponse;
+import com.greenUs.server.auth.dto.response.AccessTokenResponse;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +32,14 @@ public class AuthService {
         if (memberRepository.existsByEmail(email)) {
             return memberRepository.findByEmail(email);
         }
-        // 회원가입이 필요한 상태!! 구현하기, -> 회원가입 해야 한다고 프론트 쪽에 알려줄까??
+        // 회원가입이 필요한 상태!! 구현하기, -> 회원가입 해야 한다고 프론트 쪽에 알려주자
         return null;
+    }
+
+    public AccessTokenResponse generateAccessToken(TokenRenewalRequest tokenRenewalRequest) {
+        String refreshToken = tokenRenewalRequest.getRefreshToken();
+        AuthToken authToken = tokenCreator.renewAuthToken(refreshToken);
+        return new AccessTokenResponse(authToken.getAccessToken());
     }
 
 }
