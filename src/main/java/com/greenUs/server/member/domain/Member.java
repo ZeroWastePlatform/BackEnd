@@ -5,9 +5,11 @@ import com.greenUs.server.common.BaseEntity;
 import javax.persistence.*;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Entity
 @Getter
+@ToString
 public class Member extends BaseEntity {
 
 	@Id @GeneratedValue
@@ -38,4 +40,7 @@ public class Member extends BaseEntity {
 	@Column(name = "interest_area", nullable = false)
 	private String interestArea;
 
+	public void change(String token) {
+		this.token = token;
+	}
 }

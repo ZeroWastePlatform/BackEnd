@@ -1,11 +1,12 @@
-package com.greenUs.server.auth.dto.response;
+package com.greenUs.server.auth.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OAuthAccessTokenResponse {
+public class AuthToken {
 
     private String accessToken;
+    private String refreshToken;
 }
