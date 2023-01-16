@@ -1,0 +1,8 @@
+security:
+  jwt:
+    token:
+      secret-key: zero-waste-secret-key-made-by-sangwoo
+      access:
+        expire-length: 1800000 # 30min
+      refresh:
+        expire-length: 2592000000 # 30 days
