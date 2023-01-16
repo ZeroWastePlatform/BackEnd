@@ -1,15 +1,20 @@
 package com.greenUs.server.post.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+@NoArgsConstructor
 public class PostResponseDto {
 
 	@Schema(description = "게시판 번호", nullable = false, example = "47")
@@ -39,6 +44,9 @@ public class PostResponseDto {
 	@Schema(description = "게시판 추천수", example = "17", nullable = false)
 	private Integer recommendCnt;
 
+	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
+	private List<String> hashtagList = new ArrayList<>();
+
 	public PostResponseDto(Post entity) {
 		this.id = entity.getId();
 		this.kind = entity.getKind();
@@ -48,5 +56,10 @@ public class PostResponseDto {
 		this.viewCnt = entity.getViewCnt();
 		this.replyCnt = entity.getReplyCnt();
 		this.recommendCnt = entity.getRecommendCnt();
+
+		List<Hashtag> hashtags = entity.getHashtags();
+		for (int i = 0; i < hashtags.size(); i++) {
+			this.hashtagList.add(hashtags.get(i).getKeyword().getContent());
+		}
 	}
 }
