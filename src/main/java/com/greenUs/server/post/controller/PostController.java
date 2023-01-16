@@ -1,5 +1,7 @@
 package com.greenUs.server.post.controller;
 
+import java.io.IOException;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -74,7 +76,8 @@ public class PostController {
 	})
 	@PostMapping // 게시글 작성
 	public ResponseEntity<Integer> write(
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) {
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) throws
+		IOException {
 
 		Integer kind = postService.setPostWriting(postRequestDto);
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);

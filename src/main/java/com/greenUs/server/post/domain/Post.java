@@ -53,6 +53,8 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     List<Hashtag> hashtags = new ArrayList<>();
 
+    private Integer fileAttached;
+
     @Builder
     public Post(Integer kind, String title, String content, Integer price) {
         this.kind = kind;
@@ -74,5 +76,6 @@ public class Post extends BaseEntity {
     public void prePersist() {
         this.viewCnt = this.viewCnt == null ? 0 : this.viewCnt;
         this.recommendCnt = this.recommendCnt == null ? 0 : this.recommendCnt;
+        this.fileAttached = this.fileAttached == null ? 0 : this.fileAttached;
     }
 }
