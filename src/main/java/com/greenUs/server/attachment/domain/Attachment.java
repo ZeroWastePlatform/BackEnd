@@ -1,10 +1,16 @@
 package com.greenUs.server.attachment.domain;
 
+import java.security.cert.CertPathBuilder;
+
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.post.domain.Post;
 
 import javax.persistence.*;
 
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 @Entity
 public class Attachment extends BaseEntity {
 
@@ -19,4 +25,11 @@ public class Attachment extends BaseEntity {
     private String originalFileName;
 
     private String storedFileName;
+
+	@Builder
+	public Attachment(Post post, String originalFileName, String storedFileName) {
+		this.post = post;
+		this.originalFileName = originalFileName;
+		this.storedFileName = storedFileName;
+	}
 }

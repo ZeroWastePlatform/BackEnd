@@ -34,7 +34,8 @@ public class PostRequestDto {
 	private MultipartFile postFile;
 	private String originalFileName; // 원본 파일 이름
 	private String storedFileName; // 서버 저장용 파일 이름(원본 파일이 같은 이름으로 여러개 올라온다면 서버에서 구별하기 힘드므로 서버 저장용 파일 이름 구분)
-	private int fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0)
+	private Integer fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0)
+
 
 	public Post toEntity() {
 		return Post.builder()
@@ -42,6 +43,16 @@ public class PostRequestDto {
 			.title(title)
 			.content(content)
 			.price(price)
+			.build();
+	}
+
+	public Post toFileSaveEntity() {
+		return Post.builder()
+			.kind(kind)
+			.title(title)
+			.content(content)
+			.price(price)
+			.fileAttached(1)
 			.build();
 	}
 }

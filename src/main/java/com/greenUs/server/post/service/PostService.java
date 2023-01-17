@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.greenUs.server.attachment.AttachmentDto;
+import com.greenUs.server.attachment.domain.Attachment;
+import com.greenUs.server.attachment.repository.AttachmentRepository;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.dto.PostRequestDto;
@@ -26,6 +29,7 @@ public class PostService {
 	private static final int PAGE_POST_COUNT = 3; // 한 화면에 보일 컨텐츠 수
 	private final PostRepository postRepository;
 	private final HashtagService hashtagService;
+	private final AttachmentRepository attachmentRepository;
 
 	// 게시글 목록 조회
 	public Page<PostResponseDto> getPostLists(Integer kind, Integer page, String orderCriteria) {
@@ -60,12 +64,21 @@ public class PostService {
 	@Transactional
 	public Integer setPostWriting(PostRequestDto postRequestDto) throws IOException {
 
-		Post post = postRepository.save(postRequestDto.toEntity());
-		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+		Post post = new Post();
+
 
 		// 파일 첨부 여부에 따라 로직 분리
-		if (!postRequestDto.getPostFile().isEmpty()) {
-			/*
+		if (postRequestDto.getPostFile().isEmpty()) {
+
+			// 1. 파일이 없는 경우
+			post = postRepository.save(postRequestDto.toEntity());
+			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+
+			return new PostResponseDto(post).getKind();
+		}
+
+		// 2. 파일이 있는 경우
+		/*
 			1. DTO에 담긴 파일을 꺼냄
 			2. 파일의 이름을 가져옴
 			3. 서버 저장용 이름을 만듦
@@ -74,12 +87,32 @@ public class PostService {
 			6. post table에 데이터 save
 			7. attachment table에 데이터 save
 		 */
-			MultipartFile postFile = postRequestDto.getPostFile();
-			String originalFilename = postFile.getOriginalFilename();
-			String storedFileName = System.currentTimeMillis() + " " + originalFilename;
-			String savePath = "C:/springboot_img/" + storedFileName;
-			postFile.transferTo(new File(savePath));
-		}
+
+		MultipartFile postFile = postRequestDto.getPostFile();
+
+		String originalFilename = postFile.getOriginalFilename();
+
+		String storedFileName = System.currentTimeMillis() + " " + originalFilename;
+
+		String savePath = "C:/springboot_img/" + storedFileName;
+
+		postFile.transferTo(new File(savePath));
+
+		post = postRepository.save(postRequestDto.toFileSaveEntity());
+
+		// 해시태그 저장장
+		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+
+		Long saveId = post.getId(); // 부모(post) 번호
+
+		// DB 저장 후 생성된 ID 값을 불러오기 위해 Post 다시 호출
+		Post fileSavePost = postRepository.findById(saveId).get();
+
+		// AttachmentDto를 통해 Attachment Entity로 변환
+		Attachment attachment = new AttachmentDto(fileSavePost, originalFilename, storedFileName).toEntity();
+
+		// 첨부파일 Entity에 내용 저장
+		attachmentRepository.save(attachment);
 
 		return new PostResponseDto(post).getKind();
 	}

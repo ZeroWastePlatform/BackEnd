@@ -10,6 +10,8 @@ import com.greenUs.server.member.domain.Member;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.Builder;
@@ -21,6 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @DynamicUpdate
+@DynamicInsert
 @Entity
 public class Post extends BaseEntity {
 
@@ -45,26 +48,30 @@ public class Post extends BaseEntity {
 
     private Integer price;
 
+    @ColumnDefault("0")
     private Integer viewCnt;
 
     private Integer replyCnt;
 
+    @ColumnDefault("0")
     private Integer recommendCnt;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Hashtag> hashtags = new ArrayList<>();
 
+    @ColumnDefault("0")
     private Integer fileAttached;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Attachment> attachments = new ArrayList<>();
 
     @Builder
-    public Post(Integer kind, String title, String content, Integer price) {
+    public Post(Integer kind, String title, String content, Integer price, Integer fileAttached) {
         this.kind = kind;
         this.title = title;
         this.content = content;
         this.price = price;
+        this.fileAttached = fileAttached;
     }
 
     // 글 수정
@@ -73,13 +80,5 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.price = price;
-    }
-
-    // insert시 null값 0으로 초기화 (reply_cnt는 조인을 통해 추후 구현)
-    @PrePersist
-    public void prePersist() {
-        this.viewCnt = this.viewCnt == null ? 0 : this.viewCnt;
-        this.recommendCnt = this.recommendCnt == null ? 0 : this.recommendCnt;
-        this.fileAttached = this.fileAttached == null ? 0 : this.fileAttached;
     }
 }
