@@ -3,6 +3,7 @@ package com.greenUs.server.post.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
@@ -50,10 +51,13 @@ public class Post extends BaseEntity {
 
     private Integer recommendCnt;
 
-    @OneToMany(mappedBy = "post")
-    List<Hashtag> hashtags = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Hashtag> hashtags = new ArrayList<>();
 
     private Integer fileAttached;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Attachment> attachments = new ArrayList<>();
 
     @Builder
     public Post(Integer kind, String title, String content, Integer price) {
