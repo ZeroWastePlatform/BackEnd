@@ -8,9 +8,11 @@ import com.greenUs.server.post.domain.Post;
 import javax.persistence.*;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@Getter
 @Entity
 public class Attachment extends BaseEntity {
 

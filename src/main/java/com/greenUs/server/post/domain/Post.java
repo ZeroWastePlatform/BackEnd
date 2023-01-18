@@ -23,7 +23,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @DynamicUpdate
-@DynamicInsert
 @Entity
 public class Post extends BaseEntity {
 
@@ -48,18 +47,15 @@ public class Post extends BaseEntity {
 
     private Integer price;
 
-    @ColumnDefault("0")
     private Integer viewCnt;
 
     private Integer replyCnt;
 
-    @ColumnDefault("0")
     private Integer recommendCnt;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Hashtag> hashtags = new ArrayList<>();
 
-    @ColumnDefault("0")
     private Integer fileAttached;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -80,5 +76,12 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.price = price;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.viewCnt = this.viewCnt == null ? 0 : this.viewCnt;
+        this.recommendCnt = this.recommendCnt == null ? 0 : this.recommendCnt;
+        this.fileAttached = this.fileAttached == null ? 0 : this.fileAttached;
     }
 }
