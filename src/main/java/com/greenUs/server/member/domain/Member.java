@@ -51,4 +51,11 @@ public class Member extends BaseEntity {
 	public void change(String token) {
 		this.token = token;
 	}
+
+	public void changeInfo(String nickname, String address, String phoneNum, String interestArea) {
+		this.nickname = nickname;
+		this.address = address;
+		this.phoneNum = phoneNum;
+		this.interestArea = interestArea;
+	}
 }
