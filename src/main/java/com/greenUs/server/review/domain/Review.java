@@ -2,7 +2,6 @@ package com.greenUs.server.review.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.post.dto.User;
 import com.greenUs.server.product.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

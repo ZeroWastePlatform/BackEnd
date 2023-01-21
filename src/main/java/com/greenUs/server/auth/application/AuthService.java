@@ -32,8 +32,13 @@ public class AuthService {
         if (memberRepository.existsByEmail(email)) {
             return memberRepository.findByEmail(email);
         }
-        // 회원가입이 필요한 상태!! 구현하기, -> 회원가입 해야 한다고 프론트 쪽에 알려주자
-        return null;
+
+        return saveMember(oAuthMember);
+    }
+
+    private Member saveMember(OAuthMember oAuthMember) {
+        Member savedMember = memberRepository.save(oAuthMember.toMember());
+        return savedMember;
     }
 
     public AccessTokenResponse generateAccessToken(TokenRenewalRequest tokenRenewalRequest) {
