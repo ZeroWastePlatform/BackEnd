@@ -2,6 +2,7 @@ package com.greenUs.server.post.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -63,12 +64,12 @@ public class PostService {
 
 	// 게시글 작성
 	@Transactional
-	public Integer setPostWriting(PostRequestDto postRequestDto) throws IOException {
+	public Integer setPostWriting(List<MultipartFile> postFiles, PostRequestDto postRequestDto) throws IOException {
 
 		Post post;
 
 		// 파일 첨부 여부에 따라 로직 분리
-		if (StringUtils.isEmpty((CharSequence)postRequestDto.getPostFile())) {
+		if (postFiles.isEmpty()) {
 
 			// 1. 파일이 없는 경우
 			post = postRepository.save(postRequestDto.toEntity());
@@ -98,7 +99,7 @@ public class PostService {
 		// DB 저장 후 생성어진 ID 값을 불러오기 위해 Post 다시 호출
 		Post fileSavePost = postRepository.findById(saveId).get();
 
-		for (MultipartFile postFile : postRequestDto.getPostFile()) {
+		for (MultipartFile postFile : postFiles) {
 
 			String originalFilename = postFile.getOriginalFilename();
 

@@ -1,6 +1,7 @@
 package com.greenUs.server.post.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
@@ -76,10 +79,11 @@ public class PostController {
 	})
 	@PostMapping // 게시글 작성
 	public ResponseEntity<Integer> write(
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) throws
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag), 파일 이름 리스트(postFiles)", in = ParameterIn.PATH)
+		@RequestPart List<MultipartFile> postFiles, @RequestPart PostRequestDto postRequestDto) throws
 		IOException {
 
-		Integer kind = postService.setPostWriting(postRequestDto);
+		Integer kind = postService.setPostWriting(postFiles, postRequestDto);
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 

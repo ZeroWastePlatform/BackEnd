@@ -48,11 +48,14 @@ public class PostResponseDto {
 	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
 	private List<String> hashtags = new ArrayList<>();
 
-	private List<String> originalFileName; // 원본 파일 이름
+	@Schema(description = "원본 파일 이름", nullable = true)
+	private List<String> originalFileName = new ArrayList<>();
 
-	private List<String> storedFileName; // 서버 저장용 파일 이름(원본 파일이 같은 이름으로 여러개 올라온다면 서버에서 구별하기 힘드므로 서버 저장용 파일 이름 구분)
+	@Schema(description = "서버 저장용 파일 이름", nullable = true)
+	private List<String> storedFileName = new ArrayList<>();
 
-	private Integer fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0)
+	@Schema(description = "파일 첨부 여부", example = "첨부 : 1, 미첨부 : 0", nullable = false)
+	private Integer fileAttached;
 
 	public PostResponseDto(Post entity) {
 		this.id = entity.getId();
@@ -72,7 +75,7 @@ public class PostResponseDto {
 			this.fileAttached = entity.getFileAttached();
 		} else {
 			this.fileAttached = entity.getFileAttached();
-
+			
 			for (Attachment attachment : entity.getAttachments()) {
 				this.originalFileName.add(attachment.getOriginalFileName());
 				this.storedFileName.add(attachment.getStoredFileName());

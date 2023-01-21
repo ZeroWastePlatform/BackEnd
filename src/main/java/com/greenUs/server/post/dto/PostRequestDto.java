@@ -32,13 +32,6 @@ public class PostRequestDto {
 	@Schema(description = "게시판 해시태그", example = "#그리너스#지구", nullable = true)
 	private String hashtag;
 
-	@Schema(description = "게시판 첨부파일", example = "파일 이름 리스트", nullable = true)
-	private List<MultipartFile> postFile;
-
-	private String originalFileName; // 원본 파일 이름
-
-	private Integer fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0)
-
 	public Post toEntity() {
 		return Post.builder()
 			.kind(kind)

@@ -10,9 +10,11 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Attachment extends BaseEntity {
 
@@ -21,6 +23,7 @@ public class Attachment extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+	@ToString.Exclude
     @JoinColumn(name = "post_id")
     private Post post;
 
