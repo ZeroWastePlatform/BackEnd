@@ -23,7 +23,6 @@ public class AuthService {
     @Transactional
     public AccessRefreshTokenResponse generateAccessAndRefreshToken(OAuthMember oAuthMember) {
         Member foundMember = findMember(oAuthMember);
-        System.out.println(foundMember);
         foundMember.change(oAuthMember.getRefreshToken());
         AuthToken authToken = tokenCreator.createAuthToken(foundMember.getId());
         return new AccessRefreshTokenResponse(authToken.getAccessToken(), authToken.getRefreshToken());
@@ -34,8 +33,7 @@ public class AuthService {
         if (memberRepository.existsByEmail(email)) {
             return memberRepository.findByEmail(email);
         }
-        // 회원가입이 필요한 상태!! 구현하기, -> 회원가입 해야 한다고 프론트 쪽에 알려주자
-        return null;
+        return memberRepository.save(oAuthMember.toMember());
     }
 
     public AccessTokenResponse generateAccessToken(TokenRenewalRequest tokenRenewalRequest) {
