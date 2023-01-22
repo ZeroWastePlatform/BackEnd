@@ -6,6 +6,7 @@ import com.greenUs.server.auth.dto.request.TokenRenewalRequest;
 import com.greenUs.server.auth.dto.response.AccessRefreshTokenResponse;
 import com.greenUs.server.auth.dto.response.AccessTokenResponse;
 import com.greenUs.server.member.domain.Member;
+import com.greenUs.server.member.exception.NotExistMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class AuthService {
     @Transactional
     public AccessRefreshTokenResponse generateAccessAndRefreshToken(OAuthMember oAuthMember) {
         Member foundMember = findMember(oAuthMember);
+        System.out.println(foundMember);
         foundMember.change(oAuthMember.getRefreshToken());
         AuthToken authToken = tokenCreator.createAuthToken(foundMember.getId());
         return new AccessRefreshTokenResponse(authToken.getAccessToken(), authToken.getRefreshToken());
@@ -32,13 +34,8 @@ public class AuthService {
         if (memberRepository.existsByEmail(email)) {
             return memberRepository.findByEmail(email);
         }
-
-        return saveMember(oAuthMember);
-    }
-
-    private Member saveMember(OAuthMember oAuthMember) {
-        Member savedMember = memberRepository.save(oAuthMember.toMember());
-        return savedMember;
+        // 회원가입이 필요한 상태!! 구현하기, -> 회원가입 해야 한다고 프론트 쪽에 알려주자
+        return null;
     }
 
     public AccessTokenResponse generateAccessToken(TokenRenewalRequest tokenRenewalRequest) {
@@ -47,4 +44,9 @@ public class AuthService {
         return new AccessTokenResponse(authToken.getAccessToken());
     }
 
+    public Long extractMemberId(String accessToken) {
+        Long memberId = tokenCreator.extractPayload(accessToken);
+        memberRepository.findById(memberId).orElseThrow(NotExistMemberException::new);
+        return memberId;
+    }
 }
