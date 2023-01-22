@@ -3,6 +3,7 @@ package com.greenUs.server.auth.controller;
 import com.greenUs.server.auth.application.AuthService;
 import com.greenUs.server.auth.application.OAuthClient;
 import com.greenUs.server.auth.application.OAuthUri;
+import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.auth.dto.OAuthMember;
 import com.greenUs.server.auth.dto.request.TokenRenewalRequest;
 import com.greenUs.server.auth.dto.request.TokenRequest;
@@ -49,8 +50,13 @@ public class AuthController {
     @PostMapping("/token/access")
     public ResponseEntity<AccessTokenResponse> generateAccessToken(
             @Valid @RequestBody TokenRenewalRequest tokenRenewalRequest
-            ) {
+    ) {
         AccessTokenResponse accessTokenResponse = authService.generateAccessToken(tokenRenewalRequest);
         return ResponseEntity.ok(accessTokenResponse);
+    }
+
+    @GetMapping("/validate/token")
+    public ResponseEntity<Void> validateToken(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok().build();
     }
 }
