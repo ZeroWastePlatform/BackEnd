@@ -1,7 +1,5 @@
 package com.greenUs.server.attachment.domain;
 
-import java.security.cert.CertPathBuilder;
-
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.post.domain.Post;
 
