@@ -53,7 +53,7 @@ public class Post extends BaseEntity {
 
     private Integer recommendCnt;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Hashtag> hashtags = new ArrayList<>();
 
     private Integer fileAttached;
