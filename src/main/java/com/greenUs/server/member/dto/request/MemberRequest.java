@@ -9,9 +9,6 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class MemberRequest {
 
-    @NotNull(message = "id 는 Null 이면 안됩니다")
-    private Long id;
-
     @Min(1) @Max(10)
     @NotNull(message = "nickname 은 Null 이면 안됩니다")
     private String nickname;

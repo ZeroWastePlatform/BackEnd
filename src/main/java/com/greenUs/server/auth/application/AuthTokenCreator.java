@@ -66,6 +66,12 @@ public class AuthTokenCreator implements TokenCreator{
         return new AuthToken(accessTokenForRenew, refreshTokenForRenew);
     }
 
+    @Override
+    public Long extractPayload(String accessToken) {
+        validateToken(accessToken);
+        return Long.valueOf(getPayload(accessToken));
+    }
+
     private void validateToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
