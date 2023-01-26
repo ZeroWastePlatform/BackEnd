@@ -1,5 +1,9 @@
 package com.greenUs.server.post.dto;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.greenUs.server.post.domain.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,6 +38,16 @@ public class PostRequestDto {
 			.title(title)
 			.content(content)
 			.price(price)
+			.build();
+	}
+
+	public Post toFileSaveEntity() {
+		return Post.builder()
+			.kind(kind)
+			.title(title)
+			.content(content)
+			.price(price)
+			.fileAttached(1)
 			.build();
 	}
 }

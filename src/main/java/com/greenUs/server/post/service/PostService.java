@@ -1,14 +1,20 @@
 package com.greenUs.server.post.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.greenUs.server.hashtag.domain.Hashtag;
+import com.greenUs.server.attachment.AttachmentDto;
+import com.greenUs.server.attachment.domain.Attachment;
+import com.greenUs.server.attachment.repository.AttachmentRepository;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.dto.PostRequestDto;
@@ -22,19 +28,20 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class PostService {
 
+	private static final int PAGE_POST_COUNT = 3; // 한 화면에 보일 컨텐츠 수
 	private final PostRepository postRepository;
 	private final HashtagService hashtagService;
+	private final AttachmentRepository attachmentRepository;
 
-	private static final int PAGE_POST_COUNT = 3; // 한 화면에 보일 컨텐츠 수
 	// 게시글 목록 조회
 	public Page<PostResponseDto> getPostLists(Integer kind, Integer page, String orderCriteria) {
 
 		/* 게시판 종류(kind), 정렬 조건(orderCriteria)에 따라 게시판 내용물을 불러온 후 반환
-		*  게시판 종류(kind) -> 1: 자유게시판, 2: 정보공유, 3: 중고거래
-		*  정렬 조건(orderCriteria) -> createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순 */
+		 *  게시판 종류(kind) -> 1: 자유게시판, 2: 정보공유, 3: 중고거래
+		 *  정렬 조건(orderCriteria) -> createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순 */
 
 		/* 넘겨받은 orderCriteria 를 이용해 내림차순하여 PageRequest 객체 반환
-		*  PageRequest는 Pageable 인터페이스를 구현한 구현체 */
+		 *  PageRequest는 Pageable 인터페이스를 구현한 구현체 */
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
 		// 게시판 종류(kind)에 해당하는 post 페이지 객체 반환
@@ -57,11 +64,57 @@ public class PostService {
 
 	// 게시글 작성
 	@Transactional
-	public Integer setPostWriting(PostRequestDto postRequestDto) {
+	public Integer setPostWriting(List<MultipartFile> postFiles, PostRequestDto postRequestDto) throws IOException {
 
-		Post post = postRepository.save(postRequestDto.toEntity());
+		Post post;
 
+		// 파일 첨부 여부에 따라 로직 분리
+		if (postFiles.isEmpty()) {
+
+			// 1. 파일이 없는 경우
+			post = postRepository.save(postRequestDto.toEntity());
+			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+
+			return new PostResponseDto(post).getKind();
+		}
+
+		// 2. 파일이 있는 경우
+		/*
+			1. DTO에 담긴 파일을 꺼냄
+			2. 파일의 이름을 가져옴
+			3. 서버 저장용 이름을 만듦
+			4. 저장 경로 설정
+			5. 해당 경로에 파일 저장
+			6. post table에 데이터 save
+			7. attachment table에 데이터 save
+		 */
+
+		post = postRepository.save(postRequestDto.toFileSaveEntity());
+
+		// 해시태그 저장
 		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+
+		Long saveId = post.getId(); // 부모(post) 번호
+
+		// DB 저장 후 생성어진 ID 값을 불러오기 위해 Post 다시 호출
+		Post fileSavePost = postRepository.findById(saveId).get();
+
+		for (MultipartFile postFile : postFiles) {
+
+			String originalFilename = postFile.getOriginalFilename();
+
+			String storedFileName = System.currentTimeMillis() + " " + originalFilename;
+
+			String savePath = "C:/springboot_img/" + storedFileName;
+
+			postFile.transferTo(new File(savePath));
+
+			// AttachmentDto를 통해 Attachment Entity로 변환
+			Attachment attachment = new AttachmentDto(fileSavePost, originalFilename, storedFileName).toEntity();
+
+			// 첨부파일 Entity에 내용 저장
+			attachmentRepository.save(attachment);
+		}
 
 		return new PostResponseDto(post).getKind();
 	}

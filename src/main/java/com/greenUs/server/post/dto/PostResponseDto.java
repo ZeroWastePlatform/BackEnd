@@ -3,6 +3,7 @@ package com.greenUs.server.post.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
@@ -45,7 +46,16 @@ public class PostResponseDto {
 	private Integer recommendCnt;
 
 	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
-	private List<String> hashtagList = new ArrayList<>();
+	private List<String> hashtags = new ArrayList<>();
+
+	@Schema(description = "원본 파일 이름", nullable = true)
+	private List<String> originalFileName = new ArrayList<>();
+
+	@Schema(description = "서버 저장용 파일 이름", nullable = true)
+	private List<String> storedFileName = new ArrayList<>();
+
+	@Schema(description = "파일 첨부 여부", example = "첨부 : 1, 미첨부 : 0", nullable = false)
+	private Integer fileAttached;
 
 	public PostResponseDto(Post entity) {
 		this.id = entity.getId();
@@ -57,9 +67,19 @@ public class PostResponseDto {
 		this.replyCnt = entity.getReplyCnt();
 		this.recommendCnt = entity.getRecommendCnt();
 
-		List<Hashtag> hashtags = entity.getHashtags();
-		for (int i = 0; i < hashtags.size(); i++) {
-			this.hashtagList.add(hashtags.get(i).getKeyword().getContent());
+		for (Hashtag hashtag : entity.getHashtags()) {
+			this.hashtags.add(hashtag.getKeyword().getContent());
+		}
+
+		if (entity.getFileAttached() == 0) {
+			this.fileAttached = entity.getFileAttached();
+		} else {
+			this.fileAttached = entity.getFileAttached();
+			
+			for (Attachment attachment : entity.getAttachments()) {
+				this.originalFileName.add(attachment.getOriginalFileName());
+				this.storedFileName.add(attachment.getStoredFileName());
+			}
 		}
 	}
 }
