@@ -43,19 +43,28 @@ public class PostController {
 
 	private final PostService postService;
 
-	@Operation(summary = "게시글 목록 조회", description = "게시글 구분(kind)값과 현재 페이지(page), 정렬 조건(orderby)를 파라미터로 받아 목록을 불러올 수 있습니다.")
+	@Operation(summary = "게시글 목록 조회", description = "게시글 구분(kind)값과 현재 페이지(page), 정렬 조건(orderby), 검색 조건(searchby)를 파라미터로 받아 목록을 불러올 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostResponseDto.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/lists/{kind}") // 게시글 목록 조회
-	public ResponseEntity<Page<PostResponseDto>> list(@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @PathVariable @Min(1) @Max(3) Integer kind,
+	public ResponseEntity<Page<PostResponseDto>> list(
+		@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @PathVariable @Min(1) @Max(3) Integer kind,
 		@Parameter(description = "현재 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
-		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria
+		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria,
+		@Parameter(description = "검색 조건(title: 제목, content: 내용", in = ParameterIn.PATH) @RequestParam(required = false, value = "searchby") String searchKeyword
 	) {
 
-		Page<PostResponseDto> postResponseDto = postService.getPostLists(kind, page, orderCriteria);
-		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
+		Page<PostResponseDto> postResponseDto = null;
+
+		if (searchKeyword == null) {
+			postResponseDto = postService.getPostLists(kind, page, orderCriteria);
+			return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
+		} else {
+			postResponseDto = postService.getPostSearchLists(kind, page, orderCriteria, searchKeyword);
+			return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
+		}
 	}
 
 	@Operation(summary = "게시글 상세 내용 조회", description = "게시글 번호(id)를 파라미터로 받아 게시글을 상세 조회 할 수 있습니다.")
@@ -80,7 +89,7 @@ public class PostController {
 	@PostMapping // 게시글 작성
 	public ResponseEntity<Integer> write(
 		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag), 파일 이름 리스트(postFiles)", in = ParameterIn.PATH)
-		@RequestPart List<MultipartFile> postFiles, @RequestPart PostRequestDto postRequestDto) throws
+		@RequestPart(required = false) List<MultipartFile> postFiles, @RequestPart PostRequestDto postRequestDto) throws
 		IOException {
 
 		Integer kind = postService.setPostWriting(postFiles, postRequestDto);

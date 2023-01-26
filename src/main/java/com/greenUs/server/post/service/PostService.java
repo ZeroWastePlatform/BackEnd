@@ -54,6 +54,18 @@ public class PostService {
 
 	}
 
+	// 게시글 검색 목록 조회
+	public Page<PostResponseDto> getPostSearchLists(Integer kind, Integer page, String orderCriteria, String searchKeyword) {
+
+		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
+
+		Page<Post> post = postRepository.findByTitleContaining(searchKeyword, pageRequest);
+
+		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
+
+		return postResponseDto;
+	}
+
 	// 게시글 내용 불러오기
 	public PostResponseDto getPostDetail(Long id) {
 
