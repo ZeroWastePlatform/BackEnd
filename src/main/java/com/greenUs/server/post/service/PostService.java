@@ -67,6 +67,9 @@ public class PostService {
 		else if (searchCondition.equals("content")) {
 			post = postRepository.findByKindAndContentContaining(kind, searchKeyword, pageRequest);
 		}
+		else if (searchCondition.equals("hashtag")) {
+			post = postRepository.findByKindAndHashtagContaining(kind, searchKeyword, pageRequest);
+		}
 
 		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
 

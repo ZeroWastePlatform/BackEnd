@@ -20,6 +20,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	// 내용 검색
 	Page<Post> findByKindAndContentContaining(Integer kind, String content, Pageable pageable);
 
+	// 키워드 검색
+	@Query("select distinct p from Post p\n"
+		+ "inner join Hashtag h on p.id = h.post.id\n"
+		+ "inner join Keyword k on h.keyword.id = k.id\n"
+		+ "where k.content = :hashtag and p.kind = :kind")
+	Page<Post> findByKindAndHashtagContaining(Integer kind, String hashtag, Pageable pageable);
+
 	// 게시판 조회시 조회수 증가
 	@Modifying
 	@Query("update Post post set post.viewCnt = post.viewCnt+1 where post.id = :id")
