@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/dev/database/greenus
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+    hibernate:
+      ddl-auto: create
+
+security:
+  jwt:
+    token:
+      secret-key: zero-waste-secret-key-made-by-sangwoo
+      access:
+        expire-length: 1800000 # 30min
+      refresh:
+        expire-length: 2592000000 # 30 days
+
+
+oauth:
+  google:
+    client-id: client-id
+    client-secret: client-secret
+    oauth-end-point: https://accounts.google.com/o/oauth2/v2/auth
+    response-type: code
+    scopes:
+      - https://www.googleapis.com/auth/userinfo.profile
+      - https://www.googleapis.com/auth/userinfo.email
+    token-uri: https://oauth2.googleapis.com/token
+    access-type: offline
