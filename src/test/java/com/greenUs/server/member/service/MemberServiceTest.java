@@ -4,6 +4,7 @@ import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.domain.SocialType;
 import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.MemberResponse;
+import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
@@ -58,6 +60,17 @@ class MemberServiceTest {
                 () -> assertThat(memberResponse.getPhoneNum()).isEqualTo("010-0000-0000"),
                 () -> assertThat(memberResponse.getInterestArea()).isEqualTo("gimpo")
         );
+    }
+
+    @DisplayName("존재하지 않는 id 로 회원 찾기")
+    @Test
+    void findByIdThrowException() {
+        // given
+        Long id = 0L;
+
+        // when & then
+        assertThatThrownBy(() -> memberService.findById(id))
+                .isInstanceOf(NotFoundMemberException.class);
     }
 
 }
