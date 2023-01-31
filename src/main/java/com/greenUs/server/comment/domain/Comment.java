@@ -1,11 +1,22 @@
 package com.greenUs.server.comment.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 
 import javax.persistence.*;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@ToString
+@NoArgsConstructor
+@Getter
 @Entity
 public class Comment extends BaseEntity {
 
@@ -21,8 +32,19 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private Long parentId;
-
-    @Column(length = 50, nullable = false)
+    @Column(length = 1000, nullable = false)
     private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> children = new ArrayList<>();
+
+    @Builder
+    public Comment(String content) {
+        this.content = content;
+    }
 }

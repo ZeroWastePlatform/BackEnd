@@ -64,7 +64,7 @@ public class PostResponseDto {
 		this.content = entity.getContent();
 		this.price = entity.getPrice();
 		this.viewCnt = entity.getViewCnt();
-		this.replyCnt = entity.getReplyCnt();
+		this.replyCnt = entity.getComments().size();
 		this.recommendCnt = entity.getRecommendCnt();
 
 		for (Hashtag hashtag : entity.getHashtags()) {

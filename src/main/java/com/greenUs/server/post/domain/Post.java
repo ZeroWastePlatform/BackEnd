@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.greenUs.server.attachment.domain.Attachment;
+import com.greenUs.server.comment.domain.Comment;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
@@ -49,9 +50,10 @@ public class Post extends BaseEntity {
 
     private Integer viewCnt;
 
-    private Integer replyCnt;
-
     private Integer recommendCnt;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Hashtag> hashtags = new ArrayList<>();
