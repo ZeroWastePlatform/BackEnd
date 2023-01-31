@@ -6,7 +6,7 @@ import com.greenUs.server.auth.dto.request.TokenRenewalRequest;
 import com.greenUs.server.auth.dto.response.AccessRefreshTokenResponse;
 import com.greenUs.server.auth.dto.response.AccessTokenResponse;
 import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.member.exception.NotExistMemberException;
+import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ public class AuthService {
 
     public Long extractMemberId(String accessToken) {
         Long memberId = tokenCreator.extractPayload(accessToken);
-        memberRepository.findById(memberId).orElseThrow(NotExistMemberException::new);
+        memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
         return memberId;
     }
 }
