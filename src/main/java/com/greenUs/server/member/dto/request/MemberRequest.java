@@ -1,5 +1,6 @@
 package com.greenUs.server.member.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.validation.constraints.Max;
@@ -7,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Getter
+@AllArgsConstructor
 public class MemberRequest {
 
     @Min(1) @Max(10)
