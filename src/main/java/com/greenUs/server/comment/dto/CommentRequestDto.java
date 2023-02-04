@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentRequestDto {
 
-	@Schema(description = "게시물 번호", nullable = false)
+	@Schema(description = "게시글 번호", nullable = false)
 	private Long postId;
 
 	@Schema(description = "댓글 내용", nullable = false)

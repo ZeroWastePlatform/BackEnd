@@ -30,6 +30,7 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @ToString.Exclude
     private Post post;
 
     @Column(length = 1000, nullable = false)
@@ -39,12 +40,9 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "parent", orphanRemoval = true)
-    private List<Comment> children = new ArrayList<>();
-
     @Builder
-    public Comment(String content) {
+    public Comment(Post post, String content) {
+        this.post = post;
         this.content = content;
     }
 }

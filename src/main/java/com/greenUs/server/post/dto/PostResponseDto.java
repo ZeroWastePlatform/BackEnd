@@ -61,6 +61,7 @@ public class PostResponseDto {
 		this.id = entity.getId();
 		this.kind = entity.getKind();
 		this.title = entity.getTitle();
+		this.member = entity.getMember();
 		this.content = entity.getContent();
 		this.price = entity.getPrice();
 		this.viewCnt = entity.getViewCnt();
