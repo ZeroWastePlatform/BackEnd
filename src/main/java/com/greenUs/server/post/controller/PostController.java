@@ -121,7 +121,7 @@ public class PostController {
 	@DeleteMapping("/{id}") // 게시글 삭제
 	public ResponseEntity<Integer> delete(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		Integer kind = postService.setPostdeletion(id);
+		Integer kind = postService.setPostDeletion(id);
 		return new ResponseEntity<>(kind, HttpStatus.OK);
 	}
 }

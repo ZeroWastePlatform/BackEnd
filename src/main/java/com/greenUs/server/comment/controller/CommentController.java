@@ -2,6 +2,7 @@ package com.greenUs.server.comment.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,5 +56,17 @@ public class CommentController {
 
 		Long commentId = commentService.setCommentModification(id, commentRequestDto);
 		return new ResponseEntity<>(commentId, HttpStatus.CREATED);
+	}
+
+	@Operation(summary = "댓글 삭제", description = "댓글 번호(id)를 받아 댓글을 삭제할 수 있습니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "댓글 삭제 성공", content = @Content(schema = @Schema(implementation = Integer.class))),
+		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
+	})
+	@DeleteMapping("/{id}/comments") // 게시글 삭제
+	public ResponseEntity<Long> delete(@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+
+		Long commentId = commentService.setCommentDeletion(id);
+		return new ResponseEntity<>(commentId, HttpStatus.OK);
 	}
 }

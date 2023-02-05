@@ -160,9 +160,9 @@ public class PostService {
 		return new PostResponseDto(post).getKind();
 	}
 
-	// 게시글 삭제(수정 필요)
+	// 게시글 삭제(수정 필요 - 작성자 확인, 댓글 있는지 확인(댓글 있으면 삭제 X)
 	@Transactional
-	public Integer setPostdeletion(Long id) {
+	public Integer setPostDeletion(Long id) {
 
 		Post post = postRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));

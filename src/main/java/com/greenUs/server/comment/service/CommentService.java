@@ -41,7 +41,7 @@ public class CommentService {
 	@Transactional
 	public Long setCommentModification(Long id, CommentRequestDto commentRequestDto) {
 
-		// 입력받은 postId와 댓글id의 postID가 같은지 확인 (지금은 X)
+		// 입력받은 postId와 댓글id의 postID가 같은지 확인 (지금은 X) - 필요없는 부분(클라이언트 요청 문제)
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
 
@@ -54,5 +54,20 @@ public class CommentService {
 		);
 
 		return new CommentResponseDto(comment).getId();
+	}
+
+	// 댓글 삭제
+	@Transactional
+	public Long setCommentDeletion(Long id) {
+
+		Comment comment = commentRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
+
+		CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+
+		// 댓글 작성자 관련 처리 (지금은 X)
+		commentRepository.delete(comment);
+
+		return commentResponseDto.getId();
 	}
 }
