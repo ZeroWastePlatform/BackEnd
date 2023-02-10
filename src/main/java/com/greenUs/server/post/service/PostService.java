@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class PostService {
 
-	private static final int PAGE_POST_COUNT = 3; // 한 화면에 보일 컨텐츠 수
+	private static final int PAGE_POST_COUNT = 6; // 한 화면에 보일 게시글 수
 	private final PostRepository postRepository;
 	private final HashtagService hashtagService;
 	private final AttachmentRepository attachmentRepository;

@@ -20,9 +20,9 @@ public class CommentRequestDto {
 	@Schema(description = "댓글 내용", nullable = false)
 	private String content;
 
-	// public Comment toEntity() {
-	// 	return Comment.builder()
-	// 		.content(content)
-	// 		.build();
-	// }
+	public Comment toEntity() {
+		return Comment.builder()
+			.content(content)
+			.build();
+	}
 }

@@ -51,7 +51,7 @@ public class PostController {
 	@GetMapping("/lists/{kind}") // 게시글 목록 조회
 	public ResponseEntity<Page<PostResponseDto>> list(
 		@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @PathVariable @Min(1) @Max(3) Integer kind,
-		@Parameter(description = "현재 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
+		@Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
 		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria,
 		@Parameter(description = "검색 조건(title: 제목, content: 내용", in = ParameterIn.PATH) @RequestParam(required = false, value = "searchtype") String searchCondition,
 		@Parameter(description = "검색어", in = ParameterIn.PATH) @RequestParam(required = false, value = "searchby") String searchKeyword
