@@ -4,13 +4,17 @@ import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.delivery.domain.Delivery;
 import com.greenUs.server.member.domain.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@NoArgsConstructor
+@ToString
 @Getter
+@Entity
 public class Purchase extends BaseEntity {
 
     @Id @GeneratedValue
@@ -21,7 +25,8 @@ public class Purchase extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(mappedBy = "purchase")
+    @OneToOne()
+    @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
     @OneToMany(mappedBy = "purchase",cascade = CascadeType.ALL)
@@ -29,4 +34,9 @@ public class Purchase extends BaseEntity {
 
     private int totalPrice;
 
+    // 임시로 해둠
+    public Purchase(Member member, Delivery delivery) {
+        this.member = member;
+        this.delivery = delivery;
+    }
 }
