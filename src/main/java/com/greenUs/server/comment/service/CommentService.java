@@ -13,7 +13,6 @@ import com.greenUs.server.comment.dto.CommentRequestDto;
 import com.greenUs.server.comment.dto.CommentResponseDto;
 import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,11 +22,10 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class CommentService {
 
-	private static final int PAGE_COMMENT_COUNT = 100; // 한 화면에 보일 댓글 수
+	private static final int PAGE_COMMENT_COUNT = 100;
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
 
-	// 댓글 조회
 	public Page<CommentResponseDto> getCommentDetail(Long postId, Integer page) {
 
 		Post post = postRepository.findById(postId)
@@ -42,75 +40,64 @@ public class CommentService {
 		return commentResponseDto;
 	}
 
-	// 댓글 작성
 	@Transactional
-	public Long setCommentWriting(CommentRequestDto commentRequestDto) {
+	public void setCommentWriting(CommentRequestDto commentRequestDto) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
 
-		// 댓글 작성자 불러와서 dto에 넣어서 변환 후 저장하기(지금은 X)
+		// 댓글 작성자 저장 생략
+
 		Comment comment = Comment.builder()
 			.post(post)
 			.content(commentRequestDto.getContent())
 			.build();
-		Comment commentResult = commentRepository.save(comment);
 
-		return new CommentResponseDto(commentResult).getId();
+		Comment commentResult = commentRepository.save(comment);
 	}
 
-	// 대댓글 작성
 	@Transactional
-	public Long setReCommentWriting(Long parentId, CommentRequestDto commentRequestDto) {
+	public void setReCommentWriting(Long parentId, CommentRequestDto commentRequestDto) {
 
-		Comment comment = commentRequestDto.toEntity();
-
-		// 게시글 확인
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
 
 		// 댓글 작성자 확인 생략
 
-		// 부모 댓글 확인
+		Comment comment = Comment.builder()
+			.post(post)
+			.content(commentRequestDto.getContent())
+			.build();
+
 		comment.confirmParent(commentRepository.findById(parentId)
 			.orElseThrow(() -> new IllegalArgumentException("ParentComment is not Existing")));
 
 		commentRepository.save(comment);
-
-		return new CommentResponseDto(comment).getId();
 	}
 
-	// 댓글 수정
 	@Transactional
-	public Long setCommentModification(Long id, CommentRequestDto commentRequestDto) {
-
-		// 입력받은 postId와 댓글id의 postID가 같은지 확인 (지금은 X) - 필요없는 부분(클라이언트 요청 문제)
-		Post post = postRepository.findById(commentRequestDto.getPostId())
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+	public void setCommentModification(Long id, CommentRequestDto commentRequestDto) {
 
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
 
-		// 댓글 작성자 관련 처리 (지금은 X)
+		// 댓글 작성자 확인 생략
+
 		comment.update(
 			commentRequestDto.getContent()
 		);
-
-		return new CommentResponseDto(comment).getId();
 	}
 
-	// 댓글 삭제
 	@Transactional
-	public Long setCommentDeletion(Long id) {
+	public void setCommentDeletion(Long id) {
 
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
 
-		CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+		// 댓글 작성자 확인 생략
 
-		// 댓글 작성자 관련 처리 (지금은 X)
-		commentRepository.delete(comment);
-
-		return commentResponseDto.getId();
+		comment.remove();
+		List<Comment> removableCommentList = comment.findRemovableList();
+		commentRepository.deleteAll(removableCommentList);
 	}
 }
