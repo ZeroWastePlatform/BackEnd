@@ -7,6 +7,7 @@ import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
+import com.greenUs.server.post.domain.Time;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -45,6 +46,9 @@ public class PostResponseDto {
 	@Schema(description = "게시판 추천수", example = "17", nullable = false)
 	private Integer recommendCnt;
 
+	@Schema(description = "게시판 생성일", example = "1분전 / 1일전 / 2023.01.01", nullable = false)
+	private String createdAt;
+
 	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
 	private List<String> hashtags = new ArrayList<>();
 
@@ -67,6 +71,7 @@ public class PostResponseDto {
 		this.viewCnt = entity.getViewCnt();
 		this.replyCnt = entity.getComments().size();
 		this.recommendCnt = entity.getRecommendCnt();
+		this.createdAt = Time.calculateTime(entity.getCreatedAt());
 
 		for (Hashtag hashtag : entity.getHashtags()) {
 			this.hashtags.add(hashtag.getKeyword().getContent());

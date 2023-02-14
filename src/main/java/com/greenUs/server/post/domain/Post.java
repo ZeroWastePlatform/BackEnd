@@ -34,7 +34,6 @@ public class Post extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    // @OnDelete(action = OnDeleteAction.CASCADE) // 작성자 계정 탈퇴시 게시글도 삭제
     private Member member;
 
     @Column(nullable = false)
@@ -72,7 +71,6 @@ public class Post extends BaseEntity {
         this.fileAttached = fileAttached;
     }
 
-    // 글 수정
     public void update (Integer kind, String title, String content, Integer price) {
         this.kind = kind;
         this.title = title;
