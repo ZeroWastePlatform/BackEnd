@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.greenUs.server.auth.controller.AuthenticationPrincipal;
+import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.service.PostService;
@@ -51,7 +53,7 @@ public class PostController {
 	@GetMapping("/lists/{kind}") // 게시글 목록 조회
 	public ResponseEntity<Page<PostResponseDto>> list(
 		@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @PathVariable @Min(1) @Max(3) Integer kind,
-		@Parameter(description = "현재 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
+		@Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
 		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria,
 		@Parameter(description = "검색 조건(title: 제목, content: 내용", in = ParameterIn.PATH) @RequestParam(required = false, value = "searchtype") String searchCondition,
 		@Parameter(description = "검색어", in = ParameterIn.PATH) @RequestParam(required = false, value = "searchby") String searchKeyword
@@ -89,9 +91,8 @@ public class PostController {
 	})
 	@PostMapping // 게시글 작성
 	public ResponseEntity<Integer> write(
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag), 파일 이름 리스트(postFiles)", in = ParameterIn.PATH)
-		@RequestPart(required = false) List<MultipartFile> postFiles, @RequestPart PostRequestDto postRequestDto) throws
-		IOException {
+		@Parameter(description = "파일 이름 리스트(postFiles)", in = ParameterIn.PATH) @RequestPart(required = false) List<MultipartFile> postFiles,
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestPart PostRequestDto postRequestDto) throws IOException {
 
 		Integer kind = postService.setPostWriting(postFiles, postRequestDto);
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
@@ -104,7 +105,8 @@ public class PostController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PutMapping("/{id}") // 게시글 수정
-	public ResponseEntity<Integer> modify(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id,
+	public ResponseEntity<Integer> modify(
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id,
 		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) {
 
 		Integer kind = postService.setPostModification(id, postRequestDto);
@@ -120,7 +122,20 @@ public class PostController {
 	@DeleteMapping("/{id}") // 게시글 삭제
 	public ResponseEntity<Integer> delete(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		Integer kind = postService.setPostdeletion(id);
+		Integer kind = postService.setPostDeletion(id);
 		return new ResponseEntity<>(kind, HttpStatus.OK);
+	}
+
+	// -> 200 OK와 함께 추천 or 취소
+	@Operation(summary = "게시글 추천", description = "게시글 번호(id)를 받아 게시글을 추천할 수 있습니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "게시글 추천 성공", content = @Content(schema = @Schema(implementation = Integer.class))),
+		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
+	})
+	@PostMapping("/recommendations/{id}") // 게시글 추천
+	public ResponseEntity recommend(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+
+		postService.setPostRecommendation(id);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

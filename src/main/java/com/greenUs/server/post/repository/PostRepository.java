@@ -1,7 +1,6 @@
 package com.greenUs.server.post.repository;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,7 +10,7 @@ import com.greenUs.server.post.domain.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-	// 게시판 종류(kind)와 pageRequest를 파라미터로 받아 게시판 종류의 내용물을 정렬 조건순으로 가져오기
+	// 게시판 종류(kind)와 pageRequest를 파라미터로 받아 게시판 상단에 추천수TOP2개, 나머지 최신순 정렬 (수정요망)
 	Page<Post> findByKind(Integer kind, Pageable pageable);
 
 	// 제목 검색
