@@ -1,5 +1,6 @@
 package com.greenUs.server.member.dto.request;
 
+import com.greenUs.server.member.domain.Address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ public class MemberRequest {
     @NotNull(message = "nickname 은 Null 이면 안됩니다")
     private String nickname;
 
-    private String address;
+    private Address address;
 
     @NotNull(message = "phoneNum 은 Null 이면 안됩니다")
     private String phoneNum;

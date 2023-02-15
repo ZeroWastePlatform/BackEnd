@@ -1,5 +1,6 @@
 package com.greenUs.server.member.dto.response;
 
+import com.greenUs.server.member.domain.Address;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.domain.SocialType;
 import lombok.Getter;
@@ -12,7 +13,7 @@ public class MemberResponse {
     private String email;
     private String name;
     private String nickname;
-    private String address;
+    private Address address;
     private String phoneNum;
     private String interestArea;
 
