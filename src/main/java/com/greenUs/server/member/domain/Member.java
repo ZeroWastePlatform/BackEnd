@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -39,6 +40,10 @@ public class Member extends BaseEntity {
 
 	@Column(name = "interest_area")
 	private String interestArea;
+
+	@Column(name = "level")
+	@ColumnDefault("0")
+	private Integer level;
 
 	public Member() {}
 	public Member(String email, String name, SocialType socialType, String token ) {
