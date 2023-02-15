@@ -11,7 +11,7 @@ import com.greenUs.server.post.domain.Post;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 	// 게시판 종류(kind)와 pageRequest를 파라미터로 받아 게시판 상단에 추천수TOP2개, 나머지 최신순 정렬 (수정요망)
-	Page<Post> findByKind(Integer kind, Integer limit, Pageable pageable);
+	Page<Post> findByKind(Integer kind, Pageable pageable);
 
 	// 제목 검색
 	Page<Post> findByKindAndTitleContaining(Integer kind, String title, Pageable pageable);

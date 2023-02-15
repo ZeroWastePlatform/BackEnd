@@ -51,7 +51,7 @@ public class PostService {
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
 		// 게시판 종류(kind)에 해당하는 post 페이지 객체 반환
-		Page<Post> post = postRepository.findByKind(kind, 2, pageRequest);
+		Page<Post> post = postRepository.findByKind(kind, pageRequest);
 
 		// 람다식을 활용하여 간단히 DTO로 변환
 		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
