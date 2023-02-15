@@ -53,7 +53,7 @@ public class CommentService {
 			.content(commentRequestDto.getContent())
 			.build();
 
-		Comment commentResult = commentRepository.save(comment);
+		commentRepository.save(comment);
 	}
 
 	@Transactional

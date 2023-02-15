@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,10 +15,15 @@ import com.greenUs.server.attachment.AttachmentDto;
 import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.attachment.repository.AttachmentRepository;
 import com.greenUs.server.hashtag.service.HashtagService;
+import com.greenUs.server.member.domain.Member;
+import com.greenUs.server.member.domain.SocialType;
+import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
+import com.greenUs.server.post.domain.Recommend;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
+import com.greenUs.server.post.repository.RecommendRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,8 +32,10 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class PostService {
 
-	private static final int PAGE_POST_COUNT = 6; // 한 화면에 보일 게시글 수
+	private static final int PAGE_POST_COUNT = 6;
 	private final PostRepository postRepository;
+	private final MemberRepository memberRepository;
+	private final RecommendRepository recommendRepository;
 	private final HashtagService hashtagService;
 	private final AttachmentRepository attachmentRepository;
 
@@ -176,5 +182,25 @@ public class PostService {
 	public void updateViewCnt(Long id) {
 
 		postRepository.updateViewCnt(id);
+	}
+
+	// 추천수 증가
+	@Transactional
+	public void setPostRecommendation(Long id) {
+
+		Post post = postRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+
+		// 유저 관련처리 지금 생략
+		Member member = memberRepository.findById(1l).get();
+
+		if (recommendRepository.findByPostAndMember(post, member) == null) {
+			recommendRepository.save(new Recommend(post, member));
+			return;
+		}
+
+		Recommend recommend = recommendRepository.findByPostAndMember(post, member);
+		recommend.cancleRecommend(post);
+		recommendRepository.delete(recommend);
 	}
 }

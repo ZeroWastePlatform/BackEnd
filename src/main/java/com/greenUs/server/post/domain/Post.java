@@ -11,8 +11,6 @@ import com.greenUs.server.member.domain.Member;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.Builder;
@@ -63,7 +61,8 @@ public class Post extends BaseEntity {
     private List<Attachment> attachments = new ArrayList<>();
 
     @Builder
-    public Post(Integer kind, String title, String content, Integer price, Integer fileAttached) {
+    public Post(Member member, Integer kind, String title, String content, Integer price, Integer fileAttached) {
+        this.member = member;
         this.kind = kind;
         this.title = title;
         this.content = content;
@@ -76,6 +75,10 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.price = price;
+    }
+
+    public void caculateRecommendCnt(Integer recommendCnt) {
+        this.recommendCnt = recommendCnt;
     }
 
     @PrePersist

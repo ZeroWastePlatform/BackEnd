@@ -1,14 +1,15 @@
 package com.greenUs.server.post.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class Time {
 
-	public static String calculateTime(LocalDateTime dayBefore) {
+	public static String calculateTime(LocalDateTime date) {
 
-		long gap = ChronoUnit.MINUTES.between(dayBefore, LocalDateTime.now());
+		long gap = ChronoUnit.MINUTES.between(date, LocalDateTime.now());
 		String word;
 
 		if (gap == 0) {
@@ -17,15 +18,11 @@ public class Time {
 			word = gap + "분 전";
 		} else if (gap < 60 * 24) {
 			word = (gap / 60) + "시간 전";
-		} else if (gap < 60 * 24 * 11) {
+		} else if (gap < 60 * 24 * 30) {
 			word = (gap / 60 / 24) + "일 전";
 		} else {
-			word = dayBefore.format(DateTimeFormatter.ofPattern("YY.MM.dd"));
+			word = date.format(DateTimeFormatter.ofPattern("YY.MM.dd"));
 		}
 		return word;
-	}
-
-	public static String customForm(LocalDateTime date) {
-		return date.format(DateTimeFormatter.ofPattern("YY.MM.dd"));
 	}
 }
