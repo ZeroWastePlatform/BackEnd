@@ -1,5 +1,6 @@
 package com.greenUs.server.hashtag.service;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -96,7 +97,7 @@ public class HashtagService {
 	// 해시태그 인기글
 	public HashtagResponseDto getPopularityKeyword() {
 
-		List<Keyword> keywords = keywordRepository.findTop3ByOrderByCountDesc();
+		List<Keyword> keywords = keywordRepository.findTop5ByOrderByCountDesc();
 
 		HashtagResponseDto hashtagResponseDto = new HashtagResponseDto(keywords);
 

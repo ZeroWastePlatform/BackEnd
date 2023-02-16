@@ -11,5 +11,5 @@ public interface KeywordRepository extends JpaRepository<Keyword, Long> {
 
 	Optional<Keyword> findByContent(String keywordContent);
 
-	List<Keyword> findTop3ByOrderByCountDesc();
+	List<Keyword> findTop5ByOrderByCountDesc();
 }

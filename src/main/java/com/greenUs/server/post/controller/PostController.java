@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
+import com.greenUs.server.post.dto.PostPopularityResponseDto;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.service.PostService;
@@ -136,5 +137,18 @@ public class PostController {
 
 		postService.setPostRecommendation(id);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@Operation(summary = "인기 게시글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostPopularityResponseDto.class))),
+		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
+	})
+	@GetMapping("/popularity") // 인기 게시글 조회
+	public ResponseEntity<List<PostPopularityResponseDto>> popularity() {
+
+		List<PostPopularityResponseDto> postPopularityResponseDto = postService.getPopularityPost();
+
+		return new ResponseEntity<>(postPopularityResponseDto, HttpStatus.OK);
 	}
 }

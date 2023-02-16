@@ -2,6 +2,10 @@ package com.greenUs.server.post.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -20,6 +24,7 @@ import com.greenUs.server.member.domain.SocialType;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
+import com.greenUs.server.post.dto.PostPopularityResponseDto;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
@@ -202,5 +207,21 @@ public class PostService {
 		Recommend recommend = recommendRepository.findByPostAndMember(post, member);
 		recommend.cancleRecommend(post);
 		recommendRepository.delete(recommend);
+	}
+
+	// 당일 인기 게시글 3개
+	public List<PostPopularityResponseDto> getPopularityPost() {
+
+		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
+		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
+
+		List<PostPopularityResponseDto> postPopularityResponseDto = new ArrayList<>();
+
+		for (Post post : posts) {
+			postPopularityResponseDto.add(new PostPopularityResponseDto(post));
+		}
+
+		return postPopularityResponseDto;
 	}
 }
