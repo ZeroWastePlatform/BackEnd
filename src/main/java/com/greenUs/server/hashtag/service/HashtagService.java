@@ -7,22 +7,29 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.hashtag.domain.Keyword;
+import com.greenUs.server.hashtag.dto.HashtagResponseDto;
 import com.greenUs.server.hashtag.repository.HashtagRepository;
+import com.greenUs.server.hashtag.repository.KeywordRepository;
 import com.greenUs.server.post.domain.Post;
+import com.greenUs.server.post.dto.PostResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class HashtagService {
 
 	private final HashtagRepository hashtagRepository;
+	private final KeywordRepository keywordRepository;
 	private final KeywordService keywordService;
 
 	// 게시판 정보와 키워드 들을 입력받아 관련 내용 저장 또는 수정
+	@Transactional
 	public void applyHashtag(Post post, String keywordContentsStr) {
 
 		// 기존 해시태그 정보 가져오기
@@ -49,7 +56,8 @@ public class HashtagService {
 	}
 
 	// 키워드 저장 후 해시태그 내에 게시판ID와 키워드ID정보가 있다면 바로 리턴, 내용이 없다면 게시판ID와 키워드ID 저장
-	private Hashtag setHashtag(Post post, String keywordContent) {
+	@Transactional
+	public Hashtag setHashtag(Post post, String keywordContent) {
 
 		// 키워드 저장
 		Keyword keyword = keywordService.setKeyword(keywordContent);
@@ -73,8 +81,24 @@ public class HashtagService {
 	}
 
 	// 해시태그 정보를 불러오기
+	@Transactional
 	public List<Hashtag> getHashtags(Post post) {
 
 		return hashtagRepository.findAllByPostId(post.getId());
 	}
+
+	// 해시태그 인기글
+	public HashtagResponseDto getPopularityKeyword() {
+
+		List<Keyword> keywords = keywordRepository.findTop3ByOrderByCountDesc();
+
+		HashtagResponseDto hashtagResponseDto = new HashtagResponseDto(keywords);
+
+		return hashtagResponseDto;
+	}
+
+	// // 해시태그 검색
+	// public PostResponseDto getSearchPostList(String keyword) {
+	//
+	// }
 }
