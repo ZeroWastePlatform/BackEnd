@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,7 @@ import com.greenUs.server.hashtag.repository.HashtagRepository;
 import com.greenUs.server.hashtag.repository.KeywordRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.dto.PostResponseDto;
+import com.greenUs.server.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class HashtagService {
 
+	private static final int PAGE_POST_COUNT = 6;
+	private final PostRepository postRepository;
 	private final HashtagRepository hashtagRepository;
 	private final KeywordRepository keywordRepository;
 	private final KeywordService keywordService;
@@ -97,8 +103,15 @@ public class HashtagService {
 		return hashtagResponseDto;
 	}
 
-	// // 해시태그 검색
-	// public PostResponseDto getSearchPostList(String keyword) {
-	//
-	// }
+	// 해시태그 검색
+	public Page<PostResponseDto> getPostSearchList(Integer page, String keyword, String orderCriteria) {
+
+		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
+
+		Page<Post> post = postRepository.findByKeywordContaining(keyword, pageRequest);
+
+		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
+
+		return postResponseDto;
+	}
 }

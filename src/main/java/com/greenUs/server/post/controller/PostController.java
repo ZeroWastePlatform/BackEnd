@@ -54,20 +54,19 @@ public class PostController {
 	public ResponseEntity<Page<PostResponseDto>> list(
 		@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @PathVariable @Min(1) @Max(3) Integer kind,
 		@Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
-		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria,
-		@Parameter(description = "검색 조건(title: 제목, content: 내용", in = ParameterIn.PATH) @RequestParam(required = false, value = "searchtype") String searchCondition,
-		@Parameter(description = "검색어", in = ParameterIn.PATH) @RequestParam(required = false, value = "searchby") String searchKeyword
+		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria
 	) {
 
-		Page<PostResponseDto> postResponseDto = null;
+		Page<PostResponseDto> postResponseDto = postService.getPostLists(kind, page, orderCriteria);
+		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 
-		if (searchCondition == null || searchKeyword == null) {
-			postResponseDto = postService.getPostLists(kind, page, orderCriteria);
-			return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
-		} else {
-			postResponseDto = postService.getPostSearchLists(kind, page, orderCriteria, searchCondition, searchKeyword);
-			return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
-		}
+		// if (searchCondition == null || searchKeyword == null) {
+		// 	postResponseDto = postService.getPostLists(kind, page, orderCriteria);
+		// 	return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
+		// } else {
+		// 	postResponseDto = postService.getPostSearchLists(kind, page, orderCriteria, searchCondition, searchKeyword);
+		// 	return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
+		// }
 	}
 
 	@Operation(summary = "게시글 상세 내용 조회", description = "게시글 번호(id)를 파라미터로 받아 게시글을 상세 조회 할 수 있습니다.")
@@ -129,7 +128,7 @@ public class PostController {
 	// -> 200 OK와 함께 추천 or 취소
 	@Operation(summary = "게시글 추천", description = "게시글 번호(id)를 받아 게시글을 추천할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 추천 성공", content = @Content(schema = @Schema(implementation = Integer.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 추천 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PostMapping("/recommendations/{id}") // 게시글 추천

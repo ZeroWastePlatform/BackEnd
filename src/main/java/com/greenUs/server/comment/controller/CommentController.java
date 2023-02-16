@@ -38,7 +38,7 @@ public class CommentController {
 
 	@Operation(summary = "댓글 조회", description = "게시글 번호(postId)를 파라미터로 받아 게시글의 댓글을 조회 할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 댓글 조회 성공", content = @Content(schema = @Schema(implementation = PostResponseDto.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 댓글 조회 성공", content = @Content(schema = @Schema(implementation = CommentResponseDto.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/comments/{postId}")
@@ -52,7 +52,7 @@ public class CommentController {
 
 	@Operation(summary = "댓글 작성", description = "게시글 번호(postId)와 내용(content)을 파라미터로 받아 댓글을 작성할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "댓글 작성 성공", content = @Content(schema = @Schema(implementation = Integer.class))),
+		@ApiResponse(responseCode = "201", description = "댓글 작성 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PostMapping("/comments")
@@ -65,7 +65,7 @@ public class CommentController {
 
 	@Operation(summary = "대댓글 작성", description = "게시글 번호(postId)와 댓글 번호(id), 내용(content)을 파라미터로 받아 대댓글을 작성할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "대댓글 작성 성공", content = @Content(schema = @Schema(implementation = Integer.class))),
+		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PostMapping("/comments/{parentId}")
@@ -79,7 +79,7 @@ public class CommentController {
 
 	@Operation(summary = "댓글 수정", description = "댓글 번호(id)와 내용(content)을 파라미터로 받아 댓글을 수정할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "댓글 수정 성공", content = @Content(schema = @Schema(implementation = Integer.class))),
+		@ApiResponse(responseCode = "201", description = "댓글 수정 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PutMapping("/comments/{id}")
@@ -93,7 +93,7 @@ public class CommentController {
 
 	@Operation(summary = "댓글 삭제", description = "댓글 번호(id)를 받아 댓글을 삭제할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "댓글 삭제 성공", content = @Content(schema = @Schema(implementation = Integer.class))),
+		@ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@DeleteMapping("/comments/{id}")
