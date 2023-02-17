@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.post.dto.PostPopularityResponseDto;
+import com.greenUs.server.post.dto.PostRecommendationResponseDto;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.service.PostService;
@@ -139,7 +140,7 @@ public class PostController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@Operation(summary = "인기 게시글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
+	@Operation(summary = "오늘의 그리너스 인기글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostPopularityResponseDto.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
@@ -150,5 +151,19 @@ public class PostController {
 		List<PostPopularityResponseDto> postPopularityResponseDto = postService.getPopularityPost();
 
 		return new ResponseEntity<>(postPopularityResponseDto, HttpStatus.OK);
+	}
+
+	@Operation(summary = "(자유게시판/중고거래/정보공유) 추천글", description = "추천글 목록을 조회 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "추천글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostPopularityResponseDto.class))),
+		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
+	})
+	@GetMapping("/recommendations/{kind}") // 인기 추천글 조회
+	public ResponseEntity<List<PostRecommendationResponseDto>> recommendation(
+		@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @PathVariable @Min(1) @Max(3) Integer kind) {
+
+		List<PostRecommendationResponseDto> postRecommendationResponseDto = postService.getRecommendationPost(kind);
+
+		return new ResponseEntity<>(postRecommendationResponseDto, HttpStatus.OK);
 	}
 }

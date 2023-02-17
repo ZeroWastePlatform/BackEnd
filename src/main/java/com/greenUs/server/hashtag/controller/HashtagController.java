@@ -34,7 +34,7 @@ public class HashtagController {
 
 	private final HashtagService hashtagService;
 
-	@Operation(summary = "해시태그 인기글 조회", description = "해시태그 인기글을 조회 할 수 있습니다.")
+	@Operation(summary = "인기 해시태그(검색) 키워드", description = "해시태그 인기글을 조회 할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "해시태그 인기글 조회 성공", content = @Content(schema = @Schema(implementation = HashtagResponseDto.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))

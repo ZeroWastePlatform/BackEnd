@@ -37,4 +37,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	// 당일 인기 게시글 3개
 	List<Post> findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+	// 인기 추천글 3개
+	List<Post> findTop3ByKindOrderByRecommendCntDesc(Integer kind);
 }

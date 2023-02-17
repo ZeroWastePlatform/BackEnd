@@ -25,6 +25,7 @@ import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
 import com.greenUs.server.post.dto.PostPopularityResponseDto;
+import com.greenUs.server.post.dto.PostRecommendationResponseDto;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
@@ -223,5 +224,18 @@ public class PostService {
 		}
 
 		return postPopularityResponseDto;
+	}
+
+	public List<PostRecommendationResponseDto> getRecommendationPost(Integer kind) {
+
+		List<Post> posts = postRepository.findTop3ByKindOrderByRecommendCntDesc(kind);
+
+		List<PostRecommendationResponseDto> postRecommendationResponseDto = new ArrayList<>();
+
+		for (Post post : posts) {
+			postRecommendationResponseDto.add(new PostRecommendationResponseDto(post));
+		}
+
+		return postRecommendationResponseDto;
 	}
 }

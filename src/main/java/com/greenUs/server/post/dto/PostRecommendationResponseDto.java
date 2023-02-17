@@ -10,20 +10,20 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class PostPopularityResponseDto {
+public class PostRecommendationResponseDto {
 
-	@Schema(description = "게시판 번호", nullable = false, example = "47")
+	@Schema(description = "게시판 번호", nullable = false)
 	private Long id;
 
 	@Schema(description = "게시판 제목", nullable = false)
 	private String title;
 
-	@Schema(description = "게시판 추천수", example = "17", nullable = false)
-	private Integer recommendCnt;
+	@Schema(description = "게시판 내용", nullable = false)
+	private String content;
 
-	public PostPopularityResponseDto(Post entity) {
+	public PostRecommendationResponseDto(Post entity) {
 		this.id = entity.getId();
 		this.title = entity.getTitle();
-		this.recommendCnt = entity.getRecommendCnt();
+		this.content = entity.getContent();
 	}
 }
