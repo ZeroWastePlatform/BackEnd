@@ -98,57 +98,13 @@ public class PostService {
 
 	// 게시글 작성
 	@Transactional
-	public Integer setPostWriting(List<MultipartFile> postFiles, PostRequestDto postRequestDto) throws IOException {
+	public Integer setPostWriting(PostRequestDto postRequestDto) throws IOException {
 
-		Post post;
-
-		// 파일 첨부 여부에 따라 로직 분리
-		if (postFiles.isEmpty()) {
-
-			// 1. 파일이 없는 경우
-			post = postRepository.save(postRequestDto.toEntity());
-			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
-
-			return new PostResponseDto(post).getKind();
-		}
-
-		// 2. 파일이 있는 경우
-		/*
-			1. DTO에 담긴 파일을 꺼냄
-			2. 파일의 이름을 가져옴
-			3. 서버 저장용 이름을 만듦
-			4. 저장 경로 설정
-			5. 해당 경로에 파일 저장
-			6. post table에 데이터 save
-			7. attachment table에 데이터 save
-		 */
-
-		post = postRepository.save(postRequestDto.toFileSaveEntity());
+		// 게시글 저장
+		Post post = postRepository.save(postRequestDto.toEntity());
 
 		// 해시태그 저장
 		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
-
-		Long saveId = post.getId(); // 부모(post) 번호
-
-		// DB 저장 후 생성어진 ID 값을 불러오기 위해 Post 다시 호출
-		Post fileSavePost = postRepository.findById(saveId).get();
-
-		for (MultipartFile postFile : postFiles) {
-
-			String originalFilename = postFile.getOriginalFilename();
-
-			String storedFileName = System.currentTimeMillis() + " " + originalFilename;
-
-			String savePath = "C:/springboot_img/" + storedFileName;
-
-			postFile.transferTo(new File(savePath));
-
-			// AttachmentDto를 통해 Attachment Entity로 변환
-			Attachment attachment = new AttachmentDto(fileSavePost, originalFilename, storedFileName).toEntity();
-
-			// 첨부파일 Entity에 내용 저장
-			attachmentRepository.save(attachment);
-		}
 
 		return new PostResponseDto(post).getKind();
 	}
