@@ -18,7 +18,6 @@ public class KeywordService {
 	private final KeywordRepository keywordRepository;
 
 	// 키워드를 저장하는데 이미 키워드 목록에 있다면 바로 리턴하고, 키워드 목록에 없다면 저장 후 리턴
-	@Transactional
 	public Keyword setKeyword(String keywordContent) {
 
 		// 이미 있는 키워드는 중복 X, 바로 리턴

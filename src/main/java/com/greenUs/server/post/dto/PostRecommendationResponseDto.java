@@ -15,6 +15,9 @@ public class PostRecommendationResponseDto {
 	@Schema(description = "게시판 번호", nullable = false)
 	private Long id;
 
+	@Schema(description = "게시판 구분(1: 자유게시판, 2: 정보 공유, 3: 중고 거래)", nullable = false)
+	private Integer kind;
+
 	@Schema(description = "게시판 제목", nullable = false)
 	private String title;
 
@@ -23,6 +26,7 @@ public class PostRecommendationResponseDto {
 
 	public PostRecommendationResponseDto(Post entity) {
 		this.id = entity.getId();
+		this.kind = entity.getKind();
 		this.title = entity.getTitle();
 		this.content = entity.getContent();
 	}

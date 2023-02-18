@@ -104,7 +104,9 @@ public class PostService {
 		Post post = postRepository.save(postRequestDto.toEntity());
 
 		// 해시태그 저장
-		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+		// if (!(postRequestDto.getHashtag() == null || postRequestDto.getHashtag().trim().isEmpty()))
+		if (!postRequestDto.getHashtag().isEmpty())
+			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
 		return new PostResponseDto(post).getKind();
 	}
@@ -123,7 +125,8 @@ public class PostService {
 			postRequestDto.getPrice()
 		);
 
-		hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+		if (!postRequestDto.getHashtag().isEmpty())
+			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
 		return new PostResponseDto(post).getKind();
 	}

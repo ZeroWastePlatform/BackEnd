@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class HashtagService {
 
 	private static final int PAGE_POST_COUNT = 6;
@@ -35,8 +34,31 @@ public class HashtagService {
 	private final KeywordRepository keywordRepository;
 	private final KeywordService keywordService;
 
+	// 해시태그 인기글
+	@Transactional(readOnly = true)
+	public HashtagResponseDto getPopularityKeyword() {
+
+		List<Keyword> keywords = keywordRepository.findTop5ByOrderByCountDesc();
+
+		HashtagResponseDto hashtagResponseDto = new HashtagResponseDto(keywords);
+
+		return hashtagResponseDto;
+	}
+
+	// 해시태그 검색
+	@Transactional(readOnly = true)
+	public Page<PostResponseDto> getPostSearchList(Integer page, String keyword, String orderCriteria) {
+
+		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
+
+		Page<Post> post = postRepository.findByKeywordContaining(keyword, pageRequest);
+
+		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
+
+		return postResponseDto;
+	}
+
 	// 게시판 정보와 키워드 들을 입력받아 관련 내용 저장 또는 수정
-	@Transactional
 	public void applyHashtag(Post post, String keywordContentsStr) {
 
 		// 기존 해시태그 정보 가져오기
@@ -58,12 +80,12 @@ public class HashtagService {
 
 		// 삭제할 키워드 정보들을 삭제
 		needToDelete.forEach(hashtag -> {
+			System.out.println("나를 삭제해줘");
 			hashtagRepository.delete(hashtag);
 		});
 	}
 
 	// 키워드 저장 후 해시태그 내에 게시판ID와 키워드ID정보가 있다면 바로 리턴, 내용이 없다면 게시판ID와 키워드ID 저장
-	@Transactional
 	public Hashtag setHashtag(Post post, String keywordContent) {
 
 		// 키워드 저장
@@ -88,31 +110,8 @@ public class HashtagService {
 	}
 
 	// 해시태그 정보를 불러오기
-	@Transactional
 	public List<Hashtag> getHashtags(Post post) {
 
 		return hashtagRepository.findAllByPostId(post.getId());
-	}
-
-	// 해시태그 인기글
-	public HashtagResponseDto getPopularityKeyword() {
-
-		List<Keyword> keywords = keywordRepository.findTop5ByOrderByCountDesc();
-
-		HashtagResponseDto hashtagResponseDto = new HashtagResponseDto(keywords);
-
-		return hashtagResponseDto;
-	}
-
-	// 해시태그 검색
-	public Page<PostResponseDto> getPostSearchList(Integer page, String keyword, String orderCriteria) {
-
-		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
-
-		Page<Post> post = postRepository.findByKeywordContaining(keyword, pageRequest);
-
-		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
-
-		return postResponseDto;
 	}
 }
