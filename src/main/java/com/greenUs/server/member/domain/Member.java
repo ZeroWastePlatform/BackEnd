@@ -44,7 +44,11 @@ public class Member extends BaseEntity {
 
 	@Column(name = "level")
 	@ColumnDefault("0")
-	private Integer level;
+	private int level;
+
+	@Column(name = "point")
+	@ColumnDefault("0")
+	private int point;
 
 	public Member() {}
 	public Member(String email, String name, SocialType socialType, String token ) {
