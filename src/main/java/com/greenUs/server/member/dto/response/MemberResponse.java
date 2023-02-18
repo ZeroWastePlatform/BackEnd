@@ -16,6 +16,8 @@ public class MemberResponse {
     private Address address;
     private String phoneNum;
     private String interestArea;
+    private int level;
+    private int point;
 
     public MemberResponse(Member member) {
         this.id = member.getId();
@@ -26,5 +28,7 @@ public class MemberResponse {
         this.address = member.getAddress();
         this.phoneNum = member.getPhoneNum();
         this.interestArea = member.getInterestArea();
+        this.level = member.getLevel();
+        this.point = member.getPoint();
     }
 }
