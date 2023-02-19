@@ -11,8 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.greenUs.server.attachment.repository.AttachmentRepository;
+import com.greenUs.server.global.error.ErrorCode;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.repository.MemberRepository;
@@ -22,6 +24,7 @@ import com.greenUs.server.post.dto.PostPopularityResponseDto;
 import com.greenUs.server.post.dto.PostRecommendationResponseDto;
 import com.greenUs.server.post.dto.PostRequestDto;
 import com.greenUs.server.post.dto.PostResponseDto;
+import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.post.repository.RecommendRepository;
 
@@ -53,7 +56,7 @@ public class PostService {
 			.map(PostResponseDto::new);
 	}
 
-
+	// 키워드 검색 결과
 	public Page<PostResponseDto> getSearchLists(String word, Integer page) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -62,15 +65,15 @@ public class PostService {
 			.map(PostResponseDto::new);
 	}
 
-	// 게시글 내용 불러오기
+	// 게시글 조회
 	public PostResponseDto getPostDetail(Long id) {
 
-		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
 		return new PostResponseDto(post);
 	}
 
-	// 게시글 작성
+	// 게시글 작성(수정 필요 - 작성자 확인)
 	@Transactional
 	public Integer setPostWriting(PostRequestDto postRequestDto) {
 
@@ -84,12 +87,11 @@ public class PostService {
 		return new PostResponseDto(post).getKind();
 	}
 
-	// 게시글 수정
+	// 게시글 수정(수정 필요 - 작성자 확인)
 	@Transactional
 	public Integer setPostModification(Long id, PostRequestDto postRequestDto) {
 
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
 		post.update(
 			postRequestDto.getKind(),
@@ -104,12 +106,11 @@ public class PostService {
 		return new PostResponseDto(post).getKind();
 	}
 
-	// 게시글 삭제(수정 필요 - 작성자 확인, 댓글 있는지 확인(댓글 있으면 삭제 X)
+	// 게시글 삭제(수정 필요 - 작성자 확인)
 	@Transactional
 	public Integer setPostDeletion(Long id) {
 
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
 		postRepository.delete(post);
 		return post.getKind();
@@ -122,12 +123,11 @@ public class PostService {
 		postRepository.updateViewCnt(id);
 	}
 
-	// 추천수 증가
+	// 추천수 증가(수정 필요 - 작성자 확인)
 	@Transactional
 	public void setPostRecommendation(Long id) {
 
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
 		// 유저 관련처리 지금 생략
 		Member member = memberRepository.findById(1l).get();
@@ -158,6 +158,7 @@ public class PostService {
 		return postPopularityResponseDto;
 	}
 
+	// 상위 추천 게시글 3개
 	public List<PostRecommendationResponseDto> getRecommendationPost(Integer kind) {
 
 		List<Post> posts = postRepository.findTop3ByKindOrderByRecommendCntDesc(kind);

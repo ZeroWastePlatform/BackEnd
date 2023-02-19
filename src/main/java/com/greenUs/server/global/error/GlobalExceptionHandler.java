@@ -4,6 +4,8 @@ import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
 import com.greenUs.server.infrastructure.oauth.exception.OAuthException;
 import com.greenUs.server.member.exception.NotFoundMemberException;
+import com.greenUs.server.post.exception.NotFoundPostException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +40,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.internalServerError().body(response);
     }
 
-
+    @ExceptionHandler(NotFoundPostException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundPost() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.POST_NOT_FOUND);
+        return ResponseEntity.badRequest().body(response);
+    }
 }
