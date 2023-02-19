@@ -1,7 +1,5 @@
 package com.greenUs.server.post.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,14 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.greenUs.server.attachment.AttachmentDto;
-import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.attachment.repository.AttachmentRepository;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.member.domain.SocialType;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
@@ -39,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
 	private static final int PAGE_POST_COUNT = 6;
+	private static final int PAGE_SEARCH_POST_COUNT = 10;
 	private final PostRepository postRepository;
 	private final MemberRepository memberRepository;
 	private final RecommendRepository recommendRepository;
@@ -52,41 +47,20 @@ public class PostService {
 		 *  게시판 종류(kind) -> 1: 자유게시판, 2: 정보공유, 3: 중고거래
 		 *  정렬 조건(orderCriteria) -> createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순 */
 
-		/* 넘겨받은 orderCriteria 를 이용해 내림차순하여 PageRequest 객체 반환
-		 *  PageRequest는 Pageable 인터페이스를 구현한 구현체 */
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
-		// 게시판 종류(kind)에 해당하는 post 페이지 객체 반환
-		Page<Post> post = postRepository.findByKind(kind, pageRequest);
-
-		// 람다식을 활용하여 간단히 DTO로 변환
-		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
-
-		return postResponseDto;
-
+		return postRepository.findByKind(kind, pageRequest)
+			.map(PostResponseDto::new);
 	}
 
-	// // 게시글 검색 목록 조회
-	// public Page<PostResponseDto> getPostSearchLists(Integer kind, Integer page, String orderCriteria, String searchCondition, String searchKeyword) {
-	//
-	// 	PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
-	//
-	// 	Page<Post> post = null;
-	//
-	// 	if (searchCondition.equals("title")) {
-	// 		post = postRepository.findByKindAndTitleContaining(kind, searchKeyword, pageRequest);
-	// 	}
-	// 	else if (searchCondition.equals("content")) {
-	// 		post = postRepository.findByKindAndContentContaining(kind, searchKeyword, pageRequest);
-	// 	}
-	// 	// else if (searchCondition.equals("hashtag")) {
-	// 	// 	post = postRepository.findByKindAndHashtagContaining(kind, searchKeyword, pageRequest);
-	// 	// }
-	//
-	// 	Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
-	//
-	// 	return postResponseDto;
-	// }
+
+	public Page<PostResponseDto> getSearchLists(String word, Integer page) {
+
+		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+		return postRepository.findByTitleContainingOrContentContaining(word, word, pageRequest)
+			.map(PostResponseDto::new);
+	}
 
 	// 게시글 내용 불러오기
 	public PostResponseDto getPostDetail(Long id) {
@@ -98,13 +72,12 @@ public class PostService {
 
 	// 게시글 작성
 	@Transactional
-	public Integer setPostWriting(PostRequestDto postRequestDto) throws IOException {
+	public Integer setPostWriting(PostRequestDto postRequestDto) {
 
 		// 게시글 저장
 		Post post = postRepository.save(postRequestDto.toEntity());
 
 		// 해시태그 저장
-		// if (!(postRequestDto.getHashtag() == null || postRequestDto.getHashtag().trim().isEmpty()))
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 

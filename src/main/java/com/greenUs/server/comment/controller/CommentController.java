@@ -36,14 +36,14 @@ public class CommentController {
 
 	private final CommentService commentService;
 
-	@Operation(summary = "댓글 조회", description = "게시글 번호(postId)를 파라미터로 받아 게시글의 댓글을 조회 할 수 있습니다.")
+	@Operation(summary = "댓글 조회", description = "게시글 번호(post-id)를 파라미터로 받아 게시글의 댓글을 조회 할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "게시글 댓글 조회 성공", content = @Content(schema = @Schema(implementation = CommentResponseDto.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
-	@GetMapping("/comments/{postId}")
+	@GetMapping("/comments/{post-id}")
 	public ResponseEntity<Page<CommentResponseDto>> list(
-		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long postId,
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable(value = "post-id") Long postId,
 		@Parameter(description = "현재 댓글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
 
 		Page<CommentResponseDto> commentResponseDto = commentService.getCommentDetail(postId, page);
@@ -63,14 +63,14 @@ public class CommentController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@Operation(summary = "대댓글 작성", description = "게시글 번호(postId)와 댓글 번호(id), 내용(content)을 파라미터로 받아 대댓글을 작성할 수 있습니다.")
+	@Operation(summary = "대댓글 작성", description = "게시글 번호(post-id)와 댓글 번호(id), 내용(content)을 파라미터로 받아 대댓글을 작성할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
-	@PostMapping("/comments/{parentId}")
+	@PostMapping("/comments/{parent-id}")
 	public ResponseEntity reWrite(
-		@Parameter(description = "댓글 번호(id)", in = ParameterIn.PATH) @PathVariable Long parentId,
+		@Parameter(description = "댓글 번호(parent-id)", in = ParameterIn.PATH) @PathVariable(value = "parend-id") Long parentId,
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequestDto commentRequestDto) {
 
 		commentService.setReCommentWriting(parentId, commentRequestDto);
