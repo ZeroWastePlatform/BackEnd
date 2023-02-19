@@ -3,6 +3,7 @@ package com.greenUs.server.hashtag.service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.greenUs.server.hashtag.domain.Keyword;
 import com.greenUs.server.hashtag.repository.KeywordRepository;
@@ -21,12 +22,14 @@ public class KeywordService {
 		// 이미 있는 키워드는 중복 X, 바로 리턴
 		Optional<Keyword> optKeyword = keywordRepository.findByContent(keywordContent);
 		if (optKeyword.isPresent()) {
+			optKeyword.get().plusCount();
 			return optKeyword.get();
 		}
 
 		// 키워드가 없다면 키워드 저장 후 리턴
 		Keyword keyword = Keyword.builder()
 			.content(keywordContent)
+			.count(1)
 			.build();
 
 		keywordRepository.save(keyword);
