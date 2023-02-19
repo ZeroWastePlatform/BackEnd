@@ -80,7 +80,6 @@ public class HashtagService {
 
 		// 삭제할 키워드 정보들을 삭제
 		needToDelete.forEach(hashtag -> {
-			System.out.println("나를 삭제해줘");
 			hashtagRepository.delete(hashtag);
 		});
 	}
