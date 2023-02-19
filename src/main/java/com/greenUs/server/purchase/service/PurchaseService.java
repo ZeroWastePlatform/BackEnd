@@ -12,6 +12,7 @@ import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import com.greenUs.server.purchase.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

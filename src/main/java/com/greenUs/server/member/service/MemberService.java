@@ -1,11 +1,23 @@
 package com.greenUs.server.member.service;
 
+import com.greenUs.server.bookmark.domain.Bookmark;
+import com.greenUs.server.bookmark.repository.BookmarkRepository;
+import com.greenUs.server.comment.repository.CommentRepository;
+import com.greenUs.server.coupon.repository.CouponRepository;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.MemberResponse;
+import com.greenUs.server.member.dto.response.MyPageCommunityResponse;
+import com.greenUs.server.member.dto.response.MyPageContentResponse;
+import com.greenUs.server.member.dto.response.MyPagePurchaseResponse;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
+import com.greenUs.server.post.repository.PostRepository;
+import com.greenUs.server.purchase.dto.response.PurchaseResponse;
+import com.greenUs.server.purchase.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +27,44 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PurchaseRepository purchaseRepository;
+    private final CouponRepository couponRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public MemberResponse findById(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
         return new MemberResponse(member);
+    }
+
+    public MyPagePurchaseResponse getMyPagePurchase(MemberResponse member, int page) {
+
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<PurchaseResponse> purchaseResponses = purchaseRepository.findByMemberId(member.getId(), pageRequest);
+        return new MyPagePurchaseResponse(
+                member.getName(),
+                member.getNickname(),
+                member.getLevel(),
+                0, // 찜은 추후 구현
+                member.getPoint(),
+                couponRepository.findCountByMemberId(member.getId()),
+                purchaseResponses
+        );
+    }
+
+    public MyPageCommunityResponse getMyPageCommunity(MemberResponse member, int page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+
+        // TODO: getMyPageCommunity 구현
+
+        return null;
+    }
+
+    public Page<MyPageContentResponse> getMyPageContent(MemberResponse member, int page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<Bookmark> bookmarks = bookmarkRepository.findByMemberId(member.getId(), pageRequest);
+
+        Page<MyPageContentResponse> myPageContentResponses = bookmarks.map(MyPageContentResponse::new);
+        return myPageContentResponses;
     }
 
     @Transactional

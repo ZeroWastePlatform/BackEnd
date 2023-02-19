@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -32,13 +33,22 @@ public class Member extends BaseEntity {
 	@Column(name = "nickname")
 	private String nickname;
 
-	private String address; // TODO: embedded 로 수정하기
+	@Embedded
+	private Address address;
 
 	@Column(name = "phone_num")
 	private String phoneNum;
 
 	@Column(name = "interest_area")
 	private String interestArea;
+
+	@Column(name = "level")
+	@ColumnDefault("0")
+	private int level;
+
+	@Column(name = "point")
+	@ColumnDefault("0")
+	private int point;
 
 	public Member() {}
 	public Member(String email, String name, SocialType socialType, String token ) {
@@ -52,9 +62,9 @@ public class Member extends BaseEntity {
 		this.token = token;
 	}
 
-	public void changeInfo(String nickname, String address, String phoneNum, String interestArea) {
+	public void changeInfo(String nickname, Address address, String phoneNum, String interestArea) {
 		this.nickname = nickname;
-		this.address = address;
+		this.address = new Address(address.getZipCode(), address.getAddress(), address.getAddressDetail());
 		this.phoneNum = phoneNum;
 		this.interestArea = interestArea;
 	}
