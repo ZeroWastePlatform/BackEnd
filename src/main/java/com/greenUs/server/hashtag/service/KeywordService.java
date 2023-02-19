@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class KeywordService {
 
 	private final KeywordRepository keywordRepository;
