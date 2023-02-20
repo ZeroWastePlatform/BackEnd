@@ -17,13 +17,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	// 게시판 종류(kind)와 pageRequest를 파라미터로 받아 게시판 상단에 추천수TOP2개, 나머지 최신순 정렬 (수정요망)
 	Page<Post> findByKind(Integer kind, Pageable pageable);
 
+	// 게시글 제목과 내용에 해당하는 단어가 있는 검색물을 반환
 	Page<Post> findByTitleContainingOrContentContaining(String title, String content, Pageable pageable);
 
-	// // 제목 검색
-	// Page<Post> findByKindAndTitleContaining(Integer kind, String title, Pageable pageable);
-	//
-	// // 내용 검색
-	// Page<Post> findByKindAndContentContaining(Integer kind, String content, Pageable pageable);
+	// 내가 작성한 게시물 반환
+	Page<Post> findByMemberId(Long memberId, Pageable pageable);
 
 	// 해시태그 키워드 검색
 	@Query("select distinct p from Post p\n"
