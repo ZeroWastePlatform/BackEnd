@@ -46,6 +46,7 @@ public class ProductCommandService {
         for(Like like : member.getLikes()){
             if(like.getProductId() == likeDto.getProductId()){
                 member.getLikes().remove(like);
+                product.minusLikeCount();
             }
         }
         return likeDto.getProductId();

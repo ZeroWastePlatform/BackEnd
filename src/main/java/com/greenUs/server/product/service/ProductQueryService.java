@@ -11,8 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.InstanceNotFoundException;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +36,16 @@ public class ProductQueryService {
     public GetProductDetailDto getProduct(Long productId){
         Product product = productRepository.findById(productId)
                 .orElseThrow(()->new IllegalArgumentException());
-
+        List<String> thumbnails = new ArrayList<>();
+        thumbnails.add(product.getImage());
         GetProductDetailDto getProductDetailDto = GetProductDetailDto.builder()
                 .price(product.getPrice())
-                .name(product.getTitle())
-                .description(product.getDescription())
-                .thumbnail(product.getImage())
+                .title(product.getTitle())
+                .summary(product.getDescription())
+                .liked(product.getLikeCount())
+                .badges("NEW")
+                .thumbnail(thumbnails)
+                .category(product.getCategory().toString())
                 .build();
         return getProductDetailDto;
     }
