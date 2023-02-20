@@ -2,6 +2,7 @@ package com.greenUs.server.member.service;
 
 import com.greenUs.server.bookmark.domain.Bookmark;
 import com.greenUs.server.bookmark.repository.BookmarkRepository;
+import com.greenUs.server.comment.dto.CommentResponseDto;
 import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.coupon.repository.CouponRepository;
 import com.greenUs.server.member.domain.Member;
@@ -9,9 +10,11 @@ import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.MemberResponse;
 import com.greenUs.server.member.dto.response.MyPageCommunityResponse;
 import com.greenUs.server.member.dto.response.MyPageContentResponse;
+import com.greenUs.server.member.dto.response.MyPagePostResponse;
 import com.greenUs.server.member.dto.response.MyPagePurchaseResponse;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
+import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import com.greenUs.server.purchase.repository.PurchaseRepository;
@@ -29,6 +32,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PurchaseRepository purchaseRepository;
     private final CouponRepository couponRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final BookmarkRepository bookmarkRepository;
 
     public MemberResponse findById(Long id) {
@@ -51,11 +56,21 @@ public class MemberService {
         );
     }
 
-    public MyPageCommunityResponse getMyPageCommunity(MemberResponse member, int page) {
-        PageRequest pageRequest = PageRequest.of(page, 10);
+    public MyPageCommunityResponse getMyPageCommunity(MemberResponse member, Integer kind, int page) {
+        PageRequest pageRequest = PageRequest.of(page, 8);
 
-        // TODO: getMyPageCommunity 구현
+        MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse();
 
+        if (kind == 1) {
+            myPageCommunityResponse.setPostResponses(postRepository.findByMemberId(member.getId(), pageRequest)
+                .map(PostResponseDto::new));
+            return myPageCommunityResponse;
+        }
+        else if (kind == 2) {
+            myPageCommunityResponse.setCommentResponses(commentRepository.findByMemberId(member.getId(), pageRequest)
+                .map(CommentResponseDto::new));
+            return myPageCommunityResponse;
+        }
         return null;
     }
 

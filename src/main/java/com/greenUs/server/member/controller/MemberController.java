@@ -40,11 +40,12 @@ public class MemberController {
     }
 
     // 마이페이지 커뮤니티
-    @GetMapping("/me/communities")
+    @GetMapping("/me/communities/{kind}")
     public ResponseEntity<MyPageCommunityResponse> findMyCommunity(@AuthenticationPrincipal LoginMember loginMember,
+                                                                   @PathVariable Integer kind,
                                                                    @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        MyPageCommunityResponse response = memberService.getMyPageCommunity(memberResponse, page);
+        MyPageCommunityResponse response = memberService.getMyPageCommunity(memberResponse, kind, page);
         return ResponseEntity.ok(response);
     }
 
