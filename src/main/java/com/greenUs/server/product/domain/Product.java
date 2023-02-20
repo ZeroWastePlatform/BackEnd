@@ -40,6 +40,13 @@ public class Product extends BaseEntity {
     private ProductStatus productStatus;
     private int viewCount;
     private int price;
+    private int likeCount;
 
+    public void plusLikeCount() {
+        this.likeCount = this.likeCount+1;
+    }
+    public void minusLikeCount() {
+        this.likeCount = this.likeCount-1;
+    }
 }
 

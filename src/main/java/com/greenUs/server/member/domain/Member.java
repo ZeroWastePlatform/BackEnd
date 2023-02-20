@@ -5,6 +5,7 @@ import com.greenUs.server.common.BaseEntity;
 
 import javax.persistence.*;
 
+import com.greenUs.server.product.domain.Like;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
@@ -40,6 +41,9 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
 	private List<Basket> baskets = new ArrayList<>();
 
+	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	private List<Like> likes = new ArrayList<>();
+
 	@Embedded
 	private Address address;
 
@@ -56,6 +60,10 @@ public class Member extends BaseEntity {
 	@Column(name = "point")
 	@ColumnDefault("0")
 	private int point;
+
+
+
+
 
 	public Member() {}
 	public Member(String email, String name, SocialType socialType, String token ) {
