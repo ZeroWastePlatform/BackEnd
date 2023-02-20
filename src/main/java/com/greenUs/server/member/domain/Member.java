@@ -1,5 +1,6 @@
 package com.greenUs.server.member.domain;
 
+import com.greenUs.server.basket.domain.Basket;
 import com.greenUs.server.common.BaseEntity;
 
 import javax.persistence.*;
@@ -7,6 +8,9 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +36,9 @@ public class Member extends BaseEntity {
 
 	@Column(name = "nickname")
 	private String nickname;
+
+	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	private List<Basket> baskets = new ArrayList<>();
 
 	@Embedded
 	private Address address;

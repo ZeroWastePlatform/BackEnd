@@ -3,10 +3,16 @@ package com.greenUs.server.basket.domain;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.product.domain.Product;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Basket extends BaseEntity {
 
     @Id @GeneratedValue
