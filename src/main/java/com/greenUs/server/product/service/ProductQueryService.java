@@ -2,6 +2,7 @@ package com.greenUs.server.product.service;
 
 
 import com.greenUs.server.product.domain.Product;
+import com.greenUs.server.product.dto.respond.GetInfoDto;
 import com.greenUs.server.product.dto.respond.GetProductDetailDto;
 import com.greenUs.server.product.dto.respond.GetProductDto;
 import com.greenUs.server.product.repository.ProductRepository;
@@ -31,6 +32,14 @@ public class ProductQueryService {
         Page<Product> products = productRepository.findAllByCategory(categoryName,pageable);
         Page<GetProductDto> productForms = products.map(product -> makeProductForm(product));
         return productForms;
+    }
+    public GetInfoDto getInfoNavigation(Long productId){
+        Product product = productRepository.findById(productId).orElseThrow(IllegalAccessError::new);
+        GetInfoDto getInfoDto = GetInfoDto.builder()
+                .ask(product.getAskCount())
+                .review(product.getReviewCount())
+                .build();
+        return getInfoDto;
     }
 
     public GetProductDetailDto getProduct(Long productId){

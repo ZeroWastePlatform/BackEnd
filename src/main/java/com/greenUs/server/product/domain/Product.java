@@ -41,6 +41,8 @@ public class Product extends BaseEntity {
     private int viewCount;
     private int price;
     private int likeCount;
+    private int reviewCount =0;
+    private int askCount =0;
 
     public void plusLikeCount() {
         this.likeCount = this.likeCount+1;

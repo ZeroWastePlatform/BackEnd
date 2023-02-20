@@ -1,6 +1,7 @@
 package com.greenUs.server.product.controller;
 
 
+import com.greenUs.server.product.dto.respond.GetInfoDto;
 import com.greenUs.server.product.dto.respond.GetProductDetailDto;
 import com.greenUs.server.product.dto.respond.GetProductDto;
 import com.greenUs.server.product.service.ProductQueryService;
@@ -37,5 +38,9 @@ public class ProductQueryController {
     @GetMapping("/products/{productId}")
     public GetProductDetailDto getProduct(@PathVariable("productId") Long productId){
         return productQueryService.getProduct(productId);
+    }
+    @GetMapping("/products/{productId/infoCount}")
+    public GetInfoDto getProductInfoCount(@PathVariable("productId") Long productId){
+        return productQueryService.getInfoNavigation(productId);
     }
 }
