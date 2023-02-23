@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Tag(name="회원", description = "회원 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 @RestController
@@ -86,7 +88,7 @@ public class MemberController {
     @PostMapping("/me")
     public ResponseEntity<MemberResponse> updateInfo(
             @AuthenticationPrincipal LoginMember loginMember,
-            @Valid @RequestBody MemberRequest memberRequest
+            @Parameter(description = "회원 정보 수정 요청 body (nickname, Address(zipCode, address, addressDetail) , phoneNum, interestArea)", in = ParameterIn.PATH) @Valid @RequestBody MemberRequest memberRequest
             ) {
         MemberResponse memberResponse = memberService.updateInfo(loginMember.getId(), memberRequest);
 
