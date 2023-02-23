@@ -88,7 +88,7 @@ public class MemberController {
     @PostMapping("/me")
     public ResponseEntity<MemberResponse> updateInfo(
             @AuthenticationPrincipal LoginMember loginMember,
-            @Parameter(description = "회원 정보 수정 요청 body (nickname, Address(zipCode, address, addressDetail) , phoneNum, interestArea)", in = ParameterIn.PATH) @Valid @RequestBody MemberRequest memberRequest
+            @Valid @RequestBody MemberRequest memberRequest
             ) {
         MemberResponse memberResponse = memberService.updateInfo(loginMember.getId(), memberRequest);
 
