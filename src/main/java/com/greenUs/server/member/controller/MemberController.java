@@ -53,10 +53,16 @@ public class MemberController {
     }
 
     // 마이페이지 커뮤니티
+    @Operation(summary = "마이페이지 커뮤니티",
+            description = "마이페이지 커뮤니티 부분으로 내가 쓴 글, 댓글을 불러올 수 있습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "마이페이지 커뮤니티 조회 성공", content = @Content(schema = @Schema(implementation = MyPageCommunityResponse.class))),
+            @ApiResponse(responseCode = "400", description = "유저 엔티티를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = NotFoundMemberException.class)))
+    })
     @GetMapping("/me/communities/{kind}")
     public ResponseEntity<MyPageCommunityResponse> findMyCommunity(@AuthenticationPrincipal LoginMember loginMember,
-                                                                   @PathVariable Integer kind,
-                                                                   @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
+                                                                   @Parameter(description = "1: 글, 2: 댓글", in = ParameterIn.PATH) @PathVariable Integer kind,
+                                                                   @Parameter(description = "나의 커뮤니티 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
         MyPageCommunityResponse response = memberService.getMyPageCommunity(memberResponse, kind, page);
         return ResponseEntity.ok(response);
