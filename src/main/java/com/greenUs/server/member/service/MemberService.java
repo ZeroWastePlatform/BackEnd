@@ -10,7 +10,6 @@ import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.MemberResponse;
 import com.greenUs.server.member.dto.response.MyPageCommunityResponse;
 import com.greenUs.server.member.dto.response.MyPageContentResponse;
-import com.greenUs.server.member.dto.response.MyPagePostResponse;
 import com.greenUs.server.member.dto.response.MyPagePurchaseResponse;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
