@@ -30,8 +30,11 @@ public class Product extends BaseEntity {
     private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
 
 
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+    private String discountRate;
+    private String badges;
 
     private String title;
     private String description;
