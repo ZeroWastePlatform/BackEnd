@@ -3,12 +3,10 @@ package com.greenUs.server.product.controller;
 
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
-import com.greenUs.server.product.domain.Like;
 import com.greenUs.server.product.dto.request.CreateProductDto;
 import com.greenUs.server.product.dto.request.LikeDto;
 import com.greenUs.server.product.service.ProductCommandService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

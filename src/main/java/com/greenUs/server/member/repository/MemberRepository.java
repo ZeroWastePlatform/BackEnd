@@ -15,6 +15,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m left join fetch m.baskets where m.id = :id")
     Optional<Member> findByIdFetchBaskets(@Param("id") Long id);
 
-    @Query("select m from Member m left join fetch m.likes where m.id = :id")
+    @Query("select m from Member m left join fetch m.ProductLikes where m.id = :id")
     Optional<Member> findByIdFetchLikes(@Param("id") Long id);
 }

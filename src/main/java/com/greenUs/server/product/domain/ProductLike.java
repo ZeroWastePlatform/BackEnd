@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Like {
+public class ProductLike {
 
     @Id
     @GeneratedValue

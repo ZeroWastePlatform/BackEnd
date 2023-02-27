@@ -4,7 +4,7 @@ import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.product.domain.Like;
+import com.greenUs.server.product.domain.ProductLike;
 import com.greenUs.server.product.domain.Product;
 import com.greenUs.server.product.dto.request.CreateProductDto;
 import com.greenUs.server.product.dto.request.LikeDto;
@@ -35,17 +35,17 @@ public class ProductCommandService {
         Member member = memberRepository.findByIdFetchLikes(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
         Product product = productRepository.findById(likeDto.getProductId()).orElseThrow(IllegalArgumentException::new);
         if(likeDto.isLike()){
-            Like like = Like.builder()
+            ProductLike productLike = ProductLike.builder()
                     .member(member)
                     .productId(likeDto.getProductId())
                     .build();
-            member.getLikes().add(like);
+            member.getProductLikes().add(productLike);
             product.plusLikeCount();
             return likeDto.getProductId();
         }
-        for(Like like : member.getLikes()){
-            if(like.getProductId() == likeDto.getProductId()){
-                member.getLikes().remove(like);
+        for(ProductLike productLike : member.getProductLikes()){
+            if(productLike.getProductId() == likeDto.getProductId()){
+                member.getProductLikes().remove(productLike);
                 product.minusLikeCount();
             }
         }
