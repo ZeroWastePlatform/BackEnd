@@ -48,7 +48,7 @@ public class ProductQueryController {
     public GetProductDetailDto getProduct(@PathVariable("productId") Long productId){
         return productQueryService.getProduct(productId);
     }
-    @GetMapping("/products/{productId/infoCount}")
+    @GetMapping("/products/{productId}/infoCount")
     public GetInfoDto getProductInfoCount(@PathVariable("productId") Long productId){
         return productQueryService.getInfoNavigation(productId);
     }
