@@ -1,29 +1,30 @@
-package com.greenUs.server.basket.domain;
+package com.greenUs.server.product.domain;
 
-import com.greenUs.server.common.BaseEntity;
+
 import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.product.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Basket extends BaseEntity {
+public class Like {
 
-    @Id @GeneratedValue
-    @Column(name = "basket_id")
+    @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
+
+
 }
