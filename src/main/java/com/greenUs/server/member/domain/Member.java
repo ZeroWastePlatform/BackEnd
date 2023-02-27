@@ -5,7 +5,7 @@ import com.greenUs.server.common.BaseEntity;
 
 import javax.persistence.*;
 
-import com.greenUs.server.product.domain.Like;
+import com.greenUs.server.product.domain.ProductLike;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
@@ -42,7 +42,7 @@ public class Member extends BaseEntity {
 	private List<Basket> baskets = new ArrayList<>();
 
 	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
-	private List<Like> likes = new ArrayList<>();
+	private List<ProductLike> ProductLikes = new ArrayList<>();
 
 	@Embedded
 	private Address address;

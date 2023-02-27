@@ -2,7 +2,6 @@ package com.greenUs.server.product.service;
 
 
 import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.product.domain.Product;
 import com.greenUs.server.product.dto.respond.GetInfoDto;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.InstanceNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +74,7 @@ public class ProductQueryService {
         if(!member.isPresent()){
             return false;
         }
-        if(member.get().getLikes().contains(product)){
+        if(member.get().getProductLikes().contains(product)){
             return true;
         }
         return false;
