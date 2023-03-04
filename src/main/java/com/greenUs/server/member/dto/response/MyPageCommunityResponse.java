@@ -13,6 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MyPageCommunityResponse {
 
+    private MyPageProfileResponse myPageProfileResponse;
     private Page<PostResponseDto> postResponses;
     private Page<CommentResponseDto> commentResponses;
+
+    public MyPageCommunityResponse(MyPageProfileResponse myPageProfileResponse) {
+        this.myPageProfileResponse = myPageProfileResponse;
+    }
 }
