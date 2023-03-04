@@ -84,7 +84,7 @@ public class ProductQueryService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(()->new IllegalArgumentException());
         List<String> thumbnails = new ArrayList<>();
-        thumbnails.add(product.getImage());
+        thumbnails.add(product.getThumbnail());
         GetProductDetailDto getProductDetailDto = GetProductDetailDto.builder()
                 .price(product.getPrice())
                 .title(product.getTitle())
@@ -101,7 +101,7 @@ public class ProductQueryService {
     private GetProductDto makeProductForm(Product product) {
         GetProductDto getProductDto = GetProductDto.builder()
                 .id(product.getId())
-                .image(product.getImage())
+                .image(product.getThumbnail())
                 .brand(product.getBrand())
                 .price(product.getPrice())
                 .title(product.getTitle())
