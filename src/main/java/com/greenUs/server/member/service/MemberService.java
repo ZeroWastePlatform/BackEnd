@@ -7,10 +7,7 @@ import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.coupon.repository.CouponRepository;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.dto.request.MemberRequest;
-import com.greenUs.server.member.dto.response.MemberResponse;
-import com.greenUs.server.member.dto.response.MyPageCommunityResponse;
-import com.greenUs.server.member.dto.response.MyPageContentResponse;
-import com.greenUs.server.member.dto.response.MyPagePurchaseResponse;
+import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.dto.PostResponseDto;
@@ -45,12 +42,14 @@ public class MemberService {
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<PurchaseResponse> purchaseResponses = purchaseRepository.findByMemberId(member.getId(), pageRequest);
         return new MyPagePurchaseResponse(
-                member.getName(),
-                member.getNickname(),
-                member.getLevel(),
-                0, // 찜은 추후 구현
-                member.getPoint(),
-                couponRepository.findCountByMemberId(member.getId()),
+                new MyPageProfileResponse(
+                        member.getName(),
+                        member.getNickname(),
+                        member.getLevel(),
+                        0, // 찜은 추후 구현
+                        member.getPoint(),
+                        couponRepository.findCountByMemberId(member.getId())
+                ),
                 purchaseResponses
         );
     }
@@ -58,7 +57,16 @@ public class MemberService {
     public MyPageCommunityResponse getMyPageCommunity(MemberResponse member, Integer kind, int page) {
         PageRequest pageRequest = PageRequest.of(page, 8);
 
-        MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse();
+        MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse(
+                new MyPageProfileResponse(
+                        member.getName(),
+                        member.getNickname(),
+                        member.getLevel(),
+                        0, // 찜은 추후 구현
+                        member.getPoint(),
+                        couponRepository.findCountByMemberId(member.getId())
+                )
+        );
 
         if (kind == 1) {
             myPageCommunityResponse.setPostResponses(postRepository.findByMemberId(member.getId(), pageRequest)
