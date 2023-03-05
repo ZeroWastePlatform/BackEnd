@@ -30,7 +30,6 @@ public class Review extends BaseEntity {
 
     private String photo;
     private String content;
-    private String image;
     private int rate;
     private int likedCount;
 
