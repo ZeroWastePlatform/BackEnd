@@ -1,4 +1,4 @@
-package com.greenUs.server.review.dto;
+package com.greenUs.server.reviewAndAsk.dto;
 
 
 import lombok.Builder;

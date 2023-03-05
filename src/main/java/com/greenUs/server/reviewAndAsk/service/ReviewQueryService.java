@@ -1,24 +1,19 @@
-package com.greenUs.server.review.service;
+package com.greenUs.server.reviewAndAsk.service;
 
 import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.product.domain.Product;
 import com.greenUs.server.product.repository.ProductRepository;
-import com.greenUs.server.review.domain.Review;
-import com.greenUs.server.review.dto.GetReviewDetailDto;
-import com.greenUs.server.review.dto.GetReviewDto;
-import com.greenUs.server.review.repository.ReviewRepository;
+import com.greenUs.server.reviewAndAsk.domain.Review;
+import com.greenUs.server.reviewAndAsk.dto.GetReviewDetailDto;
+import com.greenUs.server.reviewAndAsk.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

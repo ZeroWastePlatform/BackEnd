@@ -1,6 +1,6 @@
-package com.greenUs.server.review.repository;
+package com.greenUs.server.reviewAndAsk.repository;
 
-import com.greenUs.server.review.domain.Review;
+import com.greenUs.server.reviewAndAsk.domain.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review,Long> {

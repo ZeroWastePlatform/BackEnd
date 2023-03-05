@@ -1,11 +1,10 @@
-package com.greenUs.server.review.controller;
+package com.greenUs.server.reviewAndAsk.controller;
 
 
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
-import com.greenUs.server.review.domain.Review;
-import com.greenUs.server.review.dto.ReviewDto;
-import com.greenUs.server.review.service.ReviewCommandService;
+import com.greenUs.server.reviewAndAsk.dto.ReviewDto;
+import com.greenUs.server.reviewAndAsk.service.ReviewCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

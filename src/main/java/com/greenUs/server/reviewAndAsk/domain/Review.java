@@ -1,4 +1,4 @@
-package com.greenUs.server.review.domain;
+package com.greenUs.server.reviewAndAsk.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
@@ -32,5 +32,5 @@ public class Review extends BaseEntity {
     private String content;
     private int rate;
     private int likedCount;
-
+    private String category;
 }

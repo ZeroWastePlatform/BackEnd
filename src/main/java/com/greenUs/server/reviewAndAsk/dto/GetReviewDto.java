@@ -1,9 +1,6 @@
-package com.greenUs.server.review.dto;
+package com.greenUs.server.reviewAndAsk.dto;
 
 import lombok.Builder;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 public class GetReviewDto {
