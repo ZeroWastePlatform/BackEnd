@@ -43,6 +43,21 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// oracle cloud
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-workrequests:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-filestorage:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-audit:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-core:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-database:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage-generated:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage-extensions:1.8.0'
+	implementation 'org.glassfish.jersey.core:jersey-client:2.34'
+	implementation 'org.glassfish.jersey.core:jersey-common:2.34'
+	implementation 'org.glassfish.jersey.ext:jersey-entity-filtering:2.34'
+	implementation 'org.glassfish.jersey.inject:jersey-hk2:2.34'
+	implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.34'
 }
 
 dependencyManagement {

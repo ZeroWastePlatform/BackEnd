@@ -60,6 +60,14 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Attachment> attachments = new ArrayList<>();
 
+
+
+    public Post(Integer kind, String title, String content) {
+        this.kind = kind;
+        this.title = title;
+        this.content = content;
+    }
+
     @Builder
     public Post(Member member, Integer kind, String title, String content, Integer price, Integer fileAttached) {
         this.member = member;

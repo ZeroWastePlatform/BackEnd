@@ -25,3 +25,6 @@ oauth:
       - https://www.googleapis.com/auth/userinfo.email
     token-uri: https://oauth2.googleapis.com/token
     access-type: offline
+
+server:
+  port: 80
