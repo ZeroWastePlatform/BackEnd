@@ -105,12 +105,13 @@ public class PostController {
 	})
 	@PostMapping
 	public ResponseEntity<Integer> write(
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequestDto postRequestDto) {
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestPart PostRequestDto postRequestDto,
+	@RequestPart(value = "file", required = false) MultipartFile multipartFile) throws Exception {
 
 		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
 		// postRequestDto.setMember(member);
 
-		Integer kind = postService.setPostWriting(postRequestDto);
+		Integer kind = postService.setPostWriting(postRequestDto, multipartFile);
 
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}

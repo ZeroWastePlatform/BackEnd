@@ -1,5 +1,6 @@
 package com.greenUs.server.post.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.greenUs.server.attachment.repository.AttachmentRepository;
+import com.greenUs.server.attachment.service.AttachmentService;
 import com.greenUs.server.global.error.ErrorCode;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
@@ -41,7 +44,7 @@ public class PostService {
 	private final MemberRepository memberRepository;
 	private final RecommendRepository recommendRepository;
 	private final HashtagService hashtagService;
-	private final AttachmentRepository attachmentRepository;
+	private final AttachmentService attachmentService;
 
 	// 게시글 목록 조회
 	public Page<PostResponseDto> getPostLists(Integer kind, Integer page, String orderCriteria) {
@@ -75,7 +78,8 @@ public class PostService {
 
 	// 게시글 작성(수정 필요 - 작성자 확인)
 	@Transactional
-	public Integer setPostWriting(PostRequestDto postRequestDto) {
+	public Integer setPostWriting(PostRequestDto postRequestDto, MultipartFile multipartFile) throws
+		Exception {
 
 		// 게시글 저장
 		Post post = postRepository.save(postRequestDto.toEntity());
@@ -83,6 +87,10 @@ public class PostService {
 		// 해시태그 저장
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
+		System.out.println("multipartFile = " + multipartFile);
+		// 첨부파일 저장
+		if (multipartFile != null)
+			attachmentService.applyImage(post, multipartFile);
 
 		return new PostResponseDto(post).getKind();
 	}

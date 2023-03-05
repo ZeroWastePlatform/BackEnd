@@ -1,4 +1,4 @@
-package com.greenUs.server.attachment;
+package com.greenUs.server.attachment.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

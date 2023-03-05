@@ -1,14 +1,6 @@
 package com.greenUs.server.post.service;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
-import com.oracle.bmc.ConfigFileReader.ConfigFile;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,19 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.dto.PostResponseDto;
 import com.greenUs.server.post.repository.PostRepository;
 import com.oracle.bmc.ConfigFileReader;
+import com.oracle.bmc.ConfigFileReader.ConfigFile;
 import com.oracle.bmc.Region;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorage;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
-import com.oracle.bmc.objectstorage.model.CreateBucketDetails;
 import com.oracle.bmc.objectstorage.model.ListObjects;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
-import com.oracle.bmc.objectstorage.requests.CreateBucketRequest;
 import com.oracle.bmc.objectstorage.requests.DeleteObjectRequest;
 import com.oracle.bmc.objectstorage.requests.GetBucketRequest;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
@@ -39,7 +36,8 @@ import com.oracle.bmc.objectstorage.responses.GetBucketResponse;
 import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import com.oracle.bmc.objectstorage.responses.ListObjectsResponse;
-import com.oracle.bmc.objectstorage.transfer.*;
+import com.oracle.bmc.objectstorage.transfer.UploadConfiguration;
+import com.oracle.bmc.objectstorage.transfer.UploadManager;
 import com.oracle.bmc.objectstorage.transfer.UploadManager.UploadRequest;
 import com.oracle.bmc.objectstorage.transfer.UploadManager.UploadResponse;
 
@@ -78,7 +76,6 @@ class PostServiceTest {
 		ConfigFile config = ConfigFileReader.parse("~/ocikey/config", "DEFAULT");
 
 		AuthenticationDetailsProvider provider = new ConfigFileAuthenticationDetailsProvider(config);
-
 
 		ObjectStorage client = new ObjectStorageClient(provider);
 		client.setRegion(Region.AP_SEOUL_1);
@@ -155,7 +152,6 @@ class PostServiceTest {
 				.opcMeta(metadata)
 				.build();
 
-
 		UploadRequest uploadDetails =
 			UploadRequest.builder(body).allowOverwrite(true).build(request);
 
@@ -219,8 +215,7 @@ class PostServiceTest {
 		ListObjects list = response.getListObjects();
 		List<ObjectSummary> objectList = list.getObjects();
 
-
-		for(int i=0; i<objectList.size(); i++) {
+		for (int i = 0; i < objectList.size(); i++) {
 			System.out.println("====================");
 			System.out.println("@@@@@@@@@@@@@@@@@ getName : " + objectList.get(i).getName());
 			System.out.println("@@@@@@@@@@@@@@@@@ getArchivalState : " + objectList.get(i).getArchivalState());
@@ -252,7 +247,6 @@ class PostServiceTest {
 				.namespaceName(namespaceName)
 				.objectName("객체이름MVC.png")
 				.build();
-
 
 		client.deleteObject(request);
 		client.close();

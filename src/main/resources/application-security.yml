@@ -6,3 +6,8 @@ security:
         expire-length: 1800000 # 30min
       refresh:
         expire-length: 2592000000 # 30 days
+
+oraclecloud:
+  objectstorage:
+    bucket: bucket-20230304-1919
+    namespace: cnqmrawcp5js
