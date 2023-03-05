@@ -53,6 +53,7 @@ public class ReviewQueryService {
                     .avatar(null)
                     .liked(false)
                     .build();
+            getReviewDetailDtos.add(getReviewDetailDto);
         }
         if(sorted.equals("new")){
             getReviewDetailDtos.stream().sorted(Comparator.comparing(GetReviewDetailDto::getLikedCount).reversed());

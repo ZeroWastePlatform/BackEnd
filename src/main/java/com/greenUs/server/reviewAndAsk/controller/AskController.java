@@ -5,6 +5,7 @@ import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.reviewAndAsk.dto.AskDto;
 import com.greenUs.server.reviewAndAsk.service.AskService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,5 +17,8 @@ public class AskController {
     public Long addAsk(@PathVariable("productId") Long productId, @AuthenticationPrincipal LoginMember loginMember, @RequestBody AskDto askDto){
         return askService.addAsk(loginMember,productId,askDto);
     }
-    @GetMapping(value ="products/{")
+    @GetMapping(value ="products/{productId}/asks")
+    public JSONObject getAsk(@PathVariable("productId") Long productId, @AuthenticationPrincipal LoginMember loginMember){
+        return askService.getAsk(loginMember,productId);
+    }
 }

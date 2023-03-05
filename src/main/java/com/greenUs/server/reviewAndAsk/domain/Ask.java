@@ -1,5 +1,6 @@
 package com.greenUs.server.reviewAndAsk.domain;
 
+import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.product.domain.Product;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ask {
+public class Ask extends BaseEntity {
 
     @Id
     private Long id;

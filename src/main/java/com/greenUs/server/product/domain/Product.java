@@ -2,6 +2,7 @@ package com.greenUs.server.product.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.purchase.domain.PurchaseProduct;
+import com.greenUs.server.reviewAndAsk.domain.Ask;
 import com.greenUs.server.reviewAndAsk.domain.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,8 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private List<Ask> asks = new ArrayList<>();
     private String discountRate;
     private String badges;
     private String title;
