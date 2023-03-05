@@ -28,9 +28,10 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String description;
+    private String photo;
+    private String content;
     private String image;
-    private int starCnt;
-    private int helpCnt;
+    private int rate;
+    private int likedCount;
 
 }
