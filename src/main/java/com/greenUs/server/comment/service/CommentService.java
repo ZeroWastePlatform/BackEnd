@@ -26,7 +26,7 @@ public class CommentService {
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
 
-	public Page<CommentResponseDto> getCommentDetail(Long postId, Integer page) {
+	public Page<CommentResponseDto> getCommentLists(Long postId, Integer page) {
 
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
@@ -41,7 +41,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void setCommentWriting(CommentRequestDto commentRequestDto) {
+	public void createComment(CommentRequestDto commentRequestDto) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
@@ -57,7 +57,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void setReCommentWriting(Long parentId, CommentRequestDto commentRequestDto) {
+	public void createRecomment(Long parentId, CommentRequestDto commentRequestDto) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
@@ -76,7 +76,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void setCommentModification(Long id, CommentRequestDto commentRequestDto) {
+	public void updateComment(Long id, CommentRequestDto commentRequestDto) {
 
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
@@ -89,13 +89,12 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void setCommentDeletion(Long id) {
+	public void deleteComment(Long id) {
 
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
 
 		// 댓글 작성자 확인 생략
-
 		comment.remove();
 		List<Comment> removableCommentList = comment.findRemovableList();
 		commentRepository.deleteAll(removableCommentList);

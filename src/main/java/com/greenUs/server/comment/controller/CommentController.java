@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.greenUs.server.comment.dto.CommentRequestDto;
 import com.greenUs.server.comment.dto.CommentResponseDto;
 import com.greenUs.server.comment.service.CommentService;
-import com.greenUs.server.post.dto.PostResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "커뮤니티 댓글", description = "커뮤니티 댓글 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts")
+@RequestMapping("/posts/comments")
 public class CommentController {
 
 	private final CommentService commentService;
@@ -41,12 +40,12 @@ public class CommentController {
 		@ApiResponse(responseCode = "200", description = "게시글 댓글 조회 성공", content = @Content(schema = @Schema(implementation = CommentResponseDto.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
-	@GetMapping("/comments/{post-id}")
-	public ResponseEntity<Page<CommentResponseDto>> list(
+	@GetMapping("/{post-id}")
+	public ResponseEntity<Page<CommentResponseDto>> getCommentLists(
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable(value = "post-id") Long postId,
 		@Parameter(description = "현재 댓글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
 
-		Page<CommentResponseDto> commentResponseDto = commentService.getCommentDetail(postId, page);
+		Page<CommentResponseDto> commentResponseDto = commentService.getCommentLists(postId, page);
 		return new ResponseEntity<>(commentResponseDto, HttpStatus.OK);
 	}
 
@@ -55,11 +54,11 @@ public class CommentController {
 		@ApiResponse(responseCode = "201", description = "댓글 작성 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
-	@PostMapping("/comments")
-	public ResponseEntity write(
+	@PostMapping
+	public ResponseEntity createComment(
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequestDto commentRequestDto) {
 
-		commentService.setCommentWriting(commentRequestDto);
+		commentService.createComment(commentRequestDto);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -68,12 +67,12 @@ public class CommentController {
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
-	@PostMapping("/comments/{parent-id}")
-	public ResponseEntity reWrite(
-		@Parameter(description = "댓글 번호(parent-id)", in = ParameterIn.PATH) @PathVariable(value = "parend-id") Long parentId,
+	@PostMapping("/{parent-id}")
+	public ResponseEntity createRecomment(
+		@Parameter(description = "댓글 번호(parent-id)", in = ParameterIn.PATH) @PathVariable(value = "parent-id") Long parentId,
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequestDto commentRequestDto) {
 
-		commentService.setReCommentWriting(parentId, commentRequestDto);
+		commentService.createRecomment(parentId, commentRequestDto);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -82,12 +81,12 @@ public class CommentController {
 		@ApiResponse(responseCode = "201", description = "댓글 수정 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
-	@PutMapping("/comments/{id}")
-	public ResponseEntity modify(
+	@PutMapping("/{id}")
+	public ResponseEntity updateComment(
 		@Parameter(description = "댓글 번호(id)", in = ParameterIn.PATH) @PathVariable Long id,
 		@Parameter(description = "내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequestDto commentRequestDto) {
 
-		commentService.setCommentModification(id, commentRequestDto);
+		commentService.updateComment(id, commentRequestDto);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -96,10 +95,10 @@ public class CommentController {
 		@ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
-	@DeleteMapping("/comments/{id}")
-	public ResponseEntity delete(@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity deleteComment(@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		commentService.setCommentDeletion(id);
+		commentService.deleteComment(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
