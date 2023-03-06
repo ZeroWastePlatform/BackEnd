@@ -2,8 +2,6 @@ package com.greenUs.server.hashtag.domain;
 
 import javax.persistence.*;
 
-import com.greenUs.server.post.domain.Post;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

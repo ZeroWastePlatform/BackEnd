@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.hashtag.domain.Keyword;
-import com.greenUs.server.hashtag.dto.HashtagResponseDto;
+import com.greenUs.server.hashtag.dto.HashtagResponse;
 import com.greenUs.server.hashtag.repository.HashtagRepository;
 import com.greenUs.server.hashtag.repository.KeywordRepository;
 import com.greenUs.server.post.domain.Post;
@@ -35,18 +35,18 @@ public class HashtagService {
 
 	// 해시태그 인기글
 	@Transactional(readOnly = true)
-	public HashtagResponseDto getPopularityKeyword() {
+	public HashtagResponse getPopularKeyword() {
 
 		List<Keyword> keywords = keywordRepository.findTop5ByOrderByCountDesc();
 
-		HashtagResponseDto hashtagResponseDto = new HashtagResponseDto(keywords);
+		HashtagResponse hashtagResponseDto = new HashtagResponse(keywords);
 
 		return hashtagResponseDto;
 	}
 
 	// 해시태그 검색
 	@Transactional(readOnly = true)
-	public Page<PostResponse> getPostSearchList(Integer page, String keyword, String orderCriteria) {
+	public Page<PostResponse> getPostsByKeyword(Integer page, String keyword, String orderCriteria) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 

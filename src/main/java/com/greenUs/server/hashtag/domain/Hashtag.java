@@ -1,6 +1,5 @@
 package com.greenUs.server.hashtag.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.greenUs.server.post.domain.Post;
 
 import javax.persistence.*;

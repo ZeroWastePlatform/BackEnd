@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.greenUs.server.hashtag.dto.HashtagResponseDto;
+import com.greenUs.server.hashtag.dto.HashtagResponse;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.post.dto.PostResponse;
 
@@ -32,13 +32,13 @@ public class HashtagController {
 
 	@Operation(summary = "인기 해시태그(검색) 키워드", description = "해시태그 인기글을 조회 할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "해시태그 인기글 조회 성공", content = @Content(schema = @Schema(implementation = HashtagResponseDto.class))),
+		@ApiResponse(responseCode = "200", description = "해시태그 인기글 조회 성공", content = @Content(schema = @Schema(implementation = HashtagResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/popularity")
-	public ResponseEntity<HashtagResponseDto> popularity() {
+	public ResponseEntity<HashtagResponse> getPopularKeyword() {
 
-		HashtagResponseDto hashtagResponseDto = hashtagService.getPopularityKeyword();
+		HashtagResponse hashtagResponseDto = hashtagService.getPopularKeyword();
 
 		return new ResponseEntity<>(hashtagResponseDto, HttpStatus.OK);
 	}
@@ -54,7 +54,7 @@ public class HashtagController {
 		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria,
 		@Parameter(description = "해시태그 키워드", in = ParameterIn.PATH) @RequestParam String keyword) {
 
-		Page<PostResponse> postResponseDto = hashtagService.getPostSearchList(page, keyword, orderCriteria);
+		Page<PostResponse> postResponseDto = hashtagService.getPostsByKeyword(page, keyword, orderCriteria);
 
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
