@@ -2,7 +2,8 @@ package com.greenUs.server.product.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.purchase.domain.PurchaseProduct;
-import com.greenUs.server.review.domain.Review;
+import com.greenUs.server.reviewAndAsk.domain.Ask;
+import com.greenUs.server.reviewAndAsk.domain.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,23 +24,26 @@ public class Product extends BaseEntity {
     @Column(name = "product_id")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    private String category;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
 
 
+    private String refundInfo;
+    private String deliveryInfo;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private List<Ask> asks = new ArrayList<>();
     private String discountRate;
     private String badges;
-
     private String title;
     private String description;
     private String brand;
-    private String image;
+    private String thumbnail;
+    private String info;
     private ProductStatus productStatus;
     private int viewCount;
     private int price;

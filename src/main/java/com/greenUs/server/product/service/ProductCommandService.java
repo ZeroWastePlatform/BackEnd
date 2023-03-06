@@ -22,9 +22,14 @@ public class ProductCommandService {
     public Long createProduct(CreateProductDto createProductDto) {
         Product product = Product.builder()
                 .title(createProductDto.getTitle())
+                .category(createProductDto.getCategory())
+                .discountRate(createProductDto.getDiscountRate())
                 .description(createProductDto.getDescription())
-                .image(createProductDto.getImage())
+                .thumbnail(createProductDto.getThumbnail())
+                .info(createProductDto.getInfo())
                 .brand(createProductDto.getBrand())
+                .refundInfo(createProductDto.getRefund())
+                .deliveryInfo(createProductDto.getDelivery())
                 .viewCount(0)
                 .price(createProductDto.getPrice())
                 .build();

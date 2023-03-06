@@ -31,6 +31,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'com.h2database:h2:1.4.200'
 
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 
 	// jpa + mysql
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

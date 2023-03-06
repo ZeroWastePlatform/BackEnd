@@ -1,4 +1,4 @@
-package com.greenUs.server.review.domain;
+package com.greenUs.server.reviewAndAsk.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
@@ -15,11 +15,13 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Review extends BaseEntity {
+public class Ask extends BaseEntity {
 
     @Id
     private Long id;
 
+    private String content;
+    private String title;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name ="product_id")
     private Product product;
@@ -27,10 +29,8 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    private String description;
-    private String image;
-    private int starCnt;
-    private int helpCnt;
+    private String answer = "";
+    private boolean secret;
+    private String category;
 
 }
