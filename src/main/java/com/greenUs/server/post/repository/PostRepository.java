@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.greenUs.server.hashtag.domain.Keyword;
 import com.greenUs.server.post.domain.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {

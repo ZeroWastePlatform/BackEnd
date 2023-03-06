@@ -11,10 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.greenUs.server.attachment.repository.AttachmentRepository;
-import com.greenUs.server.global.error.ErrorCode;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.repository.MemberRepository;
@@ -57,7 +55,7 @@ public class PostService {
 	}
 
 	// 키워드 검색 결과
-	public Page<PostResponseDto> getSearchLists(String word, Integer page) {
+	public Page<PostResponseDto> getSearchPostLists(String word, Integer page) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
 
@@ -75,7 +73,7 @@ public class PostService {
 
 	// 게시글 작성(수정 필요 - 작성자 확인)
 	@Transactional
-	public Integer setPostWriting(PostRequestDto postRequestDto) {
+	public Integer createPost(PostRequestDto postRequestDto) {
 
 		// 게시글 저장
 		Post post = postRepository.save(postRequestDto.toEntity());
@@ -89,7 +87,7 @@ public class PostService {
 
 	// 게시글 수정(수정 필요 - 작성자 확인)
 	@Transactional
-	public Integer setPostModification(Long id, PostRequestDto postRequestDto) {
+	public Integer updatePost(Long id, PostRequestDto postRequestDto) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
@@ -108,7 +106,7 @@ public class PostService {
 
 	// 게시글 삭제(수정 필요 - 작성자 확인)
 	@Transactional
-	public Integer setPostDeletion(Long id) {
+	public Integer deletePost(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
@@ -125,7 +123,7 @@ public class PostService {
 
 	// 추천수 증가(수정 필요 - 작성자 확인)
 	@Transactional
-	public void setPostRecommendation(Long id) {
+	public void updateRecommendationCnt(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
@@ -143,7 +141,7 @@ public class PostService {
 	}
 
 	// 당일 인기 게시글 3개
-	public List<PostPopularityResponseDto> getPopularityPost() {
+	public List<PostPopularityResponseDto> getPopularPosts() {
 
 		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
@@ -159,7 +157,7 @@ public class PostService {
 	}
 
 	// 상위 추천 게시글 3개
-	public List<PostRecommendationResponseDto> getRecommendationPost(Integer kind) {
+	public List<PostRecommendationResponseDto> getRecommendedPosts(Integer kind) {
 
 		List<Post> posts = postRepository.findTop3ByKindOrderByRecommendCntDesc(kind);
 

@@ -7,7 +7,7 @@ import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.domain.Time;
+import com.greenUs.server.global.Time;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
