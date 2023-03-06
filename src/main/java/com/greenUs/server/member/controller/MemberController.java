@@ -16,54 +16,54 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
+@RequestMapping("/api/members/me")
 @RestController
 public class MemberController {
 
     private final MemberService memberService;
 
     // 마이페이지 (기본: 나의 주문)
-    @GetMapping("/me")
-    public ResponseEntity<MyPagePurchaseResponse> findMe(@AuthenticationPrincipal LoginMember loginMember,
+    @GetMapping
+    public ResponseEntity<MyPagePurchaseResponse> getMyOrder(@AuthenticationPrincipal LoginMember loginMember,
                                                          @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        MyPagePurchaseResponse response = memberService.getMyPagePurchase(memberResponse, page);
+        MyPagePurchaseResponse response = memberService.getMyOrder(memberResponse, page);
         return ResponseEntity.ok(response);
     }
 
     // 마이페이지 관심상품
-    @GetMapping("/me/products")
-    public ResponseEntity<MemberResponse> findMyProducts(@AuthenticationPrincipal LoginMember loginMember) {
+    @GetMapping("/products")
+    public ResponseEntity<MemberResponse> getMyProducts(@AuthenticationPrincipal LoginMember loginMember) {
         // MemberResponse response = memberService.findById(loginMember.getId());
         return ResponseEntity.ok(null);
     }
 
     // 마이페이지 커뮤니티
-    @GetMapping("/me/communities/{kind}")
-    public ResponseEntity<MyPageCommunityResponse> findMyCommunity(@AuthenticationPrincipal LoginMember loginMember,
+    @GetMapping("/communities/{kind}")
+    public ResponseEntity<MyPageCommunityResponse> getMyCommunity(@AuthenticationPrincipal LoginMember loginMember,
                                                                    @PathVariable Integer kind,
                                                                    @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        MyPageCommunityResponse response = memberService.getMyPageCommunity(memberResponse, kind, page);
+        MyPageCommunityResponse response = memberService.getMyCommunity(memberResponse, kind, page);
         return ResponseEntity.ok(response);
     }
 
     // 마이페이지 컨텐츠
-    @GetMapping("/me/contents")
-    public ResponseEntity<Page<MyPageContentResponse>> findMyContents(@AuthenticationPrincipal LoginMember loginMember,
+    @GetMapping("/contents")
+    public ResponseEntity<Page<MyPageContentResponse>> getMyContents(@AuthenticationPrincipal LoginMember loginMember,
                                                                @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        Page<MyPageContentResponse> response = memberService.getMyPageContent(memberResponse, page);
+        Page<MyPageContentResponse> response = memberService.getMyContents(memberResponse, page);
         return ResponseEntity.ok(response);
     }
 
     // 내 정보 수정
-    @PostMapping("/me")
-    public ResponseEntity<MemberResponse> updateInfo(
+    @PostMapping
+    public ResponseEntity<MemberResponse> updateMyInfo(
             @AuthenticationPrincipal LoginMember loginMember,
             @Valid @RequestBody MemberRequest memberRequest
             ) {
-        MemberResponse memberResponse = memberService.updateInfo(loginMember.getId(), memberRequest);
+        MemberResponse memberResponse = memberService.updateMyInfo(loginMember.getId(), memberRequest);
 
         return ResponseEntity.ok(memberResponse);
     }

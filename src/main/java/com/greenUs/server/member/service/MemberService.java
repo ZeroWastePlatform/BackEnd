@@ -37,7 +37,7 @@ public class MemberService {
         return new MemberResponse(member);
     }
 
-    public MyPagePurchaseResponse getMyPagePurchase(MemberResponse member, int page) {
+    public MyPagePurchaseResponse getMyOrder(MemberResponse member, int page) {
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<PurchaseResponse> purchaseResponses = purchaseRepository.findByMemberId(member.getId(), pageRequest);
@@ -54,7 +54,7 @@ public class MemberService {
         );
     }
 
-    public MyPageCommunityResponse getMyPageCommunity(MemberResponse member, Integer kind, int page) {
+    public MyPageCommunityResponse getMyCommunity(MemberResponse member, Integer kind, int page) {
         PageRequest pageRequest = PageRequest.of(page, 8);
 
         MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse(
@@ -81,7 +81,7 @@ public class MemberService {
         return null;
     }
 
-    public Page<MyPageContentResponse> getMyPageContent(MemberResponse member, int page) {
+    public Page<MyPageContentResponse> getMyContents(MemberResponse member, int page) {
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Bookmark> bookmarks = bookmarkRepository.findByMemberId(member.getId(), pageRequest);
 
@@ -90,7 +90,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse updateInfo(Long id, MemberRequest memberRequest) {
+    public MemberResponse updateMyInfo(Long id, MemberRequest memberRequest) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
 
         member.changeInfo(
