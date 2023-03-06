@@ -1,6 +1,5 @@
 package com.greenUs.server.hashtag.service;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +18,7 @@ import com.greenUs.server.hashtag.dto.HashtagResponseDto;
 import com.greenUs.server.hashtag.repository.HashtagRepository;
 import com.greenUs.server.hashtag.repository.KeywordRepository;
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.dto.PostResponseDto;
+import com.greenUs.server.post.dto.PostResponse;
 import com.greenUs.server.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -47,13 +46,13 @@ public class HashtagService {
 
 	// 해시태그 검색
 	@Transactional(readOnly = true)
-	public Page<PostResponseDto> getPostSearchList(Integer page, String keyword, String orderCriteria) {
+	public Page<PostResponse> getPostSearchList(Integer page, String keyword, String orderCriteria) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
 		Page<Post> post = postRepository.findByKeywordContaining(keyword, pageRequest);
 
-		Page<PostResponseDto> postResponseDto = post.map(PostResponseDto::new);
+		Page<PostResponse> postResponseDto = post.map(PostResponse::new);
 
 		return postResponseDto;
 	}

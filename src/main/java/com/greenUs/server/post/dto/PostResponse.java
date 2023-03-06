@@ -17,7 +17,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class PostResponseDto {
+public class PostResponse {
 
 	@Schema(description = "게시판 번호", nullable = false, example = "47")
 	private Long id;
@@ -61,7 +61,7 @@ public class PostResponseDto {
 	@Schema(description = "파일 첨부 여부", example = "첨부 : 1, 미첨부 : 0", nullable = false)
 	private Integer fileAttached;
 
-	public PostResponseDto(Post entity) {
+	public PostResponse(Post entity) {
 		this.id = entity.getId();
 		this.kind = entity.getKind();
 		this.title = entity.getTitle();

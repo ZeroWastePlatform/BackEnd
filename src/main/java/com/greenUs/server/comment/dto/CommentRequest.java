@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentRequestDto {
+public class CommentRequest {
 
 	@Schema(description = "게시글 번호", nullable = false)
 	private Long postId;

@@ -2,7 +2,7 @@ package com.greenUs.server.member.service;
 
 import com.greenUs.server.bookmark.domain.Bookmark;
 import com.greenUs.server.bookmark.repository.BookmarkRepository;
-import com.greenUs.server.comment.dto.CommentResponseDto;
+import com.greenUs.server.comment.dto.CommentResponse;
 import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.coupon.repository.CouponRepository;
 import com.greenUs.server.member.domain.Member;
@@ -10,7 +10,7 @@ import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.PostResponseDto;
+import com.greenUs.server.post.dto.PostResponse;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import com.greenUs.server.purchase.repository.PurchaseRepository;
@@ -70,12 +70,12 @@ public class MemberService {
 
         if (kind == 1) {
             myPageCommunityResponse.setPostResponses(postRepository.findByMemberId(member.getId(), pageRequest)
-                .map(PostResponseDto::new));
+                .map(PostResponse::new));
             return myPageCommunityResponse;
         }
         else if (kind == 2) {
             myPageCommunityResponse.setCommentResponses(commentRepository.findByMemberId(member.getId(), pageRequest)
-                .map(CommentResponseDto::new));
+                .map(CommentResponse::new));
             return myPageCommunityResponse;
         }
         return null;

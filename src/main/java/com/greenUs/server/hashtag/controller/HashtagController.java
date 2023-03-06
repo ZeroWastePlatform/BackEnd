@@ -1,20 +1,16 @@
 package com.greenUs.server.hashtag.controller;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.greenUs.server.hashtag.dto.HashtagResponseDto;
 import com.greenUs.server.hashtag.service.HashtagService;
-import com.greenUs.server.post.dto.PostResponseDto;
+import com.greenUs.server.post.dto.PostResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,16 +45,16 @@ public class HashtagController {
 
 	@Operation(summary = "해시태그 검색", description = "해시태그를 기반으로 게시글을 검색 할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "해시태그 검색 성공", content = @Content(schema = @Schema(implementation = PostResponseDto.class))),
+		@ApiResponse(responseCode = "200", description = "해시태그 검색 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping
-	public ResponseEntity<Page<PostResponseDto>> search(
+	public ResponseEntity<Page<PostResponse>> search(
 		@Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
 		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria,
 		@Parameter(description = "해시태그 키워드", in = ParameterIn.PATH) @RequestParam String keyword) {
 
-		Page<PostResponseDto> postResponseDto = hashtagService.getPostSearchList(page, keyword, orderCriteria);
+		Page<PostResponse> postResponseDto = hashtagService.getPostSearchList(page, keyword, orderCriteria);
 
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}

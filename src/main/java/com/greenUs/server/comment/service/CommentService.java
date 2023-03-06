@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.greenUs.server.comment.domain.Comment;
-import com.greenUs.server.comment.dto.CommentRequestDto;
-import com.greenUs.server.comment.dto.CommentResponseDto;
+import com.greenUs.server.comment.dto.CommentRequest;
+import com.greenUs.server.comment.dto.CommentResponse;
 import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.repository.PostRepository;
@@ -26,7 +26,7 @@ public class CommentService {
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
 
-	public Page<CommentResponseDto> getCommentLists(Long postId, Integer page) {
+	public Page<CommentResponse> getCommentLists(Long postId, Integer page) {
 
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
@@ -35,13 +35,13 @@ public class CommentService {
 
 		Page<Comment> comment = commentRepository.findByPostId(postId, pageRequest);
 
-		Page<CommentResponseDto> commentResponseDto = comment.map(CommentResponseDto::new);
+		Page<CommentResponse> commentResponseDto = comment.map(CommentResponse::new);
 
 		return commentResponseDto;
 	}
 
 	@Transactional
-	public void createComment(CommentRequestDto commentRequestDto) {
+	public void createComment(CommentRequest commentRequestDto) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
@@ -57,7 +57,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void createRecomment(Long parentId, CommentRequestDto commentRequestDto) {
+	public void createRecomment(Long parentId, CommentRequest commentRequestDto) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
@@ -76,7 +76,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void updateComment(Long id, CommentRequestDto commentRequestDto) {
+	public void updateComment(Long id, CommentRequest commentRequestDto) {
 
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));

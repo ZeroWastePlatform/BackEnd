@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class PostRecommendationResponseDto {
+public class PostRecommendationResponse {
 
 	@Schema(description = "게시판 번호", nullable = false)
 	private Long id;
@@ -24,7 +24,7 @@ public class PostRecommendationResponseDto {
 	@Schema(description = "게시판 내용", nullable = false)
 	private String content;
 
-	public PostRecommendationResponseDto(Post entity) {
+	public PostRecommendationResponse(Post entity) {
 		this.id = entity.getId();
 		this.kind = entity.getKind();
 		this.title = entity.getTitle();
