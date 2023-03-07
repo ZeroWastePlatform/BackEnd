@@ -87,7 +87,6 @@ public class PostController {
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
-	// -> 201 created와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 작성", description = "게시글 구분(kind)값과 제목(title), 내용(content), 가격(price) 등을 파라미터로 받아 게시글을 작성할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "게시글 작성 성공 - 게시글 목록으로 돌아가기 위해 게시글 구분(kind)값 반환", content = @Content(schema = @Schema(implementation = Integer.class))),
@@ -105,7 +104,6 @@ public class PostController {
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 
-	// -> 201 created와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 수정", description = "게시글 번호(id)와 게시글 구분(kind), 제목(title) 등을 파라미터로 받아 게시글을 수정할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "게시글 수정 성공 - 게시글 목록으로 돌아가기 위해 게시글 구분(kind)값 반환", content = @Content(schema = @Schema(implementation = Integer.class))),
@@ -120,7 +118,6 @@ public class PostController {
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 
-	// -> 200 OK와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 삭제", description = "게시글 번호(id)와 사용자 정보를 받아 게시글을 삭제할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "게시글 삭제 성공 - 게시글 목록으로 돌아가기 위해 게시글 구분(kind)값 반환", content = @Content(schema = @Schema(implementation = Integer.class))),
@@ -133,7 +130,6 @@ public class PostController {
 		return new ResponseEntity<>(kind, HttpStatus.OK);
 	}
 
-	// -> 200 OK와 함께 추천 or 취소
 	@Operation(summary = "게시글 추천", description = "게시글 번호(id)를 받아 게시글을 추천할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "게시글 추천 성공"),
