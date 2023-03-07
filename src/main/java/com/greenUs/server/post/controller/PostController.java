@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.greenUs.server.auth.controller.AuthenticationPrincipal;
+import com.greenUs.server.auth.dto.LoginMember;
+import com.greenUs.server.member.domain.Member;
+import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.dto.PostPopularityResponse;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
@@ -94,10 +99,11 @@ public class PostController {
 	})
 	@PostMapping
 	public ResponseEntity<Integer> createPost(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequest postRequestDto) {
 
-		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
-		// postRequestDto.setMember(member);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+		postRequestDto.setMember(member);
 
 		Integer kind = postService.createPost(postRequestDto);
 

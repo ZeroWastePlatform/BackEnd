@@ -41,12 +41,7 @@ public class PostService {
 	private final HashtagService hashtagService;
 	private final AttachmentRepository attachmentRepository;
 
-	// 게시글 목록 조회
 	public Page<PostResponse> getPostLists(Integer kind, Integer page, String orderCriteria) {
-
-		/* 게시판 종류(kind), 정렬 조건(orderCriteria)에 따라 게시판 내용물을 불러온 후 반환
-		 *  게시판 종류(kind) -> 1: 자유게시판, 2: 정보공유, 3: 중고거래
-		 *  정렬 조건(orderCriteria) -> createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순 */
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
@@ -54,7 +49,6 @@ public class PostService {
 			.map(PostResponse::new);
 	}
 
-	// 키워드 검색 결과
 	public Page<PostResponse> getSearchPostLists(String word, Integer page) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -63,7 +57,6 @@ public class PostService {
 			.map(PostResponse::new);
 	}
 
-	// 게시글 조회
 	public PostResponse getPostDetail(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
@@ -71,14 +64,11 @@ public class PostService {
 		return new PostResponse(post);
 	}
 
-	// 게시글 작성(수정 필요 - 작성자 확인)
 	@Transactional
 	public Integer createPost(PostRequest postRequestDto) {
 
-		// 게시글 저장
 		Post post = postRepository.save(postRequestDto.toEntity());
 
-		// 해시태그 저장
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
