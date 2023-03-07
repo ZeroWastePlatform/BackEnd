@@ -22,6 +22,7 @@ import com.greenUs.server.post.dto.PostPopularityResponse;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.exception.NotFoundMemberAndPostMemberException;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.post.repository.RecommendRepository;
@@ -75,7 +76,6 @@ public class PostService {
 		return new PostResponse(post).getKind();
 	}
 
-	// 게시글 수정(수정 필요 - 작성자 확인)
 	@Transactional
 	public Integer updatePost(Long id, PostRequest postRequestDto) {
 
