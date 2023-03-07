@@ -1,9 +1,6 @@
 package com.greenUs.server.comment.repository;
 
-import java.util.Optional;
-
 import com.greenUs.server.comment.domain.Comment;
-import com.greenUs.server.post.domain.Post;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class CommentResponseDto {
+public class CommentResponse {
 
 	@Schema(description = "댓글 번호", nullable = false, example = "47")
 	private Long id;
@@ -28,7 +28,7 @@ public class CommentResponseDto {
 	@Schema(description = "게시판 댓글수", example = "14", nullable = false)
 	private Integer replyCnt;
 
-	public CommentResponseDto(Comment entity) {
+	public CommentResponse(Comment entity) {
 		this.id = entity.getId();
 		this.kind = entity.getPost().getKind();
 		this.member = entity.getMember();

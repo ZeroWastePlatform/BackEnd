@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class PostPopularityResponseDto {
+public class PostPopularityResponse {
 
 	@Schema(description = "게시판 번호", nullable = false, example = "47")
 	private Long id;
@@ -21,7 +21,7 @@ public class PostPopularityResponseDto {
 	@Schema(description = "게시판 추천수", example = "17", nullable = false)
 	private Integer recommendCnt;
 
-	public PostPopularityResponseDto(Post entity) {
+	public PostPopularityResponse(Post entity) {
 		this.id = entity.getId();
 		this.title = entity.getTitle();
 		this.recommendCnt = entity.getRecommendCnt();

@@ -1,13 +1,5 @@
 package com.greenUs.server.post.dto;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.greenUs.server.auth.controller.AuthenticationPrincipal;
-import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 
@@ -22,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostRequestDto {
+public class PostRequest {
 
 	private Member member;
 

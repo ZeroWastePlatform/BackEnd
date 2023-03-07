@@ -2,7 +2,7 @@ package com.greenUs.server.member.service;
 
 import com.greenUs.server.bookmark.domain.Bookmark;
 import com.greenUs.server.bookmark.repository.BookmarkRepository;
-import com.greenUs.server.comment.dto.CommentResponseDto;
+import com.greenUs.server.comment.dto.CommentResponse;
 import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.coupon.repository.CouponRepository;
 import com.greenUs.server.member.domain.Member;
@@ -10,7 +10,7 @@ import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.PostResponseDto;
+import com.greenUs.server.post.dto.PostResponse;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import com.greenUs.server.purchase.repository.PurchaseRepository;
@@ -37,7 +37,7 @@ public class MemberService {
         return new MemberResponse(member);
     }
 
-    public MyPagePurchaseResponse getMyPagePurchase(MemberResponse member, int page) {
+    public MyPagePurchaseResponse getMyOrder(MemberResponse member, int page) {
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<PurchaseResponse> purchaseResponses = purchaseRepository.findByMemberId(member.getId(), pageRequest);
@@ -54,7 +54,7 @@ public class MemberService {
         );
     }
 
-    public MyPageCommunityResponse getMyPageCommunity(MemberResponse member, Integer kind, int page) {
+    public MyPageCommunityResponse getMyCommunity(MemberResponse member, Integer kind, int page) {
         PageRequest pageRequest = PageRequest.of(page, 8);
 
         MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse(
@@ -70,18 +70,18 @@ public class MemberService {
 
         if (kind == 1) {
             myPageCommunityResponse.setPostResponses(postRepository.findByMemberId(member.getId(), pageRequest)
-                .map(PostResponseDto::new));
+                .map(PostResponse::new));
             return myPageCommunityResponse;
         }
         else if (kind == 2) {
             myPageCommunityResponse.setCommentResponses(commentRepository.findByMemberId(member.getId(), pageRequest)
-                .map(CommentResponseDto::new));
+                .map(CommentResponse::new));
             return myPageCommunityResponse;
         }
         return null;
     }
 
-    public Page<MyPageContentResponse> getMyPageContent(MemberResponse member, int page) {
+    public Page<MyPageContentResponse> getMyContents(MemberResponse member, int page) {
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Bookmark> bookmarks = bookmarkRepository.findByMemberId(member.getId(), pageRequest);
 
@@ -90,7 +90,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse updateInfo(Long id, MemberRequest memberRequest) {
+    public MemberResponse updateMyInfo(Long id, MemberRequest memberRequest) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
 
         member.changeInfo(

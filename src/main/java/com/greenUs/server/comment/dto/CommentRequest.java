@@ -1,7 +1,6 @@
 package com.greenUs.server.comment.dto;
 
 import com.greenUs.server.comment.domain.Comment;
-import com.greenUs.server.post.domain.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -12,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentRequestDto {
+public class CommentRequest {
 
 	@Schema(description = "게시글 번호", nullable = false)
 	private Long postId;
