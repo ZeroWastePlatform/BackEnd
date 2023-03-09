@@ -2,6 +2,7 @@ package com.greenUs.server.global.error;
 
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
+import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
 import com.greenUs.server.infrastructure.oauth.exception.OAuthException;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
@@ -50,6 +51,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotEqualMemberAndPostMember.class)
     public ResponseEntity<ErrorResponse> handleNotEqualMemberAndPostMember() {
         ErrorResponse response = new ErrorResponse(ErrorCode.POSTMEMBER_NOT_EQUAL);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotEqualMemberAndCommentMember.class)
+    public ResponseEntity<ErrorResponse> handleNotEqualMemberAndCommentMember() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.COMMENTMEMBER_NOT_EQUAL);
         return ResponseEntity.badRequest().body(response);
     }
 }
