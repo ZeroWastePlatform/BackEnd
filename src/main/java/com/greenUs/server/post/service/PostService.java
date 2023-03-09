@@ -22,7 +22,7 @@ import com.greenUs.server.post.dto.PostPopularityResponse;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
-import com.greenUs.server.post.exception.NotFoundMemberAndPostMemberException;
+import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.post.repository.RecommendRepository;
@@ -81,6 +81,10 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
+		if (post.getId() != postRequestDto.getMember().getId()) {
+			throw new NotEqualMemberAndPostMember();
+		}
+
 		post.update(
 			postRequestDto.getKind(),
 			postRequestDto.getTitle(),
@@ -94,17 +98,19 @@ public class PostService {
 		return new PostResponse(post).getKind();
 	}
 
-	// 게시글 삭제(수정 필요 - 작성자 확인)
 	@Transactional
-	public Integer deletePost(Long id) {
+	public Integer deletePost(Long id, Member member) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
+
+		if (post.getId() != member.getId()) {
+			throw new NotEqualMemberAndPostMember();
+		}
 
 		postRepository.delete(post);
 		return post.getKind();
 	}
 
-	// 조회수 증가
 	@Transactional
 	public void updateViewCnt(Long id) {
 
@@ -118,7 +124,7 @@ public class PostService {
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
 		// 유저 관련처리 지금 생략
-		Member member = memberRepository.findById(1l).get();
+		Member member = memberRepository.findById(1L).get();
 
 		if (recommendRepository.findByPostAndMember(post, member) == null) {
 			recommendRepository.save(new Recommend(post, member));

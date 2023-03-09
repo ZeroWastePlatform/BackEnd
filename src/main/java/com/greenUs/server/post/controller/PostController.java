@@ -134,9 +134,13 @@ public class PostController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Integer> deletePost(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity<Integer> deletePost(
+		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		Integer kind = postService.deletePost(id);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		Integer kind = postService.deletePost(id, member);
 		return new ResponseEntity<>(kind, HttpStatus.OK);
 	}
 

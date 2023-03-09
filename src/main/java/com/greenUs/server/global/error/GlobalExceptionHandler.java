@@ -4,6 +4,7 @@ import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
 import com.greenUs.server.infrastructure.oauth.exception.OAuthException;
 import com.greenUs.server.member.exception.NotFoundMemberException;
+import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundPostException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundPost() {
         ErrorResponse response = new ErrorResponse(ErrorCode.POST_NOT_FOUND);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotEqualMemberAndPostMember.class)
+    public ResponseEntity<ErrorResponse> handleNotEqualMemberAndPostMember() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.POSTMEMBER_NOT_EQUAL);
         return ResponseEntity.badRequest().body(response);
     }
 }
