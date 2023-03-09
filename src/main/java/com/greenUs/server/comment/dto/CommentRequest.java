@@ -1,6 +1,7 @@
 package com.greenUs.server.comment.dto;
 
 import com.greenUs.server.comment.domain.Comment;
+import com.greenUs.server.member.domain.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;

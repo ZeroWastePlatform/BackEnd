@@ -13,9 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.greenUs.server.auth.controller.AuthenticationPrincipal;
+import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.comment.dto.CommentRequest;
 import com.greenUs.server.comment.dto.CommentResponse;
 import com.greenUs.server.comment.service.CommentService;
+import com.greenUs.server.member.domain.Member;
+import com.greenUs.server.member.exception.NotFoundMemberException;
+import com.greenUs.server.member.repository.MemberRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 
 	private final CommentService commentService;
+	private final MemberRepository memberRepository;
 
 	@Operation(summary = "댓글 조회", description = "게시글 번호(post-id)를 파라미터로 받아 게시글의 댓글을 조회 할 수 있습니다.")
 	@ApiResponses(value = {
@@ -56,9 +62,12 @@ public class CommentController {
 	})
 	@PostMapping
 	public ResponseEntity createComment(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
-		commentService.createComment(commentRequestDto);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		commentService.createComment(commentRequestDto, member);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -69,10 +78,13 @@ public class CommentController {
 	})
 	@PostMapping("/{parent-id}")
 	public ResponseEntity createRecomment(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "댓글 번호(parent-id)", in = ParameterIn.PATH) @PathVariable(value = "parent-id") Long parentId,
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
-		commentService.createRecomment(parentId, commentRequestDto);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		commentService.createRecomment(parentId, commentRequestDto, member);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -83,10 +95,13 @@ public class CommentController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity updateComment(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "댓글 번호(id)", in = ParameterIn.PATH) @PathVariable Long id,
 		@Parameter(description = "내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
-		commentService.updateComment(id, commentRequestDto);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		commentService.updateComment(id, commentRequestDto, member);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -96,9 +111,13 @@ public class CommentController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteComment(@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity deleteComment(
+		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		commentService.deleteComment(id);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		commentService.deleteComment(id, member);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

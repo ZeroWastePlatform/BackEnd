@@ -18,10 +18,10 @@ import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
-import com.greenUs.server.post.dto.PostPopularityResponse;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.post.repository.RecommendRepository;
@@ -36,17 +36,11 @@ public class PostService {
 	private static final int PAGE_POST_COUNT = 6;
 	private static final int PAGE_SEARCH_POST_COUNT = 10;
 	private final PostRepository postRepository;
-	private final MemberRepository memberRepository;
 	private final RecommendRepository recommendRepository;
 	private final HashtagService hashtagService;
 	private final AttachmentRepository attachmentRepository;
 
-	// 게시글 목록 조회
 	public Page<PostResponse> getPostLists(Integer kind, Integer page, String orderCriteria) {
-
-		/* 게시판 종류(kind), 정렬 조건(orderCriteria)에 따라 게시판 내용물을 불러온 후 반환
-		 *  게시판 종류(kind) -> 1: 자유게시판, 2: 정보공유, 3: 중고거래
-		 *  정렬 조건(orderCriteria) -> createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순 */
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
@@ -54,7 +48,6 @@ public class PostService {
 			.map(PostResponse::new);
 	}
 
-	// 키워드 검색 결과
 	public Page<PostResponse> getSearchPostLists(String word, Integer page) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -63,7 +56,6 @@ public class PostService {
 			.map(PostResponse::new);
 	}
 
-	// 게시글 조회
 	public PostResponse getPostDetail(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
@@ -71,25 +63,25 @@ public class PostService {
 		return new PostResponse(post);
 	}
 
-	// 게시글 작성(수정 필요 - 작성자 확인)
 	@Transactional
 	public Integer createPost(PostRequest postRequestDto) {
 
-		// 게시글 저장
 		Post post = postRepository.save(postRequestDto.toEntity());
 
-		// 해시태그 저장
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
 		return new PostResponse(post).getKind();
 	}
 
-	// 게시글 수정(수정 필요 - 작성자 확인)
 	@Transactional
 	public Integer updatePost(Long id, PostRequest postRequestDto) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
+
+		if (!post.getId().equals(postRequestDto.getMember().getId())) {
+			throw new NotEqualMemberAndPostMember();
+		}
 
 		post.update(
 			postRequestDto.getKind(),
@@ -104,31 +96,29 @@ public class PostService {
 		return new PostResponse(post).getKind();
 	}
 
-	// 게시글 삭제(수정 필요 - 작성자 확인)
 	@Transactional
-	public Integer deletePost(Long id) {
+	public Integer deletePost(Long id, Member member) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
+
+		if (!post.getId().equals(member.getId())) {
+			throw new NotEqualMemberAndPostMember();
+		}
 
 		postRepository.delete(post);
 		return post.getKind();
 	}
 
-	// 조회수 증가
 	@Transactional
 	public void updateViewCnt(Long id) {
 
 		postRepository.updateViewCnt(id);
 	}
 
-	// 추천수 증가(수정 필요 - 작성자 확인)
 	@Transactional
-	public void updateRecommendationCnt(Long id) {
+	public void updateRecommendationCnt(Long id, Member member) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
-
-		// 유저 관련처리 지금 생략
-		Member member = memberRepository.findById(1l).get();
 
 		if (recommendRepository.findByPostAndMember(post, member) == null) {
 			recommendRepository.save(new Recommend(post, member));
@@ -140,23 +130,21 @@ public class PostService {
 		recommendRepository.delete(recommend);
 	}
 
-	// 당일 인기 게시글 3개
-	public List<PostPopularityResponse> getPopularPosts() {
+	public List<PostResponse> getPopularPosts() {
 
 		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
-		List<PostPopularityResponse> postPopularityResponseDto = new ArrayList<>();
+		List<PostResponse> postResponseDto = new ArrayList<>();
 
 		for (Post post : posts) {
-			postPopularityResponseDto.add(new PostPopularityResponse(post));
+			postResponseDto.add(new PostResponse(post));
 		}
 
-		return postPopularityResponseDto;
+		return postResponseDto;
 	}
 
-	// 상위 추천 게시글 3개
 	public List<PostRecommendationResponse> getRecommendedPosts(Integer kind) {
 
 		List<Post> posts = postRepository.findTop3ByKindOrderByRecommendCntDesc(kind);

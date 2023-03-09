@@ -17,8 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.greenUs.server.auth.controller.AuthenticationPrincipal;
+import com.greenUs.server.auth.dto.LoginMember;
+import com.greenUs.server.member.domain.Member;
+import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.PostPopularityResponse;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
@@ -80,14 +84,14 @@ public class PostController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/{id}")
-	public ResponseEntity<PostResponse> getPostDetail(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity<PostResponse> getPostDetail(
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
 		postService.updateViewCnt(id);
 		PostResponse postResponseDto = postService.getPostDetail(id);
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
-	// -> 201 created와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 작성", description = "게시글 구분(kind)값과 제목(title), 내용(content), 가격(price) 등을 파라미터로 받아 게시글을 작성할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "게시글 작성 성공 - 게시글 목록으로 돌아가기 위해 게시글 구분(kind)값 반환", content = @Content(schema = @Schema(implementation = Integer.class))),
@@ -95,17 +99,17 @@ public class PostController {
 	})
 	@PostMapping
 	public ResponseEntity<Integer> createPost(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequest postRequestDto) {
 
-		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
-		// postRequestDto.setMember(member);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+		postRequestDto.setMember(member);
 
 		Integer kind = postService.createPost(postRequestDto);
 
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 
-	// -> 201 created와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 수정", description = "게시글 번호(id)와 게시글 구분(kind), 제목(title) 등을 파라미터로 받아 게시글을 수정할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "게시글 수정 성공 - 게시글 목록으로 돌아가기 위해 게시글 구분(kind)값 반환", content = @Content(schema = @Schema(implementation = Integer.class))),
@@ -113,55 +117,65 @@ public class PostController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity<Integer> updatePost(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id,
 		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequest postRequestDto) {
+
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+		postRequestDto.setMember(member);
 
 		Integer kind = postService.updatePost(id, postRequestDto);
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 
-	// -> 200 OK와 함께 게시글 목록 페이지로 넘어갈 수 있도록 그룹번호 반환
 	@Operation(summary = "게시글 삭제", description = "게시글 번호(id)와 사용자 정보를 받아 게시글을 삭제할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "게시글 삭제 성공 - 게시글 목록으로 돌아가기 위해 게시글 구분(kind)값 반환", content = @Content(schema = @Schema(implementation = Integer.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Integer> deletePost(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity<Integer> deletePost(
+		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		Integer kind = postService.deletePost(id);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		Integer kind = postService.deletePost(id, member);
 		return new ResponseEntity<>(kind, HttpStatus.OK);
 	}
 
-	// -> 200 OK와 함께 추천 or 취소
 	@Operation(summary = "게시글 추천", description = "게시글 번호(id)를 받아 게시글을 추천할 수 있습니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "게시글 추천 성공"),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PostMapping("/recommendations/{id}")
-	public ResponseEntity recommendPost(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity recommendPost(
+		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		postService.updateRecommendationCnt(id);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		postService.updateRecommendationCnt(id, member);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@Operation(summary = "오늘의 그리너스 인기글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostPopularityResponse.class))),
+		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/popularity")
-	public ResponseEntity<List<PostPopularityResponse>> getPopularPosts() {
+	public ResponseEntity<List<PostResponse>> getPopularPosts() {
 
-		List<PostPopularityResponse> postPopularityResponseDto = postService.getPopularPosts();
+		List<PostResponse> postResponseDto = postService.getPopularPosts();
 
-		return new ResponseEntity<>(postPopularityResponseDto, HttpStatus.OK);
+		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "(자유게시판/중고거래/정보공유) 추천글", description = "추천글 목록을 조회 합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "추천글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostPopularityResponse.class))),
+		@ApiResponse(responseCode = "200", description = "추천글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostRecommendationResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/recommendations/{kind}")

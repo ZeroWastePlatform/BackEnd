@@ -11,8 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.greenUs.server.comment.domain.Comment;
 import com.greenUs.server.comment.dto.CommentRequest;
 import com.greenUs.server.comment.dto.CommentResponse;
+import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
+import com.greenUs.server.comment.exception.NotFoundCommentException;
 import com.greenUs.server.comment.repository.CommentRepository;
+import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
+import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +32,7 @@ public class CommentService {
 
 	public Page<CommentResponse> getCommentLists(Long postId, Integer page) {
 
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+		postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_COMMENT_COUNT, Sort.by(Sort.Direction.ASC, "createdAt"));
 
@@ -41,14 +44,13 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void createComment(CommentRequest commentRequestDto) {
+	public void createComment(CommentRequest commentRequestDto, Member member) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
-
-		// 댓글 작성자 저장 생략
+			.orElseThrow(NotFoundPostException::new);
 
 		Comment comment = Comment.builder()
+			.member(member)
 			.post(post)
 			.content(commentRequestDto.getContent())
 			.build();
@@ -57,14 +59,13 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void createRecomment(Long parentId, CommentRequest commentRequestDto) {
+	public void createRecomment(Long parentId, CommentRequest commentRequestDto, Member member) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
-
-		// 댓글 작성자 확인 생략
+			.orElseThrow(NotFoundPostException::new);
 
 		Comment comment = Comment.builder()
+			.member(member)
 			.post(post)
 			.content(commentRequestDto.getContent())
 			.build();
@@ -76,12 +77,14 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void updateComment(Long id, CommentRequest commentRequestDto) {
+	public void updateComment(Long id, CommentRequest commentRequestDto, Member member) {
 
 		Comment comment = commentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
+			.orElseThrow(NotFoundCommentException::new);
 
-		// 댓글 작성자 확인 생략
+		if (!member.getId().equals(comment.getMember().getId())) {
+			throw new NotEqualMemberAndCommentMember();
+		}
 
 		comment.update(
 			commentRequestDto.getContent()
@@ -89,12 +92,15 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void deleteComment(Long id) {
+	public void deleteComment(Long id, Member member) {
 
 		Comment comment = commentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
+			.orElseThrow(NotFoundCommentException::new);
 
-		// 댓글 작성자 확인 생략
+		if (!member.getId().equals(comment.getMember().getId())) {
+			throw new NotEqualMemberAndCommentMember();
+		}
+
 		comment.remove();
 		List<Comment> removableCommentList = comment.findRemovableList();
 		commentRepository.deleteAll(removableCommentList);
