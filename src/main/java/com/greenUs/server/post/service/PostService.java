@@ -18,7 +18,6 @@ import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
-import com.greenUs.server.post.dto.PostPopularityResponse;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
@@ -37,7 +36,6 @@ public class PostService {
 	private static final int PAGE_POST_COUNT = 6;
 	private static final int PAGE_SEARCH_POST_COUNT = 10;
 	private final PostRepository postRepository;
-	private final MemberRepository memberRepository;
 	private final RecommendRepository recommendRepository;
 	private final HashtagService hashtagService;
 	private final AttachmentRepository attachmentRepository;
@@ -81,7 +79,7 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		if (post.getId() != postRequestDto.getMember().getId()) {
+		if (!post.getId().equals(postRequestDto.getMember().getId())) {
 			throw new NotEqualMemberAndPostMember();
 		}
 
@@ -103,7 +101,7 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		if (post.getId() != member.getId()) {
+		if (!post.getId().equals(member.getId())) {
 			throw new NotEqualMemberAndPostMember();
 		}
 
@@ -132,19 +130,19 @@ public class PostService {
 		recommendRepository.delete(recommend);
 	}
 
-	public List<PostPopularityResponse> getPopularPosts() {
+	public List<PostResponse> getPopularPosts() {
 
 		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
-		List<PostPopularityResponse> postPopularityResponseDto = new ArrayList<>();
+		List<PostResponse> postResponseDto = new ArrayList<>();
 
 		for (Post post : posts) {
-			postPopularityResponseDto.add(new PostPopularityResponse(post));
+			postResponseDto.add(new PostResponse(post));
 		}
 
-		return postPopularityResponseDto;
+		return postResponseDto;
 	}
 
 	public List<PostRecommendationResponse> getRecommendedPosts(Integer kind) {

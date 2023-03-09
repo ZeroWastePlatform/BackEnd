@@ -16,7 +16,6 @@ import com.greenUs.server.comment.exception.NotFoundCommentException;
 import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 
@@ -83,7 +82,7 @@ public class CommentService {
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(NotFoundCommentException::new);
 
-		if (member.getId() != comment.getMember().getId()) {
+		if (!member.getId().equals(comment.getMember().getId())) {
 			throw new NotEqualMemberAndCommentMember();
 		}
 
@@ -98,7 +97,7 @@ public class CommentService {
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(NotFoundCommentException::new);
 
-		if (member.getId() != comment.getMember().getId()) {
+		if (!member.getId().equals(comment.getMember().getId())) {
 			throw new NotEqualMemberAndCommentMember();
 		}
 

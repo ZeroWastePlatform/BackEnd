@@ -23,7 +23,6 @@ import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.PostPopularityResponse;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
@@ -85,7 +84,8 @@ public class PostController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/{id}")
-	public ResponseEntity<PostResponse> getPostDetail(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity<PostResponse> getPostDetail(
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
 		postService.updateViewCnt(id);
 		PostResponse postResponseDto = postService.getPostDetail(id);
@@ -162,20 +162,20 @@ public class PostController {
 
 	@Operation(summary = "오늘의 그리너스 인기글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostPopularityResponse.class))),
+		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/popularity")
-	public ResponseEntity<List<PostPopularityResponse>> getPopularPosts() {
+	public ResponseEntity<List<PostResponse>> getPopularPosts() {
 
-		List<PostPopularityResponse> postPopularityResponseDto = postService.getPopularPosts();
+		List<PostResponse> postResponseDto = postService.getPopularPosts();
 
-		return new ResponseEntity<>(postPopularityResponseDto, HttpStatus.OK);
+		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "(자유게시판/중고거래/정보공유) 추천글", description = "추천글 목록을 조회 합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "추천글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostPopularityResponse.class))),
+		@ApiResponse(responseCode = "200", description = "추천글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostRecommendationResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/recommendations/{kind}")
