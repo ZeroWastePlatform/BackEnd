@@ -78,10 +78,13 @@ public class CommentController {
 	})
 	@PostMapping("/{parent-id}")
 	public ResponseEntity createRecomment(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "댓글 번호(parent-id)", in = ParameterIn.PATH) @PathVariable(value = "parent-id") Long parentId,
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
-		commentService.createRecomment(parentId, commentRequestDto);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		commentService.createRecomment(parentId, commentRequestDto, member);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 

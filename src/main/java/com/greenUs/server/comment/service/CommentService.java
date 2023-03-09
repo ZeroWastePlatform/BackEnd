@@ -57,14 +57,13 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void createRecomment(Long parentId, CommentRequest commentRequestDto) {
+	public void createRecomment(Long parentId, CommentRequest commentRequestDto, Member member) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
-
-		// 댓글 작성자 확인 생략
+			.orElseThrow(NotFoundPostException::new);
 
 		Comment comment = Comment.builder()
+			.member(member)
 			.post(post)
 			.content(commentRequestDto.getContent())
 			.build();
