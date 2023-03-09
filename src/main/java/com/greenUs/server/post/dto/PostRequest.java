@@ -16,6 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostRequest {
 
+	@Schema(description = "게시글 작성자", nullable = true)
 	private Member member;
 
 	@Schema(description = "게시판 구분(1: 자유게시판, 2: 정보 공유, 3: 중고 거래", nullable = false, allowableValues = {"1", "2", "3"})

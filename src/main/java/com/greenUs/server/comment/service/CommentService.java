@@ -12,7 +12,9 @@ import com.greenUs.server.comment.domain.Comment;
 import com.greenUs.server.comment.dto.CommentRequest;
 import com.greenUs.server.comment.dto.CommentResponse;
 import com.greenUs.server.comment.repository.CommentRepository;
+import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
+import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +30,7 @@ public class CommentService {
 
 	public Page<CommentResponse> getCommentLists(Long postId, Integer page) {
 
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
+		postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_COMMENT_COUNT, Sort.by(Sort.Direction.ASC, "createdAt"));
 
@@ -41,14 +42,13 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void createComment(CommentRequest commentRequestDto) {
+	public void createComment(CommentRequest commentRequestDto, Member member) {
 
 		Post post = postRepository.findById(commentRequestDto.getPostId())
-			.orElseThrow(() -> new IllegalArgumentException("Post is not Existing"));
-
-		// 댓글 작성자 저장 생략
+			.orElseThrow(NotFoundPostException::new);
 
 		Comment comment = Comment.builder()
+			.member(member)
 			.post(post)
 			.content(commentRequestDto.getContent())
 			.build();
