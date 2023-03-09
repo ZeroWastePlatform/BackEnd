@@ -95,10 +95,13 @@ public class CommentController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity updateComment(
+		@AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "댓글 번호(id)", in = ParameterIn.PATH) @PathVariable Long id,
 		@Parameter(description = "내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
-		commentService.updateComment(id, commentRequestDto);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		commentService.updateComment(id, commentRequestDto, member);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -108,9 +111,13 @@ public class CommentController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteComment(@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity deleteComment(
+		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		commentService.deleteComment(id);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		commentService.deleteComment(id, member);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

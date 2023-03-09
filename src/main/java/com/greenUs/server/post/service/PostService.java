@@ -132,7 +132,6 @@ public class PostService {
 		recommendRepository.delete(recommend);
 	}
 
-	// 당일 인기 게시글 3개
 	public List<PostPopularityResponse> getPopularPosts() {
 
 		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
@@ -148,7 +147,6 @@ public class PostService {
 		return postPopularityResponseDto;
 	}
 
-	// 상위 추천 게시글 3개
 	public List<PostRecommendationResponse> getRecommendedPosts(Integer kind) {
 
 		List<Post> posts = postRepository.findTop3ByKindOrderByRecommendCntDesc(kind);

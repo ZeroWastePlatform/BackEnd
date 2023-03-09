@@ -11,9 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.greenUs.server.comment.domain.Comment;
 import com.greenUs.server.comment.dto.CommentRequest;
 import com.greenUs.server.comment.dto.CommentResponse;
+import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
+import com.greenUs.server.comment.exception.NotFoundCommentException;
 import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
+import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 
@@ -75,12 +78,14 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void updateComment(Long id, CommentRequest commentRequestDto) {
+	public void updateComment(Long id, CommentRequest commentRequestDto, Member member) {
 
 		Comment comment = commentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
+			.orElseThrow(NotFoundCommentException::new);
 
-		// 댓글 작성자 확인 생략
+		if (member.getId() != comment.getMember().getId()) {
+			throw new NotEqualMemberAndCommentMember();
+		}
 
 		comment.update(
 			commentRequestDto.getContent()
@@ -88,12 +93,15 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void deleteComment(Long id) {
+	public void deleteComment(Long id, Member member) {
 
 		Comment comment = commentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Comment is not Existing"));
+			.orElseThrow(NotFoundCommentException::new);
 
-		// 댓글 작성자 확인 생략
+		if (member.getId() != comment.getMember().getId()) {
+			throw new NotEqualMemberAndCommentMember();
+		}
+
 		comment.remove();
 		List<Comment> removableCommentList = comment.findRemovableList();
 		commentRepository.deleteAll(removableCommentList);
