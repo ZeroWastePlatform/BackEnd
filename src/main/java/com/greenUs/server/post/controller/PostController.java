@@ -150,9 +150,13 @@ public class PostController {
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@PostMapping("/recommendations/{id}")
-	public ResponseEntity recommendPost(@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+	public ResponseEntity recommendPost(
+		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		postService.updateRecommendationCnt(id);
+		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+
+		postService.updateRecommendationCnt(id, member);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

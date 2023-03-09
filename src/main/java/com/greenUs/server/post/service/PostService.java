@@ -117,14 +117,10 @@ public class PostService {
 		postRepository.updateViewCnt(id);
 	}
 
-	// 추천수 증가(수정 필요 - 작성자 확인)
 	@Transactional
-	public void updateRecommendationCnt(Long id) {
+	public void updateRecommendationCnt(Long id, Member member) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
-
-		// 유저 관련처리 지금 생략
-		Member member = memberRepository.findById(1L).get();
 
 		if (recommendRepository.findByPostAndMember(post, member) == null) {
 			recommendRepository.save(new Recommend(post, member));
