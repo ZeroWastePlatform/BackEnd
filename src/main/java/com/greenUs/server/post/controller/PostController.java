@@ -124,7 +124,8 @@ public class PostController {
 		// @AuthenticationPrincipal LoginMember loginMember,
 		@RequestPart(required = false) List<MultipartFile> multipartFiles,
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id,
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequest postRequestDto) {
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestPart PostRequest postRequestDto) throws
+		Exception {
 
 		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
 		// postRequestDto.setMember(member);

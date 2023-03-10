@@ -9,4 +9,6 @@ import com.greenUs.server.attachment.domain.Attachment;
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
 
 	List<Attachment> findByPostId(Long postId);
+
+	Attachment findByStoredFileName(String StoredFileName);
 }

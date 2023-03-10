@@ -45,13 +45,26 @@ public class AttachmentService {
 		}
 	}
 
-	public void updateAttachment(Long postId, List<String> storedFileNames) {
+	public void deleteAttachment(Long postId, List<String> storedFileNames) {
 
+		for (String storedFileName : storedFileNames) {
+
+			if ("".equals(storedFileName) == false && storedFileName != null) {
+				boolean isExistObject = amazonS3.doesObjectExist(bucket, storedFileName);
+
+				if (isExistObject == true) {
+					Attachment attachment = getAttachmentInfoByStoredFileName(storedFileName);
+					if (attachment.getPost().getId() == postId)
+						attachmentRepository.delete(attachment);
+					amazonS3.deleteObject(bucket, storedFileName);
+				}
+			}
+		}
 	}
 
 	public List<String> getAttachmentUrlList(Long postId) {
 
-		List<Attachment> attachments = getAttachmentInfo(postId);
+		List<Attachment> attachments = getAttachmentInfoByPostId(postId);
 
 		List<String> attachmentUrls = new ArrayList<>();
 
@@ -64,7 +77,7 @@ public class AttachmentService {
 
 	public List<String> getAttachmentStoredFileNameList(Long postId) {
 
-		List<Attachment> attachments = getAttachmentInfo(postId);
+		List<Attachment> attachments = getAttachmentInfoByPostId(postId);
 
 		List<String> storedFileNames = new ArrayList<>();
 
@@ -75,8 +88,12 @@ public class AttachmentService {
 		return storedFileNames;
 	}
 
-	private List<Attachment> getAttachmentInfo(Long postId) {
+	public List<Attachment> getAttachmentInfoByPostId(Long postId) {
 
 		return attachmentRepository.findByPostId(postId);
+	}
+
+	private Attachment getAttachmentInfoByStoredFileName(String storedFileName) {
+		return attachmentRepository.findByStoredFileName(storedFileName);
 	}
 }

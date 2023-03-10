@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -97,7 +96,8 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer updatePost(Long id, List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
+	public Integer updatePost(Long id, List<MultipartFile> multipartFiles, PostRequest postRequestDto) throws
+		Exception {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
@@ -105,14 +105,24 @@ public class PostService {
 		// 	throw new NotEqualMemberAndPostMember();
 		// }
 
-		// if (!(multipartFiles == null || multipartFiles.isEmpty()))
-		// 	attachmentService.createAttachment(post, multipartFiles);
+		if (!postRequestDto.getStoredFileNames().isEmpty())
+			attachmentService.deleteAttachment(id, postRequestDto.getStoredFileNames());
+
+		if (!(multipartFiles == null || multipartFiles.isEmpty()))
+			attachmentService.createAttachment(post, multipartFiles);
+
+		List<Attachment> attachments = attachmentService.getAttachmentInfoByPostId(id);
+		if (attachments.size() == 0)
+			postRequestDto.setFileAttached(0);
+		else
+			postRequestDto.setFileAttached(1);
 
 		post.update(
 			postRequestDto.getKind(),
 			postRequestDto.getTitle(),
 			postRequestDto.getContent(),
-			postRequestDto.getPrice()
+			postRequestDto.getPrice(),
+			postRequestDto.getFileAttached()
 		);
 
 		if (!postRequestDto.getHashtag().isEmpty())

@@ -70,11 +70,12 @@ public class Post extends BaseEntity {
         this.fileAttached = fileAttached;
     }
 
-    public void update (Integer kind, String title, String content, Integer price) {
+    public void update (Integer kind, String title, String content, Integer price, Integer fileAttached) {
         this.kind = kind;
         this.title = title;
         this.content = content;
         this.price = price;
+        this.fileAttached = fileAttached;
     }
 
     public void caculateRecommendCnt(Integer recommendCnt) {

@@ -1,5 +1,8 @@
 package com.greenUs.server.post.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 
@@ -33,6 +36,9 @@ public class PostRequest {
 
 	@Schema(description = "게시판 파일 첨부 여부(0: 미첨부, 1:첨부)", nullable = true)
 	private Integer fileAttached;
+
+	@Schema(description = "서버에 저장된 파일 이름", nullable = true)
+	private List<String> storedFileNames = new ArrayList<>();
 
 	@Schema(description = "게시판 해시태그", example = "#그리너스#지구")
 	private String hashtag = "";
