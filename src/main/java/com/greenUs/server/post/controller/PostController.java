@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.greenUs.server.attachment.service.AttachmentService;
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.member.domain.Member;
@@ -45,6 +48,7 @@ import lombok.RequiredArgsConstructor;
 public class PostController {
 
 	private final PostService postService;
+	private final AttachmentService attachmentService;
 	private final MemberRepository memberRepository;
 
 	@Operation(summary = "게시글 목록 조회", description = "게시글 구분(kind)값과 현재 페이지(page), 정렬 조건(orderby), 검색 조건(searchtype), 검색어(searchby)를 파라미터로 받아 목록을 불러올 수 있습니다.")
@@ -99,11 +103,15 @@ public class PostController {
 	})
 	@PostMapping
 	public ResponseEntity<Integer> createPost(
-		@AuthenticationPrincipal LoginMember loginMember,
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestBody PostRequest postRequestDto) {
+		// @AuthenticationPrincipal LoginMember loginMember,
+		@RequestPart MultipartFile multipartFile,
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestPart PostRequest postRequestDto) throws Exception {
 
-		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
-		postRequestDto.setMember(member);
+		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+		// postRequestDto.setMember(member);
+
+		if (!multipartFile.isEmpty())
+			attachmentService.uploadAttachment(multipartFile);
 
 		Integer kind = postService.createPost(postRequestDto);
 
