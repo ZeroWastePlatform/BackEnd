@@ -54,8 +54,11 @@ public class PostResponse {
 	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
 	private List<String> hashtags = new ArrayList<>();
 
-	@Schema(description = "AWS Attachment URL", nullable = true)
-	private List<String> attachmentUrl = new ArrayList<>();
+	@Schema(description = "AWS Attachment storedName", nullable = true)
+	private List<String> storedFileNames = new ArrayList<>();
+
+	@Schema(description = "AWS Attachment URLs", nullable = true)
+	private List<String> attachmentUrls = new ArrayList<>();
 
 	public PostResponse(Post entity) {
 		this.id = entity.getId();

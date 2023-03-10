@@ -66,25 +66,29 @@ public class PostService {
 		PostResponse postResponseDto = new PostResponse(post);
 
 		if (post.getFileAttached() == 1) {
-			for (Attachment attachment : post.getAttachments())
-				postResponseDto.setAttachmentUrl(
-					Collections.singletonList(attachmentService.getAttachment(attachment.getStoredFileName())));
+			List<String> attachmentUrls = attachmentService.getAttachmentUrlList(id);
+			List<String> storedFileNames = attachmentService.getAttachmentStoredFileNameList(id);
+
+			postResponseDto.setAttachmentUrls(attachmentUrls);
+			postResponseDto.setStoredFileNames(storedFileNames);
 		}
 
 		return postResponseDto;
 	}
 
 	@Transactional
-	public Integer createPost(MultipartFile multipartFile, PostRequest postRequestDto) throws Exception {
+	public Integer createPost(List<MultipartFile> multipartFiles, PostRequest postRequestDto) throws Exception {
 
-		if (multipartFile.isEmpty())
+		if (!(multipartFiles == null || multipartFiles.isEmpty()))
+			postRequestDto.setFileAttached(1);
+		else {
 			postRequestDto.setFileAttached(0);
-		postRequestDto.setFileAttached(1);
+		}
 
 		Post post = postRepository.save(postRequestDto.toEntity());
 
-		if (!multipartFile.isEmpty())
-			attachmentService.createAttachment(post, multipartFile);
+		if (!(multipartFiles == null || multipartFiles.isEmpty()))
+			attachmentService.createAttachment(post, multipartFiles);
 
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
@@ -93,13 +97,16 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer updatePost(Long id, PostRequest postRequestDto) {
+	public Integer updatePost(Long id, List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		if (!post.getId().equals(postRequestDto.getMember().getId())) {
-			throw new NotEqualMemberAndPostMember();
-		}
+		// if (!post.getId().equals(postRequestDto.getMember().getId())) {
+		// 	throw new NotEqualMemberAndPostMember();
+		// }
+
+		// if (!(multipartFiles == null || multipartFiles.isEmpty()))
+		// 	attachmentService.createAttachment(post, multipartFiles);
 
 		post.update(
 			postRequestDto.getKind(),
