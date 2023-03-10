@@ -31,6 +31,9 @@ public class PostRequest {
 	@Schema(description = "게시판 가격(중고 거래 게시판일 경우)", example = "20000", nullable = true)
 	private Integer price;
 
+	@Schema(description = "게시판 파일 첨부 여부(0: 미첨부, 1:첨부)", nullable = true)
+	private Integer fileAttached;
+
 	@Schema(description = "게시판 해시태그", example = "#그리너스#지구")
 	private String hashtag = "";
 
@@ -41,16 +44,7 @@ public class PostRequest {
 			.title(title)
 			.content(content)
 			.price(price)
-			.build();
-	}
-
-	public Post toFileSaveEntity() {
-		return Post.builder()
-			.kind(kind)
-			.title(title)
-			.content(content)
-			.price(price)
-			.fileAttached(1)
+			.fileAttached(fileAttached)
 			.build();
 	}
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,11 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.greenUs.server.attachment.repository.AttachmentRepository;
+import com.greenUs.server.attachment.domain.Attachment;
+import com.greenUs.server.attachment.service.AttachmentService;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
@@ -38,7 +40,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final RecommendRepository recommendRepository;
 	private final HashtagService hashtagService;
-	private final AttachmentRepository attachmentRepository;
+	private final AttachmentService attachmentService;
 
 	public Page<PostResponse> getPostLists(Integer kind, Integer page, String orderCriteria) {
 
@@ -50,7 +52,8 @@ public class PostService {
 
 	public Page<PostResponse> getSearchPostLists(String word, Integer page) {
 
-		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
+		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT,
+			Sort.by(Sort.Direction.DESC, "createdAt"));
 
 		return postRepository.findByTitleContainingOrContentContaining(word, word, pageRequest)
 			.map(PostResponse::new);
@@ -60,13 +63,28 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		return new PostResponse(post);
+		PostResponse postResponseDto = new PostResponse(post);
+
+		if (post.getFileAttached() == 1) {
+			for (Attachment attachment : post.getAttachments())
+				postResponseDto.setAttachmentUrl(
+					Collections.singletonList(attachmentService.getAttachment(attachment.getStoredFileName())));
+		}
+
+		return postResponseDto;
 	}
 
 	@Transactional
-	public Integer createPost(PostRequest postRequestDto) {
+	public Integer createPost(MultipartFile multipartFile, PostRequest postRequestDto) throws Exception {
+
+		if (multipartFile.isEmpty())
+			postRequestDto.setFileAttached(0);
+		postRequestDto.setFileAttached(1);
 
 		Post post = postRepository.save(postRequestDto.toEntity());
+
+		if (!multipartFile.isEmpty())
+			attachmentService.createAttachment(post, multipartFile);
 
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
@@ -132,8 +150,8 @@ public class PostService {
 
 	public List<PostResponse> getPopularPosts() {
 
-		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
-		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
+		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
 		List<PostResponse> postResponseDto = new ArrayList<>();

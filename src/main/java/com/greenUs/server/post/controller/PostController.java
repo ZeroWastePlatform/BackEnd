@@ -48,7 +48,6 @@ import lombok.RequiredArgsConstructor;
 public class PostController {
 
 	private final PostService postService;
-	private final AttachmentService attachmentService;
 	private final MemberRepository memberRepository;
 
 	@Operation(summary = "게시글 목록 조회", description = "게시글 구분(kind)값과 현재 페이지(page), 정렬 조건(orderby), 검색 조건(searchtype), 검색어(searchby)를 파라미터로 받아 목록을 불러올 수 있습니다.")
@@ -110,10 +109,7 @@ public class PostController {
 		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
 		// postRequestDto.setMember(member);
 
-		if (!multipartFile.isEmpty())
-			attachmentService.uploadAttachment(multipartFile);
-
-		Integer kind = postService.createPost(postRequestDto);
+		Integer kind = postService.createPost(multipartFile, postRequestDto);
 
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}

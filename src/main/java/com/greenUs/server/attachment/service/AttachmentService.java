@@ -4,11 +4,13 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.greenUs.server.attachment.dto.AttachmentRequest;
+import com.greenUs.server.attachment.repository.AttachmentRepository;
+import com.greenUs.server.post.domain.Post;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,15 +21,23 @@ public class AttachmentService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 	private final AmazonS3 amazonS3;
+	private final AttachmentRepository attachmentRepository;
 
-	public String uploadAttachment(MultipartFile multipartFile) throws Exception {
-		String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+	public void createAttachment(Post post, MultipartFile multipartFile) throws Exception {
+
+		String storedFileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
 
 		ObjectMetadata objMeta = new ObjectMetadata();
 		objMeta.setContentLength(multipartFile.getInputStream().available());
 
-		amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
+		amazonS3.putObject(bucket, storedFileName, multipartFile.getInputStream(), objMeta);
 
-		return amazonS3.getUrl(bucket, s3FileName).toString();
+		attachmentRepository.save(
+			new AttachmentRequest(post, multipartFile.getOriginalFilename(), storedFileName).toEntity());
+	}
+
+	public String getAttachment(String storedFileName) {
+
+		return amazonS3.getUrl(bucket, storedFileName).toString();
 	}
 }
