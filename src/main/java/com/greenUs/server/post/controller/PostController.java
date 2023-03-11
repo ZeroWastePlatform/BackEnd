@@ -138,12 +138,12 @@ public class PostController {
 	})
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Integer> deletePost(
-		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
+		// @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
-		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
 
-		Integer kind = postService.deletePost(id, member);
+		Integer kind = postService.deletePost(id);
 		return new ResponseEntity<>(kind, HttpStatus.OK);
 	}
 

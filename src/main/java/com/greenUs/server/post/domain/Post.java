@@ -57,7 +57,7 @@ public class Post extends BaseEntity {
 
     private Integer fileAttached;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Attachment> attachments = new ArrayList<>();
 
     @Builder

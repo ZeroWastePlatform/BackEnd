@@ -124,15 +124,24 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer deletePost(Long id, Member member) {
+	public Integer deletePost(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		if (!post.getId().equals(member.getId())) {
-			throw new NotEqualMemberAndPostMember();
+		// if (!post.getId().equals(member.getId())) {
+		// 	throw new NotEqualMemberAndPostMember();
+		// }
+
+		List<String> storedFileNames = new ArrayList<>();
+		for (Attachment attachment : post.getAttachments()) {
+			storedFileNames.add(attachment.getStoredFileName());
 		}
 
+		if (!storedFileNames.isEmpty())
+			attachmentService.deleteAttachment(id, storedFileNames);
+
 		postRepository.delete(post);
+
 		return post.getKind();
 	}
 
