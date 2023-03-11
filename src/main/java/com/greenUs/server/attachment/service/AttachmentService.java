@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.attachment.exception.FailConvertOutputStream;
 import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
+import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.attachment.repository.AttachmentRepository;
 import com.greenUs.server.post.domain.Post;
 
@@ -58,9 +59,13 @@ public class AttachmentService {
 			if ("".equals(storedFileName) == false && storedFileName != null) {
 				boolean isExistObject = amazonS3.doesObjectExist(bucket, storedFileName);
 
-				if (isExistObject == true) {
+				if (!isExistObject) {
+					throw new NotFoundObjectException();
+				}
+				else {
 					Attachment attachment = getAttachmentInfoByStoredFileName(storedFileName);
-					if (attachment.getPost().getId() != postId)
+
+					if (!attachment.getPost().getId().equals(postId))
 						throw new NotEqualAttachmentAndPostAttachment();
 					attachmentRepository.delete(attachment);
 					amazonS3.deleteObject(bucket, storedFileName);

@@ -2,6 +2,7 @@ package com.greenUs.server.global.error;
 
 import com.greenUs.server.attachment.exception.FailConvertOutputStream;
 import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
+import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
@@ -71,6 +72,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FailConvertOutputStream.class)
     public ResponseEntity<ErrorResponse> handleFailConvertOutputStream() {
         ErrorResponse response = new ErrorResponse(ErrorCode.OUTPUT_STREAM_ERROR);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotFoundObjectException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundObjectException() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.OBJECT_NOT_FOUND);
         return ResponseEntity.badRequest().body(response);
     }
 }
