@@ -1,6 +1,6 @@
 package com.greenUs.server.attachment.service;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.greenUs.server.attachment.domain.Attachment;
+import com.greenUs.server.attachment.exception.FailConvertOutputStream;
 import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
 import com.greenUs.server.attachment.repository.AttachmentRepository;
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,15 +27,19 @@ public class AttachmentService {
 	private final AmazonS3 amazonS3;
 	private final AttachmentRepository attachmentRepository;
 
-	public void createAttachment(Post post, List<MultipartFile> multipartFiles) throws Exception {
+	public void createAttachment(Post post, List<MultipartFile> multipartFiles) {
 
 		for (MultipartFile multipartFile : multipartFiles) {
 			String storedFileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
 
 			ObjectMetadata objMeta = new ObjectMetadata();
-			objMeta.setContentLength(multipartFile.getInputStream().available());
+			try {
+				objMeta.setContentLength(multipartFile.getInputStream().available());
 
-			amazonS3.putObject(bucket, storedFileName, multipartFile.getInputStream(), objMeta);
+				amazonS3.putObject(bucket, storedFileName, multipartFile.getInputStream(), objMeta);
+			} catch (IOException e) {
+				throw new FailConvertOutputStream();
+			}
 
 			attachmentRepository.save(
 				Attachment.builder()
@@ -65,34 +69,7 @@ public class AttachmentService {
 		}
 	}
 
-	public List<String> getAttachmentUrlList(Long postId) {
-
-		List<Attachment> attachments = getAttachmentInfoByPostId(postId);
-
-		List<String> attachmentUrls = new ArrayList<>();
-
-		for (Attachment attachment : attachments) {
-			attachmentUrls.add(attachment.getAttachmentUrl());
-		}
-
-		return attachmentUrls;
-	}
-
-	public List<String> getAttachmentStoredFileNameList(Long postId) {
-
-		List<Attachment> attachments = getAttachmentInfoByPostId(postId);
-
-		List<String> storedFileNames = new ArrayList<>();
-
-		for (Attachment attachment : attachments) {
-			storedFileNames.add(attachment.getStoredFileName());
-		}
-
-		return storedFileNames;
-	}
-
 	public List<Attachment> getAttachmentInfoByPostId(Long postId) {
-
 		return attachmentRepository.findByPostId(postId);
 	}
 

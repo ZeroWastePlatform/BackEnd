@@ -68,7 +68,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer createPost(List<MultipartFile> multipartFiles, PostRequest postRequestDto) throws Exception {
+	public Integer createPost(List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
 
 		if (!(multipartFiles == null || multipartFiles.isEmpty()))
 			postRequestDto.setFileAttached(1);
@@ -88,8 +88,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer updatePost(Long id, List<MultipartFile> multipartFiles, PostRequest postRequestDto) throws
-		Exception {
+	public Integer updatePost(Long id, List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 

@@ -102,8 +102,8 @@ public class PostController {
 	})
 	@PostMapping
 	public ResponseEntity<Integer> createPost(
-		// @AuthenticationPrincipal LoginMember loginMember,
-		@RequestPart(required = false) List<MultipartFile> multipartFiles,
+		// @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "게시글 첨부파일 리스트", in = ParameterIn.PATH) @RequestPart(required = false) List<MultipartFile> multipartFiles,
 		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestPart PostRequest postRequestDto) throws Exception {
 
 		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
@@ -121,10 +121,10 @@ public class PostController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity<Integer> updatePost(
-		// @AuthenticationPrincipal LoginMember loginMember,
-		@RequestPart(required = false) List<MultipartFile> multipartFiles,
+		// @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "게시글 첨부파일 리스트", in = ParameterIn.PATH) @RequestPart(required = false) List<MultipartFile> multipartFiles,
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id,
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestPart PostRequest postRequestDto) throws
+		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우만), 삭제할 첨부파일 이름 리스트(storedFileNames), 해시태그(hashtags)", in = ParameterIn.PATH) @RequestPart PostRequest postRequestDto) throws
 		Exception {
 
 		// Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
@@ -141,7 +141,7 @@ public class PostController {
 	})
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Integer> deletePost(
-		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
 		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
@@ -157,7 +157,7 @@ public class PostController {
 	})
 	@PostMapping("/recommendations/{id}")
 	public ResponseEntity recommendPost(
-		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
 		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);

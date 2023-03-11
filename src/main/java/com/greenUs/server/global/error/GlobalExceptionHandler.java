@@ -1,5 +1,6 @@
 package com.greenUs.server.global.error;
 
+import com.greenUs.server.attachment.exception.FailConvertOutputStream;
 import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
@@ -64,6 +65,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotEqualAttachmentAndPostAttachment.class)
     public ResponseEntity<ErrorResponse> handleNotEqualAttachmentAndPostAttachment() {
         ErrorResponse response = new ErrorResponse(ErrorCode.POST_ATTACHMENT_NOT_EQUAL);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(FailConvertOutputStream.class)
+    public ResponseEntity<ErrorResponse> handleFailConvertOutputStream() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.OUTPUT_STREAM_ERROR);
         return ResponseEntity.badRequest().body(response);
     }
 }

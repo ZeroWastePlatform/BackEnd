@@ -54,10 +54,10 @@ public class PostResponse {
 	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
 	private List<String> hashtags = new ArrayList<>();
 
-	@Schema(description = "AWS Attachment storedName", nullable = true)
+	@Schema(description = "서버에 저장된 파일 이름", nullable = false)
 	private List<String> storedFileNames = new ArrayList<>();
 
-	@Schema(description = "AWS Attachment URLs", nullable = true)
+	@Schema(description = "첨부파일 경로", nullable = false)
 	private List<String> attachmentUrls = new ArrayList<>();
 
 	public PostResponse(Post entity) {

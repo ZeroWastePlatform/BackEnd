@@ -37,10 +37,10 @@ public class PostRequest {
 	@Schema(description = "게시판 파일 첨부 여부(0: 미첨부, 1:첨부)", nullable = true)
 	private Integer fileAttached;
 
-	@Schema(description = "서버에 저장된 파일 이름", nullable = true)
+	@Schema(description = "서버에 저장된 파일 이름", example = "[서버에 저장된 파일 이름, 서버에 저장된 파일 이름]", nullable = true)
 	private List<String> storedFileNames = new ArrayList<>();
 
-	@Schema(description = "게시판 해시태그", example = "#그리너스#지구")
+	@Schema(description = "게시판 해시태그", example = "#그리너스#지구", nullable = true)
 	private String hashtag = "";
 
 	public Post toEntity() {
