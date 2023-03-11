@@ -64,14 +64,6 @@ public class PostService {
 
 		PostResponse postResponseDto = new PostResponse(post);
 
-		if (post.getFileAttached() == 1) {
-			List<String> attachmentUrls = attachmentService.getAttachmentUrlList(id);
-			List<String> storedFileNames = attachmentService.getAttachmentStoredFileNameList(id);
-
-			postResponseDto.setAttachmentUrls(attachmentUrls);
-			postResponseDto.setStoredFileNames(storedFileNames);
-		}
-
 		return postResponseDto;
 	}
 

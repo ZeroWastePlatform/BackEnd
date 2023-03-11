@@ -75,5 +75,12 @@ public class PostResponse {
 		for (Hashtag hashtag : entity.getHashtags()) {
 			this.hashtags.add(hashtag.getKeyword().getContent());
 		}
+
+		if (entity.getFileAttached() == 1) {
+			for (Attachment attachment : entity.getAttachments()) {
+				this.storedFileNames.add(attachment.getStoredFileName());
+				this.attachmentUrls.add(attachment.getAttachmentUrl());
+			}
+		}
 	}
 }

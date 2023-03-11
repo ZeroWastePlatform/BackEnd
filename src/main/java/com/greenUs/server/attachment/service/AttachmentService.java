@@ -11,8 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.greenUs.server.attachment.domain.Attachment;
+import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
 import com.greenUs.server.attachment.repository.AttachmentRepository;
 import com.greenUs.server.post.domain.Post;
+import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,8 +56,9 @@ public class AttachmentService {
 
 				if (isExistObject == true) {
 					Attachment attachment = getAttachmentInfoByStoredFileName(storedFileName);
-					if (attachment.getPost().getId() == postId)
-						attachmentRepository.delete(attachment);
+					if (attachment.getPost().getId() != postId)
+						throw new NotEqualAttachmentAndPostAttachment();
+					attachmentRepository.delete(attachment);
 					amazonS3.deleteObject(bucket, storedFileName);
 				}
 			}
