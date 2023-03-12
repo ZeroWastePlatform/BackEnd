@@ -34,8 +34,8 @@ public class PostRequest {
 	@Schema(description = "게시판 가격(중고 거래 게시판일 경우)", example = "20000", nullable = true)
 	private Integer price;
 
-	@Schema(description = "게시판 파일 첨부 여부(0: 미첨부, 1:첨부)", nullable = true)
-	private Integer fileAttached;
+	@Schema(description = "게시판 파일 첨부 여부(false: 미첨부, true:첨부)", nullable = true)
+	private Boolean fileAttached;
 
 	@Schema(description = "서버에 저장된 파일 이름", example = "[서버에 저장된 파일 이름, 서버에 저장된 파일 이름]", nullable = true)
 	private List<String> storedFileNames = new ArrayList<>();

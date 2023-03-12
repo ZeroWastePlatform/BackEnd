@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -23,7 +22,6 @@ import com.greenUs.server.post.domain.Recommend;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
-import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.post.repository.RecommendRepository;
@@ -72,9 +70,9 @@ public class PostService {
 	public Integer createPost(List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
 
 		if (!(multipartFiles == null || multipartFiles.isEmpty()))
-			postRequestDto.setFileAttached(1);
+			postRequestDto.setFileAttached(true);
 		else {
-			postRequestDto.setFileAttached(0);
+			postRequestDto.setFileAttached(false);
 		}
 
 		Post post = postRepository.save(postRequestDto.toEntity());
@@ -105,9 +103,9 @@ public class PostService {
 
 		List<Attachment> attachments = attachmentService.getAttachmentInfoByPostId(id);
 		if (attachments.size() == 0)
-			postRequestDto.setFileAttached(0);
+			postRequestDto.setFileAttached(false);
 		else
-			postRequestDto.setFileAttached(1);
+			postRequestDto.setFileAttached(true);
 
 		post.update(
 			postRequestDto.getKind(),

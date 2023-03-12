@@ -76,7 +76,7 @@ public class PostResponse {
 			this.hashtags.add(hashtag.getKeyword().getContent());
 		}
 
-		if (entity.getFileAttached() == 1) {
+		if (entity.getFileAttached() == true) {
 			for (Attachment attachment : entity.getAttachments()) {
 				this.storedFileNames.add(attachment.getStoredFileName());
 				this.attachmentUrls.add(attachment.getAttachmentUrl());
