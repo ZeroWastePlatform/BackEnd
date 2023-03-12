@@ -22,6 +22,7 @@ import com.greenUs.server.post.domain.Recommend;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
 import com.greenUs.server.post.dto.PostRequest;
 import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.post.repository.RecommendRepository;
@@ -91,9 +92,9 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		// if (!post.getId().equals(postRequestDto.getMember().getId())) {
-		// 	throw new NotEqualMemberAndPostMember();
-		// }
+		if (!post.getId().equals(postRequestDto.getMember().getId())) {
+			throw new NotEqualMemberAndPostMember();
+		}
 
 		if (!postRequestDto.getStoredFileNames().isEmpty())
 			attachmentService.deleteAttachment(id, postRequestDto.getStoredFileNames());
@@ -122,13 +123,13 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer deletePost(Long id) {
+	public Integer deletePost(Long id, Member member) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		// if (!post.getId().equals(member.getId())) {
-		// 	throw new NotEqualMemberAndPostMember();
-		// }
+		if (!post.getId().equals(member.getId())) {
+			throw new NotEqualMemberAndPostMember();
+		}
 
 		List<String> storedFileNames = new ArrayList<>();
 		for (Attachment attachment : post.getAttachments()) {
