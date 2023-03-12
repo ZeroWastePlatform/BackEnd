@@ -11,4 +11,5 @@ public class AccessRefreshTokenResponse {
 
     private String accessToken;
     private String refreshToken;
+    private boolean isNewMember;
 }

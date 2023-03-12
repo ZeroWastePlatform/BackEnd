@@ -46,7 +46,7 @@ public class AuthController {
         return ResponseEntity.ok(oAuthUriResponse);
     }
 
-    @Operation(summary = "토큰 발급", description = "인가 코드를 바탕으로 accessToken 과 refreshToken 을 발급, 신규 회원일 경우 null 반환")
+    @Operation(summary = "토큰 발급", description = "인가 코드를 바탕으로 accessToken 과 refreshToken 을 발급")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "토큰 발급 성공 | 최초 가입일 경우 null 반환", content = @Content(schema = @Schema(implementation = AccessRefreshTokenResponse.class))),
             @ApiResponse(responseCode = "500", description = "OAuth 서버와의 연동 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
