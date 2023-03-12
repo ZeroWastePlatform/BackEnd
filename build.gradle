@@ -30,7 +30,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'com.h2database:h2:1.4.200'
-
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.281'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
 	// jpa + mysql

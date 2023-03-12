@@ -1,5 +1,8 @@
 package com.greenUs.server.global.error;
 
+import com.greenUs.server.attachment.exception.FailConvertOutputStream;
+import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
+import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
@@ -50,13 +53,31 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotEqualMemberAndPostMember.class)
     public ResponseEntity<ErrorResponse> handleNotEqualMemberAndPostMember() {
-        ErrorResponse response = new ErrorResponse(ErrorCode.POSTMEMBER_NOT_EQUAL);
+        ErrorResponse response = new ErrorResponse(ErrorCode.POST_MEMBER_NOT_EQUAL);
         return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(NotEqualMemberAndCommentMember.class)
     public ResponseEntity<ErrorResponse> handleNotEqualMemberAndCommentMember() {
-        ErrorResponse response = new ErrorResponse(ErrorCode.COMMENTMEMBER_NOT_EQUAL);
+        ErrorResponse response = new ErrorResponse(ErrorCode.COMMENT_MEMBER_NOT_EQUAL);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotEqualAttachmentAndPostAttachment.class)
+    public ResponseEntity<ErrorResponse> handleNotEqualAttachmentAndPostAttachment() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.POST_ATTACHMENT_NOT_EQUAL);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(FailConvertOutputStream.class)
+    public ResponseEntity<ErrorResponse> handleFailConvertOutputStream() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.OUTPUT_STREAM_ERROR);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotFoundObjectException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundObjectException() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.OBJECT_NOT_FOUND);
         return ResponseEntity.badRequest().body(response);
     }
 }

@@ -11,11 +11,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.greenUs.server.attachment.repository.AttachmentRepository;
+import com.greenUs.server.attachment.domain.Attachment;
+import com.greenUs.server.attachment.service.AttachmentService;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
 import com.greenUs.server.post.dto.PostRecommendationResponse;
@@ -38,7 +39,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final RecommendRepository recommendRepository;
 	private final HashtagService hashtagService;
-	private final AttachmentRepository attachmentRepository;
+	private final AttachmentService attachmentService;
 
 	public Page<PostResponse> getPostLists(Integer kind, Integer page, String orderCriteria) {
 
@@ -50,7 +51,8 @@ public class PostService {
 
 	public Page<PostResponse> getSearchPostLists(String word, Integer page) {
 
-		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
+		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT,
+			Sort.by(Sort.Direction.DESC, "createdAt"));
 
 		return postRepository.findByTitleContainingOrContentContaining(word, word, pageRequest)
 			.map(PostResponse::new);
@@ -60,13 +62,24 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		return new PostResponse(post);
+		PostResponse postResponseDto = new PostResponse(post);
+
+		return postResponseDto;
 	}
 
 	@Transactional
-	public Integer createPost(PostRequest postRequestDto) {
+	public Integer createPost(List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
+
+		if (!(multipartFiles == null || multipartFiles.isEmpty()))
+			postRequestDto.setFileAttached(true);
+		else {
+			postRequestDto.setFileAttached(false);
+		}
 
 		Post post = postRepository.save(postRequestDto.toEntity());
+
+		if (!(multipartFiles == null || multipartFiles.isEmpty()))
+			attachmentService.createAttachment(post, multipartFiles);
 
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
@@ -75,7 +88,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer updatePost(Long id, PostRequest postRequestDto) {
+	public Integer updatePost(Long id, List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
@@ -83,11 +96,24 @@ public class PostService {
 			throw new NotEqualMemberAndPostMember();
 		}
 
+		if (!postRequestDto.getStoredFileNames().isEmpty())
+			attachmentService.deleteAttachment(id, postRequestDto.getStoredFileNames());
+
+		if (!(multipartFiles == null || multipartFiles.isEmpty()))
+			attachmentService.createAttachment(post, multipartFiles);
+
+		List<Attachment> attachments = attachmentService.getAttachmentInfoByPostId(id);
+		if (attachments.size() == 0)
+			postRequestDto.setFileAttached(false);
+		else
+			postRequestDto.setFileAttached(true);
+
 		post.update(
 			postRequestDto.getKind(),
 			postRequestDto.getTitle(),
 			postRequestDto.getContent(),
-			postRequestDto.getPrice()
+			postRequestDto.getPrice(),
+			postRequestDto.getFileAttached()
 		);
 
 		if (!postRequestDto.getHashtag().isEmpty())
@@ -105,7 +131,16 @@ public class PostService {
 			throw new NotEqualMemberAndPostMember();
 		}
 
+		List<String> storedFileNames = new ArrayList<>();
+		for (Attachment attachment : post.getAttachments()) {
+			storedFileNames.add(attachment.getStoredFileName());
+		}
+
+		if (!storedFileNames.isEmpty())
+			attachmentService.deleteAttachment(id, storedFileNames);
+
 		postRepository.delete(post);
+
 		return post.getKind();
 	}
 
@@ -132,8 +167,8 @@ public class PostService {
 
 	public List<PostResponse> getPopularPosts() {
 
-		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
-		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
+		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
 		List<PostResponse> postResponseDto = new ArrayList<>();

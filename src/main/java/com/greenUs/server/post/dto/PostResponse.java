@@ -12,9 +12,11 @@ import com.greenUs.server.global.Time;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 public class PostResponse {
@@ -52,14 +54,11 @@ public class PostResponse {
 	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
 	private List<String> hashtags = new ArrayList<>();
 
-	@Schema(description = "원본 파일 이름", nullable = true)
-	private List<String> originalFileName = new ArrayList<>();
+	@Schema(description = "서버에 저장된 파일 이름", nullable = false)
+	private List<String> storedFileNames = new ArrayList<>();
 
-	@Schema(description = "서버 저장용 파일 이름", nullable = true)
-	private List<String> storedFileName = new ArrayList<>();
-
-	@Schema(description = "파일 첨부 여부", example = "첨부 : 1, 미첨부 : 0", nullable = false)
-	private Integer fileAttached;
+	@Schema(description = "첨부파일 경로", nullable = false)
+	private List<String> attachmentUrls = new ArrayList<>();
 
 	public PostResponse(Post entity) {
 		this.id = entity.getId();
@@ -77,14 +76,10 @@ public class PostResponse {
 			this.hashtags.add(hashtag.getKeyword().getContent());
 		}
 
-		if (entity.getFileAttached() == 0) {
-			this.fileAttached = entity.getFileAttached();
-		} else {
-			this.fileAttached = entity.getFileAttached();
-			
+		if (entity.getFileAttached() == true) {
 			for (Attachment attachment : entity.getAttachments()) {
-				this.originalFileName.add(attachment.getOriginalFileName());
-				this.storedFileName.add(attachment.getStoredFileName());
+				this.storedFileNames.add(attachment.getStoredFileName());
+				this.attachmentUrls.add(attachment.getAttachmentUrl());
 			}
 		}
 	}

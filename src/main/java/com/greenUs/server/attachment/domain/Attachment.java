@@ -29,10 +29,13 @@ public class Attachment extends BaseEntity {
 
     private String storedFileName;
 
+	private String attachmentUrl;
+
 	@Builder
-	public Attachment(Post post, String originalFileName, String storedFileName) {
+	public Attachment(Post post, String originalFileName, String storedFileName, String attachmentUrl) {
 		this.post = post;
 		this.originalFileName = originalFileName;
 		this.storedFileName = storedFileName;
+		this.attachmentUrl = attachmentUrl;
 	}
 }
