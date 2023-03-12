@@ -23,18 +23,16 @@ public class AuthService {
     @Transactional
     public AccessRefreshTokenResponse generateAccessAndRefreshToken(OAuthMember oAuthMember) {
         Member foundMember = findMember(oAuthMember);
-        if (foundMember == null)
-            return null;
         foundMember.change(oAuthMember.getRefreshToken());
         AuthToken authToken = tokenCreator.createAuthToken(foundMember.getId());
-        return new AccessRefreshTokenResponse(authToken.getAccessToken(), authToken.getRefreshToken());
+        return new AccessRefreshTokenResponse(authToken.getAccessToken(), authToken.getRefreshToken(), foundMember.getNickname() == null);
     }
 
     private Member findMember(OAuthMember oAuthMember) {
         String email = oAuthMember.getEmail();
         if (memberRepository.existsByEmail(email))
             return memberRepository.findByEmail(email);
-        return null;
+        return memberRepository.save(oAuthMember.toMember());
     }
 
     public AccessTokenResponse generateAccessToken(TokenRenewalRequest tokenRenewalRequest) {
