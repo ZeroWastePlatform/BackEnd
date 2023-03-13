@@ -7,6 +7,7 @@ import com.greenUs.server.comment.repository.CommentRepository;
 import com.greenUs.server.coupon.repository.CouponRepository;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.dto.request.MemberRequest;
+import com.greenUs.server.member.dto.request.SignUpRequest;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
@@ -98,6 +99,14 @@ public class MemberService {
                 memberRequest.getAddress(),
                 memberRequest.getPhoneNum(),
                 memberRequest.getInterestArea());
+        return new MemberResponse(memberRepository.save(member));
+    }
+
+    @Transactional
+    public MemberResponse signUp(Long id, SignUpRequest signUpRequest) {
+        Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
+
+        member.changeNickName(signUpRequest.getNickName());
         return new MemberResponse(memberRepository.save(member));
     }
 }

@@ -61,10 +61,6 @@ public class Member extends BaseEntity {
 	@ColumnDefault("0")
 	private int point;
 
-
-
-
-
 	public Member() {}
 	public Member(String email, String name, SocialType socialType, String token ) {
 		this.email = email;
@@ -82,5 +78,9 @@ public class Member extends BaseEntity {
 		this.address = new Address(address.getZipCode(), address.getAddress(), address.getAddressDetail());
 		this.phoneNum = phoneNum;
 		this.interestArea = interestArea;
+	}
+
+	public void changeNickName(String nickname) {
+		this.nickname = nickname;
 	}
 }

@@ -2,6 +2,7 @@ package com.greenUs.server.member.controller;
 
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
+import com.greenUs.server.member.dto.request.SignUpRequest;
 import com.greenUs.server.global.error.ErrorResponse;
 import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.MemberResponse;
@@ -26,7 +27,7 @@ import javax.validation.Valid;
 
 @Tag(name = "유저", description = "유저 API")
 @RequiredArgsConstructor
-@RequestMapping("/api/members/me")
+@RequestMapping("/api/members")
 @RestController
 public class MemberController {
 
@@ -37,7 +38,7 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "마이페이지 나의 주문 조회 성공", content = @Content(schema = @Schema(implementation = MyPagePurchaseResponse.class))),
             @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<MyPagePurchaseResponse> getMyOrder(
             @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
             @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
@@ -47,7 +48,7 @@ public class MemberController {
     }
 
     // 마이페이지 관심상품
-    @GetMapping("/products")
+    @GetMapping("/me/products")
     public ResponseEntity<MemberResponse> getMyProducts(@AuthenticationPrincipal LoginMember loginMember) {
         // MemberResponse response = memberService.findById(loginMember.getId());
         return ResponseEntity.ok(null);
@@ -58,7 +59,7 @@ public class MemberController {
         @ApiResponse(responseCode = "200", description = "마이페이지 내가 작성한 게시글/댓글 조회 성공", content = @Content(schema = @Schema(implementation = MyPageCommunityResponse.class))),
         @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/communities/{kind}")
+    @GetMapping("/me/communities/{kind}")
     public ResponseEntity<MyPageCommunityResponse> getMyCommunity(
         @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
         @Parameter(description = "게시글/댓글 조회 선택 (1:게시글, 2:댓글)", in = ParameterIn.PATH) @PathVariable Integer kind,
@@ -73,7 +74,7 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "마이페이지 컨텐츠 조회 성공", content = @Content(schema = @Schema(implementation = MyPageContentResponse.class))),
             @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/contents")
+    @GetMapping("/me/contents")
     public ResponseEntity<Page<MyPageContentResponse>> getMyContents(
             @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
             @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
@@ -87,13 +88,27 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "내 정보 수정 성공", content = @Content(schema = @Schema(implementation = MemberResponse.class))),
             @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping
+    @PostMapping("/me")
     public ResponseEntity<MemberResponse> updateMyInfo(
             @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
             @Valid @RequestBody MemberRequest memberRequest
             ) {
         MemberResponse memberResponse = memberService.updateMyInfo(loginMember.getId(), memberRequest);
 
+        return ResponseEntity.ok(memberResponse);
+    }
+
+    @Operation(summary = "회원가입", description = "신규 회원일 경우 nickname 지정 필요")
+    @ApiResponses(value =  {
+            @ApiResponse(responseCode = "200", description = "회원가입 성공", content = @Content(schema = @Schema(implementation = MemberResponse.class))),
+            @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/signup")
+    public ResponseEntity<MemberResponse> signUp(
+            @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
+            @Valid @RequestBody SignUpRequest signUpRequest
+    ) {
+        MemberResponse memberResponse = memberService.signUp(loginMember.getId(), signUpRequest);
         return ResponseEntity.ok(memberResponse);
     }
 }
