@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -101,13 +103,12 @@ public class PostController {
 	@PostMapping
 	public ResponseEntity<Integer> createPost(
 		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
-		@Parameter(description = "게시글 첨부파일 리스트", in = ParameterIn.PATH) @RequestPart(required = false) List<MultipartFile> multipartFiles,
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우), 해시태그(hashtag)", in = ParameterIn.PATH) @RequestPart PostRequest postRequestDto) {
+		@Parameter(description = "필수요소 : 게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우) / 선택요소 : 해시태그(hashtag), 첨부파일(multipartFiles)", in = ParameterIn.PATH) PostRequest postRequestDto) {
 
 		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
 		postRequestDto.setMember(member);
 
-		Integer kind = postService.createPost(multipartFiles, postRequestDto);
+		Integer kind = postService.createPost(postRequestDto);
 
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
@@ -120,14 +121,13 @@ public class PostController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Integer> updatePost(
 		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
-		@Parameter(description = "게시글 첨부파일 리스트", in = ParameterIn.PATH) @RequestPart(required = false) List<MultipartFile> multipartFiles,
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id,
-		@Parameter(description = "게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우만), 삭제할 첨부파일 이름 리스트(storedFileNames), 해시태그(hashtags)", in = ParameterIn.PATH) @RequestPart PostRequest postRequestDto) {
+		@Parameter(description = "필수요소 : 게시글 구분(kind), 제목(title), 내용(content), 가격(price)(중고 거래 게시글일 경우) / 선택요소 : 해시태그(hashtag), 첨부파일(multipartFiles)", in = ParameterIn.PATH) PostRequest postRequestDto) {
 
 		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
 		postRequestDto.setMember(member);
 
-		Integer kind = postService.updatePost(id, multipartFiles, postRequestDto);
+		Integer kind = postService.updatePost(id, postRequestDto);
 		return new ResponseEntity<>(kind, HttpStatus.CREATED);
 	}
 

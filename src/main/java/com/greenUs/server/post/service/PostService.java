@@ -68,18 +68,18 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer createPost(List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
+	public Integer createPost(PostRequest postRequestDto) {
 
-		if (!(multipartFiles == null || multipartFiles.isEmpty()))
+		if (!(postRequestDto.getMultipartFiles() == null || postRequestDto.getMultipartFiles().isEmpty()))
 			postRequestDto.setFileAttached(true);
 		else {
 			postRequestDto.setFileAttached(false);
 		}
-
+		System.out.println("postRequestDto = " + postRequestDto);
 		Post post = postRepository.save(postRequestDto.toEntity());
 
-		if (!(multipartFiles == null || multipartFiles.isEmpty()))
-			attachmentService.createAttachment(post, multipartFiles);
+		if (!(postRequestDto.getMultipartFiles() == null || postRequestDto.getMultipartFiles().isEmpty()))
+			attachmentService.createAttachment(post, postRequestDto.getMultipartFiles());
 
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
@@ -88,7 +88,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public Integer updatePost(Long id, List<MultipartFile> multipartFiles, PostRequest postRequestDto) {
+	public Integer updatePost(Long id, PostRequest postRequestDto) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
@@ -99,8 +99,8 @@ public class PostService {
 		if (!postRequestDto.getStoredFileNames().isEmpty())
 			attachmentService.deleteAttachment(id, postRequestDto.getStoredFileNames());
 
-		if (!(multipartFiles == null || multipartFiles.isEmpty()))
-			attachmentService.createAttachment(post, multipartFiles);
+		if (!(postRequestDto.getMultipartFiles() == null || postRequestDto.getMultipartFiles().isEmpty()))
+			attachmentService.createAttachment(post, postRequestDto.getMultipartFiles());
 
 		List<Attachment> attachments = attachmentService.getAttachmentInfoByPostId(id);
 		if (attachments.size() == 0)
