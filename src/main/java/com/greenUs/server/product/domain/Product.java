@@ -1,5 +1,6 @@
 package com.greenUs.server.product.domain;
 
+import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.purchase.domain.PurchaseProduct;
 import com.greenUs.server.reviewAndAsk.domain.Ask;
@@ -24,32 +25,47 @@ public class Product extends BaseEntity {
     @Column(name = "product_id")
     private Long id;
 
-    private String category;
+    private String refundInfo; // 환불 정보 (환불 배송지, 환불 가격 ... )
+
+    private String deliveryInfo; // 배송지 정보 (배송지, 배송 가격 ... )
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private Category category;
+
+    private String discountRate;
+
+    private Badge badges;
+
+    private String title;
+
+    private String description;
+
+    private String brand;
+
+    private ProductStatus productStatus;
+
+    private Integer viewCount;
+
+    private Integer price;
+    private Integer likeCount;
+
+    private Integer reviewCount;
+
+    private Integer askCount;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
 
-
-    private String refundInfo;
-    private String deliveryInfo;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<Attachment> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Ask> asks = new ArrayList<>();
-    private String discountRate;
-    private String badges;
-    private String title;
-    private String description;
-    private String brand;
-    private String thumbnail;
-    private String info;
-    private ProductStatus productStatus;
-    private int viewCount;
-    private int price;
-    private int likeCount;
-    private int reviewCount =0;
-    private int askCount =0;
+
 
     public void plusLikeCount() {
         this.likeCount = this.likeCount+1;
