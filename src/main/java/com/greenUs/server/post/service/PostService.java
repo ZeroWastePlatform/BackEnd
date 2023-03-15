@@ -75,7 +75,7 @@ public class PostService {
 		else {
 			postRequestDto.setFileAttached(false);
 		}
-		System.out.println("postRequestDto = " + postRequestDto);
+
 		Post post = postRepository.save(postRequestDto.toEntity());
 
 		if (!(postRequestDto.getMultipartFiles() == null || postRequestDto.getMultipartFiles().isEmpty()))
