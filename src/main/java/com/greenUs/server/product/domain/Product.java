@@ -2,6 +2,9 @@ package com.greenUs.server.product.domain;
 
 import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.common.BaseEntity;
+import com.greenUs.server.product.converter.BadgeConverter;
+import com.greenUs.server.product.converter.CategoryConverter;
+import com.greenUs.server.product.converter.ProductStatusConverter;
 import com.greenUs.server.purchase.domain.PurchaseProduct;
 import com.greenUs.server.reviewAndAsk.domain.Ask;
 import com.greenUs.server.reviewAndAsk.domain.Review;
@@ -29,12 +32,12 @@ public class Product extends BaseEntity {
 
     private String deliveryInfo; // 배송지 정보 (배송지, 배송 가격 ... )
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "category", nullable = false)
+    @Convert(converter = CategoryConverter.class)
     private Category category;
 
     private String discountRate;
 
+    @Convert(converter = BadgeConverter.class)
     private Badge badges;
 
     private String title;
@@ -43,6 +46,7 @@ public class Product extends BaseEntity {
 
     private String brand;
 
+    @Convert(converter = ProductStatusConverter.class)
     private ProductStatus productStatus;
 
     private Integer viewCount;
