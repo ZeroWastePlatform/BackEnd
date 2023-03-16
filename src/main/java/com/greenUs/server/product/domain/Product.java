@@ -28,10 +28,6 @@ public class Product extends BaseEntity {
     @Column(name = "product_id")
     private Long id;
 
-    private String refundInfo; // 환불 정보 (환불 배송지, 환불 가격 ... )
-
-    private String deliveryInfo; // 배송지 정보 (배송지, 배송 가격 ... )
-
     @Convert(converter = CategoryConverter.class)
     private Category category;
 
@@ -44,7 +40,8 @@ public class Product extends BaseEntity {
 
     private String description;
 
-    private String brand;
+    @Enumerated(EnumType.STRING)
+    private Brand brand;
 
     @Convert(converter = ProductStatusConverter.class)
     private ProductStatus productStatus;
@@ -52,6 +49,8 @@ public class Product extends BaseEntity {
     private Integer viewCount;
 
     private Integer price;
+
+    private Integer deliveryFee;
     private Integer likeCount;
 
     private Integer reviewCount;
