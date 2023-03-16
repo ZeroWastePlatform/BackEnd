@@ -1,10 +1,33 @@
 package com.greenUs.server.product.domain;
 
-public enum Category {
-    식품("food"),주방("kitchen"),욕실("bath"),생활("life"),취미("hobby"),선물("gift"),여성용품("woman"),반려동물("pet"),문구("stationery");
-    private String title;
+import com.greenUs.server.product.exception.ConvertFailException;
+import lombok.Getter;
 
-    Category(String title) {
-        this.title = title;
+import java.util.Arrays;
+
+@Getter
+public enum Category {
+    FOOD("food","1"),
+    KITCHEN("kitchen","2"),
+    BATH("bath", "3"),
+    LIFE("life", "4"),
+    HOBBY("hobby","5"),
+    GIFT("gift","6"),
+    WOMAN("woman", "7"),
+    PET("pet","8"),
+    STATIONERY("stationery","9");
+    private String desc;
+    private String code;
+
+    Category(String desc, String code) {
+        this.desc = desc;
+        this.code = code;
+    }
+
+    public static Category ofCode(String code) {
+        return Arrays.stream(Category.values())
+                .filter(v->v.getCode().equals(code))
+                .findAny()
+                .orElseThrow(() -> new ConvertFailException(String.format("DB 상에 %s 가 없습니다.", code)));
     }
 }
