@@ -3,6 +3,8 @@ package com.greenUs.server.post.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 
@@ -37,11 +39,14 @@ public class PostRequest {
 	@Schema(description = "게시판 파일 첨부 여부(false: 미첨부, true:첨부)", nullable = true)
 	private Boolean fileAttached;
 
-	@Schema(description = "서버에 저장된 파일 이름", example = "[서버에 저장된 파일 이름, 서버에 저장된 파일 이름]", nullable = true)
+	@Schema(description = "삭제할 첨부파일 이름", example = "[삭제할 첨부파일 이름, 삭제할 첨부파일 이름]", nullable = true)
 	private List<String> storedFileNames = new ArrayList<>();
 
 	@Schema(description = "게시판 해시태그", example = "#그리너스#지구", nullable = true)
 	private String hashtag = "";
+
+	@Schema(description = "게시판 첨부파일", example = "[첨부파일, 첨부파일]", nullable = true)
+	private List<MultipartFile> multipartFiles;
 
 	public Post toEntity() {
 		return Post.builder()
