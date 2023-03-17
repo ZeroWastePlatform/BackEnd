@@ -40,7 +40,7 @@ public class PostRequest {
 	private Boolean fileAttached;
 
 	@Schema(description = "삭제할 첨부파일 이름", example = "[삭제할 첨부파일 이름, 삭제할 첨부파일 이름]", nullable = true)
-	private List<String> storedFileNames = new ArrayList<>();
+	private List<String> serverFileNames = new ArrayList<>();
 
 	@Schema(description = "게시판 해시태그", example = "#그리너스#지구", nullable = true)
 	private String hashtag = "";
