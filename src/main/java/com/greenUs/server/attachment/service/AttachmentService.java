@@ -34,10 +34,12 @@ public class AttachmentService {
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
-	private static final int FREE_INFO_POST_WIDTH = 100;
-	private static final int USED_POST_WIDTH = 427;
 	private final AmazonS3 amazonS3;
 	private final AttachmentRepository attachmentRepository;
+	private static final int FREE_INFO_POST_WIDTH = 100;
+	private static final int FREE_INFO_POST_HEIGHT = 100;
+	private static final int USED_POST_WiDTH = 427;
+	private static final int USED_POST_HEIGHT = 427;
 
 	public void createAttachment(Post post, List<MultipartFile> multipartFiles) {
 
@@ -49,8 +51,9 @@ public class AttachmentService {
 			// 썸네일 (원본 이미지 축소)
 			String thumbnailFileName = "s_" + serverFileName;
 			String fileFormatName = file.getContentType().substring(file.getContentType().lastIndexOf("/") + 1);
+
 			MultipartFile thumbnailFile = resizeAttachment(thumbnailFileName, fileFormatName, file,
-				getTargetWidth(post.getKind()));
+				getTargetWidth(post.getKind()), getTargetHeight(post.getKind()));
 
 			putAmazonS3Object(serverFileName, file, new ObjectMetadata());
 			putAmazonS3Object(thumbnailFileName, thumbnailFile, new ObjectMetadata());
@@ -97,18 +100,15 @@ public class AttachmentService {
 	}
 
 	private MultipartFile resizeAttachment(String fileName, String fileFormatName, MultipartFile multipartFile,
-		int targetWidth) {
+		int targetWidth, int targetHeight) {
 
 		try {
-			// MultipartFile -> BufferedImage Convert
 			BufferedImage image = ImageIO.read(multipartFile.getInputStream());
 
-			// newWidth : newHeight = originWidth : originHeight
 			int originWidth = image.getWidth();
 			int originHeight = image.getHeight();
 
-			// origin 이미지가 resizing될 사이즈보다 작을 경우 resizing 작업 안 함
-			if (originWidth < targetWidth)
+			if (originWidth < targetWidth && originHeight < targetHeight)
 				return multipartFile;
 
 			MarvinImage imageMarvin = new MarvinImage(image);
@@ -116,7 +116,7 @@ public class AttachmentService {
 			Scale scale = new Scale();
 			scale.load();
 			scale.setAttribute("newWidth", targetWidth);
-			scale.setAttribute("newHeight", targetWidth * originHeight / originWidth);
+			scale.setAttribute("newHeight", targetHeight);
 			scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
 
 			BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
@@ -146,7 +146,13 @@ public class AttachmentService {
 
 	private int getTargetWidth(Integer kind) {
 		if (kind.equals(2))
-			return USED_POST_WIDTH;
+			return USED_POST_WiDTH;
 		return FREE_INFO_POST_WIDTH;
+	}
+
+	private int getTargetHeight(Integer kind) {
+		if (kind.equals(2))
+			return USED_POST_HEIGHT;
+		return FREE_INFO_POST_HEIGHT;
 	}
 }
