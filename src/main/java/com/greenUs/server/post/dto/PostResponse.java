@@ -78,8 +78,8 @@ public class PostResponse {
 
 		if (entity.getFileAttached() == true) {
 			for (Attachment attachment : entity.getAttachments()) {
-				this.storedFileNames.add(attachment.getStoredFileName());
-				this.attachmentUrls.add(attachment.getAttachmentUrl());
+				this.storedFileNames.add(attachment.getServerFileName());
+				this.attachmentUrls.add(attachment.getServerFileUrl());
 			}
 		}
 	}

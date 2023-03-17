@@ -133,7 +133,8 @@ public class PostService {
 
 		List<String> storedFileNames = new ArrayList<>();
 		for (Attachment attachment : post.getAttachments()) {
-			storedFileNames.add(attachment.getStoredFileName());
+			storedFileNames.add(attachment.getServerFileName());
+			storedFileNames.add(attachment.getThumbnailFileName());
 		}
 
 		if (!storedFileNames.isEmpty())

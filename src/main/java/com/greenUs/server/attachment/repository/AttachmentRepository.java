@@ -10,5 +10,5 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
 
 	List<Attachment> findByPostId(Long postId);
 
-	Attachment findByStoredFileName(String StoredFileName);
+	Attachment findByServerFileName(String serverFileName);
 }
