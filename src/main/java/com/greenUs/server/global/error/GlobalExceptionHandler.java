@@ -1,6 +1,7 @@
 package com.greenUs.server.global.error;
 
 import com.greenUs.server.attachment.exception.FailConvertOutputStream;
+import com.greenUs.server.attachment.exception.FailResizeAttachment;
 import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
 import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
@@ -78,6 +79,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundObjectException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundObjectException() {
         ErrorResponse response = new ErrorResponse(ErrorCode.OBJECT_NOT_FOUND);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(FailResizeAttachment.class)
+    public ResponseEntity<ErrorResponse> handleFailResizeAttachment() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.RESIZE_SERVER_ERROR);
         return ResponseEntity.badRequest().body(response);
     }
 }

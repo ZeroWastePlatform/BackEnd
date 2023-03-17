@@ -16,6 +16,7 @@ public enum ErrorCode {
     COMMENT_MEMBER_NOT_EQUAL(403, "댓글의 작성자가 아닙니다."),
     OBJECT_NOT_FOUND(404,"이미 삭제된 파일로 찾을 수 없습니다."),
     POST_NOT_FOUND(404,"게시글을 찾을 수 없습니다."),
+    RESIZE_SERVER_ERROR(500, "파일 리사이즈에 실패했습니다."),
     OAUTH_SERVER_ERROR(500, "OAuth 서버와 통신이 원활하지 않습니다."),
     OUTPUT_STREAM_ERROR(501, "Output Stream 변환에 실패했습니다.");
 
