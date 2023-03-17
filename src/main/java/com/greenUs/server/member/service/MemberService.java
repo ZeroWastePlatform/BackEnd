@@ -11,7 +11,7 @@ import com.greenUs.server.member.dto.request.SignUpRequest;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.dto.response.PostResponse;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import com.greenUs.server.purchase.repository.PurchaseRepository;

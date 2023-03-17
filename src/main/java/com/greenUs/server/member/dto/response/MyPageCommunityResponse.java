@@ -1,7 +1,7 @@
 package com.greenUs.server.member.dto.response;
 
 import com.greenUs.server.comment.dto.CommentResponse;
-import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.dto.response.PostResponse;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 

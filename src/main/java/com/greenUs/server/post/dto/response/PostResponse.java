@@ -1,4 +1,4 @@
-package com.greenUs.server.post.dto;
+package com.greenUs.server.post.dto.response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +55,10 @@ public class PostResponse {
 	private List<String> hashtags = new ArrayList<>();
 
 	@Schema(description = "서버에 저장된 파일 이름", nullable = false)
-	private List<String> storedFileNames = new ArrayList<>();
+	private List<String> serverFileNames = new ArrayList<>();
 
 	@Schema(description = "첨부파일 경로", nullable = false)
-	private List<String> attachmentUrls = new ArrayList<>();
+	private List<String> serverFileUrls = new ArrayList<>();
 
 	public PostResponse(Post entity) {
 		this.id = entity.getId();
@@ -78,8 +78,8 @@ public class PostResponse {
 
 		if (entity.getFileAttached() == true) {
 			for (Attachment attachment : entity.getAttachments()) {
-				this.storedFileNames.add(attachment.getServerFileName());
-				this.attachmentUrls.add(attachment.getServerFileUrl());
+				this.serverFileNames.add(attachment.getServerFileName());
+				this.serverFileUrls.add(attachment.getServerFileUrl());
 			}
 		}
 	}

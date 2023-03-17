@@ -1,4 +1,4 @@
-package com.greenUs.server.post.dto;
+package com.greenUs.server.post.dto.response;
 
 import com.greenUs.server.post.domain.Post;
 

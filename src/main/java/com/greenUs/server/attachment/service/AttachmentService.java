@@ -10,16 +10,15 @@ import javax.imageio.ImageIO;
 
 import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.attachment.exception.FailConvertOutputStream;
+import com.greenUs.server.attachment.exception.FailResizeAttachment;
 import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
 import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.attachment.repository.AttachmentRepository;
@@ -45,10 +44,8 @@ public class AttachmentService {
 
 		for (MultipartFile file : multipartFiles) {
 
-			// 원본 이미지
 			String serverFileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
 
-			// 썸네일 (원본 이미지 축소)
 			String thumbnailFileName = "s_" + serverFileName;
 			String fileFormatName = file.getContentType().substring(file.getContentType().lastIndexOf("/") + 1);
 
@@ -91,14 +88,6 @@ public class AttachmentService {
 		}
 	}
 
-	public List<Attachment> getAttachmentInfoByPostId(Long postId) {
-		return attachmentRepository.findByPostId(postId);
-	}
-
-	private Attachment getAttachmentByServerFileName(String serverFileName) {
-		return attachmentRepository.findByServerFileName(serverFileName);
-	}
-
 	private MultipartFile resizeAttachment(String fileName, String fileFormatName, MultipartFile multipartFile,
 		int targetWidth, int targetHeight) {
 
@@ -127,7 +116,7 @@ public class AttachmentService {
 			return new MockMultipartFile(fileName, baos.toByteArray());
 
 		} catch (IOException e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 리사이즈에 실패했습니다.");
+			throw new FailResizeAttachment();
 		}
 	}
 
@@ -154,5 +143,13 @@ public class AttachmentService {
 		if (kind.equals(2))
 			return USED_POST_HEIGHT;
 		return FREE_INFO_POST_HEIGHT;
+	}
+
+	public List<Attachment> getAttachmentByPostId(Long postId) {
+		return attachmentRepository.findByPostId(postId);
+	}
+
+	private Attachment getAttachmentByServerFileName(String serverFileName) {
+		return attachmentRepository.findByServerFileName(serverFileName);
 	}
 }
