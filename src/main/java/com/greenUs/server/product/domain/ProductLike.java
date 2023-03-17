@@ -25,6 +25,4 @@ public class ProductLike {
     private Member member;
 
     private Long productId;
-
-
 }

@@ -1,6 +1,10 @@
 package com.greenUs.server.product.domain;
 
+import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.common.BaseEntity;
+import com.greenUs.server.product.converter.BadgeConverter;
+import com.greenUs.server.product.converter.CategoryConverter;
+import com.greenUs.server.product.converter.ProductStatusConverter;
 import com.greenUs.server.purchase.domain.PurchaseProduct;
 import com.greenUs.server.reviewAndAsk.domain.Ask;
 import com.greenUs.server.reviewAndAsk.domain.Review;
@@ -24,32 +28,47 @@ public class Product extends BaseEntity {
     @Column(name = "product_id")
     private Long id;
 
-    private String category;
+    @Convert(converter = CategoryConverter.class)
+    private Category category;
+
+    private String discountRate;
+
+    @Convert(converter = BadgeConverter.class)
+    private Badge badges;
+
+    private String title;
+
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private Brand brand;
+
+    @Convert(converter = ProductStatusConverter.class)
+    private ProductStatus productStatus;
+
+    private Integer viewCount;
+
+    private Integer price;
+
+    private Integer deliveryFee;
+    private Integer likeCount;
+
+    private Integer reviewCount;
+
+    private Integer askCount;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
 
-
-    private String refundInfo;
-    private String deliveryInfo;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<Attachment> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Ask> asks = new ArrayList<>();
-    private String discountRate;
-    private String badges;
-    private String title;
-    private String description;
-    private String brand;
-    private String thumbnail;
-    private String info;
-    private ProductStatus productStatus;
-    private int viewCount;
-    private int price;
-    private int likeCount;
-    private int reviewCount =0;
-    private int askCount =0;
+
 
     public void plusLikeCount() {
         this.likeCount = this.likeCount+1;

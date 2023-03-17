@@ -6,24 +6,27 @@ import lombok.Getter;
 import java.util.Arrays;
 
 @Getter
-public enum ProductStatus {
-
-    SOLD_OUT("품절", "1"),
-    IN_STOCK("재고 있음", "2");
+public enum Badge {
+    BEST("best", "1"),
+    NEW("new", "2"),
+    SALE("sale", "3"),
+    BEST_SALE("best-sale", "4"),
+    BEST_NEW("best-new", "5"),
+    NEW_SALE("new-sale", "6"),
+    BEST_NEW_SALE("best-new-sale", "7");
 
     private String name;
     private String code;
 
-    ProductStatus(String name, String code) {
-        this.name = name;
-        this.code = code;
+    Badge(String name, String code) {
+        this.name=name;
+        this.code=code;
     }
 
-    public static ProductStatus ofCode(String code) {
-        return Arrays.stream(ProductStatus.values())
+    public static Badge ofCode(String code) {
+        return Arrays.stream(Badge.values())
                 .filter(v->v.getCode().equals(code))
                 .findAny()
                 .orElseThrow(() -> new ConvertFailException(String.format("DB 상에 %s 가 없습니다.", code)));
-
     }
 }

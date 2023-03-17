@@ -5,6 +5,7 @@ import com.greenUs.server.post.domain.Post;
 
 import javax.persistence.*;
 
+import com.greenUs.server.product.domain.Product;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,10 @@ public class Attachment extends BaseEntity {
     private String storedFileName;
 
 	private String attachmentUrl;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id")
+	private Product product;
 
 	@Builder
 	public Attachment(Post post, String originalFileName, String storedFileName, String attachmentUrl) {
