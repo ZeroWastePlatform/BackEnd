@@ -45,9 +45,9 @@ public class AttachmentService {
 		for (MultipartFile file : multipartFiles) {
 
 			String serverFileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+			String thumbnailFileName = getThumbnailFileName(serverFileName);
 
-			String thumbnailFileName = "s_" + serverFileName;
-			String fileFormatName = file.getContentType().substring(file.getContentType().lastIndexOf("/") + 1);
+			String fileFormatName = getFileFormatName(file);
 
 			MultipartFile thumbnailFile = resizeAttachment(thumbnailFileName, fileFormatName, file,
 				getTargetWidth(post.getKind()), getTargetHeight(post.getKind()));
@@ -76,14 +76,17 @@ public class AttachmentService {
 
 				if (!isExistObject) {
 					throw new NotFoundObjectException();
-				} else {
-					Attachment attachment = getAttachmentByServerFileName(serverFileName);
-
-					if (!attachment.getPost().getId().equals(postId))
-						throw new NotEqualAttachmentAndPostAttachment();
-					attachmentRepository.delete(attachment);
-					amazonS3.deleteObject(bucket, serverFileName);
 				}
+
+				Attachment attachment = getAttachmentByServerFileName(serverFileName);
+
+				if (!attachment.getPost().getId().equals(postId))
+					throw new NotEqualAttachmentAndPostAttachment();
+
+				amazonS3.deleteObject(bucket, serverFileName);
+				amazonS3.deleteObject(bucket, getThumbnailFileName(serverFileName));
+
+				attachmentRepository.delete(attachment);
 			}
 		}
 	}
@@ -131,6 +134,14 @@ public class AttachmentService {
 		} catch (IOException e) {
 			throw new FailConvertOutputStream();
 		}
+	}
+
+	private String getThumbnailFileName(String serverFileName) {
+		return "s_" + serverFileName;
+	}
+
+	private String getFileFormatName(MultipartFile file) {
+		return file.getContentType().substring(file.getContentType().lastIndexOf("/") + 1);
 	}
 
 	private int getTargetWidth(Integer kind) {
