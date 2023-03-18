@@ -46,7 +46,7 @@ public class PostRequest {
 	private String hashtag = "";
 
 	@Schema(description = "게시판 첨부파일", example = "[첨부파일, 첨부파일]", nullable = true)
-	private List<MultipartFile> multipartFiles;
+	private List<MultipartFile> multipartFiles = new ArrayList<>();;
 
 	public Post toEntity() {
 		return Post.builder()
