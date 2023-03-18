@@ -11,6 +11,7 @@ import com.greenUs.server.member.dto.request.SignUpRequest;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
+import com.greenUs.server.post.dto.response.PostListsResponse;
 import com.greenUs.server.post.dto.response.PostResponse;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.purchase.dto.response.PurchaseResponse;
@@ -71,7 +72,7 @@ public class MemberService {
 
         if (kind == 1) {
             myPageCommunityResponse.setPostResponses(postRepository.findByMemberId(member.getId(), pageRequest)
-                .map(PostResponse::new));
+                .map(PostListsResponse::new));
             return myPageCommunityResponse;
         }
         else if (kind == 2) {
