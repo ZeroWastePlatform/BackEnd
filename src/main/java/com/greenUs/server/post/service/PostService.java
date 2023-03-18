@@ -131,14 +131,13 @@ public class PostService {
 			throw new NotEqualMemberAndPostMember();
 		}
 
-		List<String> storedFileNames = new ArrayList<>();
+		List<String> serverFileNames = new ArrayList<>();
 		for (Attachment attachment : post.getAttachments()) {
-			storedFileNames.add(attachment.getServerFileName());
-			storedFileNames.add(attachment.getThumbnailFileName());
+			serverFileNames.add(attachment.getServerFileName());
 		}
 
-		if (!storedFileNames.isEmpty())
-			attachmentService.deleteAttachment(id, storedFileNames);
+		if (!serverFileNames.isEmpty())
+			attachmentService.deleteAttachment(id, serverFileNames);
 
 		postRepository.delete(post);
 
