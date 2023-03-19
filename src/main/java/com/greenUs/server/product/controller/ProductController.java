@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Tag(name = "상품", description = "상품 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
@@ -30,10 +32,9 @@ public class ProductController {
     })
     @GetMapping
     public ResponseEntity<Page<ProductsResponse>> getProducts(
-            ProductsRequest productsRequest
+            @Valid ProductsRequest productsRequest
     ){
         Page<ProductsResponse> response = productService.getProducts(productsRequest);
-
         return ResponseEntity.ok(response);
     }
 

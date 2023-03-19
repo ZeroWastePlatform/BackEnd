@@ -3,7 +3,6 @@ package com.greenUs.server.product.dto.response;
 import com.greenUs.server.product.domain.Badge;
 import com.greenUs.server.product.domain.Brand;
 import com.greenUs.server.product.domain.Category;
-import com.greenUs.server.product.domain.ProductStatus;
 import lombok.*;
 
 @Getter
@@ -16,7 +15,7 @@ public class ProductsResponse {
 
     private Category category;
 
-    private String discountRate;
+    private Integer discountRate;
 
     private Badge badges;
 
@@ -26,9 +25,9 @@ public class ProductsResponse {
 
     private Brand brand;
 
-    private ProductStatus productStatus;
-
     private Integer viewCount;
+
+    private Integer stock;
 
     private Integer price;
 

@@ -4,7 +4,6 @@ import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.product.converter.BadgeConverter;
 import com.greenUs.server.product.converter.CategoryConverter;
-import com.greenUs.server.product.converter.ProductStatusConverter;
 import com.greenUs.server.purchase.domain.PurchaseProduct;
 import com.greenUs.server.reviewAndAsk.domain.Ask;
 import com.greenUs.server.reviewAndAsk.domain.Review;
@@ -31,7 +30,7 @@ public class Product extends BaseEntity {
     @Convert(converter = CategoryConverter.class)
     private Category category;
 
-    private String discountRate;
+    private Integer discountRate;
 
     @Convert(converter = BadgeConverter.class)
     private Badge badges;
@@ -43,10 +42,9 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Brand brand;
 
-    @Convert(converter = ProductStatusConverter.class)
-    private ProductStatus productStatus;
-
     private Integer viewCount;
+
+    private Integer stock;
 
     private Integer price;
 

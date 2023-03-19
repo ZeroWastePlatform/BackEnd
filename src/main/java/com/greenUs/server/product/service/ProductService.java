@@ -5,6 +5,7 @@ import com.greenUs.server.product.dto.Order;
 import com.greenUs.server.product.dto.request.ProductsRequest;
 import com.greenUs.server.product.dto.response.ProductsResponse;
 import com.greenUs.server.product.repository.ProductRepository;
+import com.greenUs.server.product.repository.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,8 @@ public class ProductService {
     private static final int MAX_PRODUCTS_COUNT = 9;
 
     private final ProductRepository productRepository;
+    private final ProductRepositoryCustom productRepositoryCustom;
+
 
     public Page<ProductsResponse> getProducts (ProductsRequest productsRequest) {
 
@@ -31,9 +34,17 @@ public class ProductService {
             productsResponses = transformProducts(productRepository.findAll(pageRequest));
         }
 
-        // 특정 카테고리 검색일 경우
+        // 검색 및 필터 적용
         else {
-            productsResponses = transformProducts(productRepository.findByCategory(productsRequest.getCategory(), pageRequest));
+            productsResponses = transformProducts(
+                    productRepositoryCustom.findWithSearchCondition(
+                            productsRequest.getCategory(),
+                            productsRequest.getBrand(),
+                            productsRequest.getPrice(),
+                            productsRequest.getProductStatus(),
+                            pageRequest
+                    )
+            );
         }
 
         return productsResponses;
@@ -63,8 +74,8 @@ public class ProductService {
                         .title(product.getTitle())
                         .description(product.getDescription())
                         .brand(product.getBrand())
-                        .productStatus(product.getProductStatus())
                         .viewCount(product.getViewCount())
+                        .stock(product.getStock())
                         .price(product.getPrice())
                         .deliveryFee(product.getDeliveryFee())
                         .likeCount(product.getLikeCount())
