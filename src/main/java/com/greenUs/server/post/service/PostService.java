@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.attachment.service.AttachmentService;
@@ -19,9 +18,11 @@ import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
-import com.greenUs.server.post.dto.PostRecommendationResponse;
-import com.greenUs.server.post.dto.PostRequest;
-import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.dto.request.PostRequest;
+import com.greenUs.server.post.dto.response.PostDetailResponse;
+import com.greenUs.server.post.dto.response.PostListsResponse;
+import com.greenUs.server.post.dto.response.PostPopularityResponse;
+import com.greenUs.server.post.dto.response.PostRecommendationResponse;
 import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
@@ -41,28 +42,28 @@ public class PostService {
 	private final HashtagService hashtagService;
 	private final AttachmentService attachmentService;
 
-	public Page<PostResponse> getPostLists(Integer kind, Integer page, String orderCriteria) {
+	public Page<PostListsResponse> getPostLists(Integer kind, Integer page, String orderCriteria) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
 		return postRepository.findByKind(kind, pageRequest)
-			.map(PostResponse::new);
+			.map(PostListsResponse::new);
 	}
 
-	public Page<PostResponse> getSearchPostLists(String word, Integer page) {
+	public Page<PostListsResponse> getSearchPostLists(String word, Integer page) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_SEARCH_POST_COUNT,
 			Sort.by(Sort.Direction.DESC, "createdAt"));
 
 		return postRepository.findByTitleContainingOrContentContaining(word, word, pageRequest)
-			.map(PostResponse::new);
+			.map(PostListsResponse::new);
 	}
 
-	public PostResponse getPostDetail(Long id) {
+	public PostDetailResponse getPostDetail(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		PostResponse postResponseDto = new PostResponse(post);
+		PostDetailResponse postResponseDto = new PostDetailResponse(post);
 
 		return postResponseDto;
 	}
@@ -84,7 +85,7 @@ public class PostService {
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
-		return new PostResponse(post).getKind();
+		return new PostDetailResponse(post).getKind();
 	}
 
 	@Transactional
@@ -96,13 +97,13 @@ public class PostService {
 			throw new NotEqualMemberAndPostMember();
 		}
 
-		if (!postRequestDto.getStoredFileNames().isEmpty())
-			attachmentService.deleteAttachment(id, postRequestDto.getStoredFileNames());
+		if (!postRequestDto.getServerFileNames().isEmpty())
+			attachmentService.deleteAttachment(id, postRequestDto.getServerFileNames());
 
 		if (!(postRequestDto.getMultipartFiles() == null || postRequestDto.getMultipartFiles().isEmpty()))
 			attachmentService.createAttachment(post, postRequestDto.getMultipartFiles());
 
-		List<Attachment> attachments = attachmentService.getAttachmentInfoByPostId(id);
+		List<Attachment> attachments = attachmentService.getAttachmentByPostId(id);
 		if (attachments.size() == 0)
 			postRequestDto.setFileAttached(false);
 		else
@@ -119,7 +120,7 @@ public class PostService {
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
-		return new PostResponse(post).getKind();
+		return new PostDetailResponse(post).getKind();
 	}
 
 	@Transactional
@@ -131,13 +132,13 @@ public class PostService {
 			throw new NotEqualMemberAndPostMember();
 		}
 
-		List<String> storedFileNames = new ArrayList<>();
+		List<String> serverFileNames = new ArrayList<>();
 		for (Attachment attachment : post.getAttachments()) {
-			storedFileNames.add(attachment.getStoredFileName());
+			serverFileNames.add(attachment.getServerFileName());
 		}
 
-		if (!storedFileNames.isEmpty())
-			attachmentService.deleteAttachment(id, storedFileNames);
+		if (!serverFileNames.isEmpty())
+			attachmentService.deleteAttachment(id, serverFileNames);
 
 		postRepository.delete(post);
 
@@ -165,16 +166,16 @@ public class PostService {
 		recommendRepository.delete(recommend);
 	}
 
-	public List<PostResponse> getPopularPosts() {
+	public List<PostPopularityResponse> getPopularPosts() {
 
 		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
-		List<PostResponse> postResponseDto = new ArrayList<>();
+		List<PostPopularityResponse> postResponseDto = new ArrayList<>();
 
 		for (Post post : posts) {
-			postResponseDto.add(new PostResponse(post));
+			postResponseDto.add(new PostPopularityResponse(post));
 		}
 
 		return postResponseDto;

@@ -1,11 +1,13 @@
 package com.greenUs.server.global.error;
 
 import com.greenUs.server.attachment.exception.FailConvertOutputStream;
+import com.greenUs.server.attachment.exception.FailResizeAttachment;
 import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachment;
 import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
+import com.greenUs.server.comment.exception.NotFoundCommentException;
 import com.greenUs.server.infrastructure.oauth.exception.OAuthException;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 @RestControllerAdvice
 @Slf4j
@@ -51,6 +54,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @ExceptionHandler(NotFoundCommentException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundComment() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.COMMENT_NOT_FOUND);
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @ExceptionHandler(NotEqualMemberAndPostMember.class)
     public ResponseEntity<ErrorResponse> handleNotEqualMemberAndPostMember() {
         ErrorResponse response = new ErrorResponse(ErrorCode.POST_MEMBER_NOT_EQUAL);
@@ -78,6 +87,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundObjectException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundObjectException() {
         ErrorResponse response = new ErrorResponse(ErrorCode.OBJECT_NOT_FOUND);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(FailResizeAttachment.class)
+    public ResponseEntity<ErrorResponse> handleFailResizeAttachment() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.RESIZE_SERVER_ERROR);
         return ResponseEntity.badRequest().body(response);
     }
 }

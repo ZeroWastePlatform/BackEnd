@@ -1,7 +1,8 @@
 package com.greenUs.server.member.dto.response;
 
-import com.greenUs.server.comment.dto.CommentResponse;
-import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.dto.response.MyPageCommentResponse;
+import com.greenUs.server.post.dto.response.MyPagePostResponse;
+
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
@@ -14,8 +15,8 @@ import lombok.Setter;
 public class MyPageCommunityResponse {
 
     private MyPageProfileResponse myPageProfileResponse;
-    private Page<PostResponse> postResponses;
-    private Page<CommentResponse> commentResponses;
+    private Page<MyPagePostResponse> postResponses;
+    private Page<MyPageCommentResponse> commentResponses;
 
     public MyPageCommunityResponse(MyPageProfileResponse myPageProfileResponse) {
         this.myPageProfileResponse = myPageProfileResponse;

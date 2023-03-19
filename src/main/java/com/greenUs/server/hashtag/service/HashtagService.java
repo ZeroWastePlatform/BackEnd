@@ -18,7 +18,7 @@ import com.greenUs.server.hashtag.dto.HashtagResponse;
 import com.greenUs.server.hashtag.repository.HashtagRepository;
 import com.greenUs.server.hashtag.repository.KeywordRepository;
 import com.greenUs.server.post.domain.Post;
-import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.dto.response.PostListsResponse;
 import com.greenUs.server.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class HashtagService {
 
 	// 해시태그 인기글
 	@Transactional(readOnly = true)
-	public HashtagResponse getPopularKeyword() {
+	public HashtagResponse getPopularKeywords() {
 
 		List<Keyword> keywords = keywordRepository.findTop5ByOrderByCountDesc();
 
@@ -46,15 +46,12 @@ public class HashtagService {
 
 	// 해시태그 검색
 	@Transactional(readOnly = true)
-	public Page<PostResponse> getPostsByKeyword(Integer page, String keyword, String orderCriteria) {
+	public Page<PostListsResponse> getSearchKeywordLists(Integer page, String keyword, String orderCriteria) {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, orderCriteria));
 
-		Page<Post> post = postRepository.findByKeywordContaining(keyword, pageRequest);
-
-		Page<PostResponse> postResponseDto = post.map(PostResponse::new);
-
-		return postResponseDto;
+		return postRepository.findByKeywordContaining(keyword, pageRequest)
+			.map(PostListsResponse::new);
 	}
 
 	// 게시판 정보와 키워드 들을 입력받아 관련 내용 저장 또는 수정

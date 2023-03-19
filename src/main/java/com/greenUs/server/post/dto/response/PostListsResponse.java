@@ -1,13 +1,12 @@
-package com.greenUs.server.post.dto;
+package com.greenUs.server.post.dto.response;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.greenUs.server.attachment.domain.Attachment;
-import com.greenUs.server.hashtag.domain.Hashtag;
-import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.global.Time;
+import com.greenUs.server.hashtag.domain.Hashtag;
+import com.greenUs.server.post.domain.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -19,7 +18,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class PostResponse {
+public class PostListsResponse {
 
 	@Schema(description = "게시판 번호", nullable = false, example = "47")
 	private Long id;
@@ -30,8 +29,8 @@ public class PostResponse {
 	@Schema(description = "게시판 제목", nullable = false)
 	private String title;
 
-	@Schema(description = "게시판 작성자", nullable = false)
-	private Member member;
+	@Schema(description = "게시판 작성자 닉네임", nullable = false)
+	private String nickname;
 
 	@Schema(description = "게시판 내용", nullable = false)
 	private String content;
@@ -54,17 +53,14 @@ public class PostResponse {
 	@Schema(description = "게시판 해시태그", example = "[그리너스, 지구]", nullable = false)
 	private List<String> hashtags = new ArrayList<>();
 
-	@Schema(description = "서버에 저장된 파일 이름", nullable = false)
-	private List<String> storedFileNames = new ArrayList<>();
+	@Schema(description = "썸네일 경로", nullable = false)
+	private List<String> thumbnailUrls = new ArrayList<>();
 
-	@Schema(description = "첨부파일 경로", nullable = false)
-	private List<String> attachmentUrls = new ArrayList<>();
-
-	public PostResponse(Post entity) {
+	public PostListsResponse(Post entity) {
 		this.id = entity.getId();
 		this.kind = entity.getKind();
 		this.title = entity.getTitle();
-		this.member = entity.getMember();
+		this.nickname = entity.getMember().getNickname();
 		this.content = entity.getContent();
 		this.price = entity.getPrice();
 		this.viewCnt = entity.getViewCnt();
@@ -78,8 +74,7 @@ public class PostResponse {
 
 		if (entity.getFileAttached() == true) {
 			for (Attachment attachment : entity.getAttachments()) {
-				this.storedFileNames.add(attachment.getStoredFileName());
-				this.attachmentUrls.add(attachment.getAttachmentUrl());
+				this.thumbnailUrls.add(attachment.getThumbnailFileUrl());
 			}
 		}
 	}

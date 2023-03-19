@@ -1,4 +1,4 @@
-package com.greenUs.server.post.dto;
+package com.greenUs.server.post.dto.request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +40,14 @@ public class PostRequest {
 	private Boolean fileAttached;
 
 	@Schema(description = "삭제할 첨부파일 이름", example = "[삭제할 첨부파일 이름, 삭제할 첨부파일 이름]", nullable = true)
-	private List<String> storedFileNames = new ArrayList<>();
+	private List<String> serverFileNames = new ArrayList<>();
 
 	@Schema(description = "게시판 해시태그", example = "#그리너스#지구", nullable = true)
 	private String hashtag = "";
 
 	@Schema(description = "게시판 첨부파일", example = "[첨부파일, 첨부파일]", nullable = true)
-	private List<MultipartFile> multipartFiles;
+	private List<MultipartFile> multipartFiles = new ArrayList<>();
+	;
 
 	public Post toEntity() {
 		return Post.builder()

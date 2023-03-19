@@ -10,25 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.PostRecommendationResponse;
-import com.greenUs.server.post.dto.PostRequest;
-import com.greenUs.server.post.dto.PostResponse;
+import com.greenUs.server.post.dto.request.PostRequest;
+import com.greenUs.server.post.dto.response.PostDetailResponse;
+import com.greenUs.server.post.dto.response.PostListsResponse;
+import com.greenUs.server.post.dto.response.PostPopularityResponse;
+import com.greenUs.server.post.dto.response.PostRecommendationResponse;
 import com.greenUs.server.post.service.PostService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,46 +50,46 @@ public class PostController {
 
 	@Operation(summary = "게시글 목록 조회", description = "게시글 구분(kind)값과 현재 페이지(page), 정렬 조건(orderby), 검색 조건(searchtype), 검색어(searchby)를 파라미터로 받아 목록을 불러올 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/lists/{kind}")
-	public ResponseEntity<Page<PostResponse>> getPostLists(
+	public ResponseEntity<Page<PostListsResponse>> getPostLists(
 		@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @PathVariable @Min(1) @Max(3) Integer kind,
 		@Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
 		@Parameter(description = "정렬 조건(createdAt: 최신순, viewCnt: 조회순, recommendCnt: 추천순)", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "createdAt", value = "orderby") String orderCriteria
 	) {
 
-		Page<PostResponse> postResponseDto = postService.getPostLists(kind, page, orderCriteria);
+		Page<PostListsResponse> postResponseDto = postService.getPostLists(kind, page, orderCriteria);
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "게시글 검색 조회", description = "게시글 검색 키워드를 파라미터로 받아 검색 목록을 불러올 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 검색 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 검색 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping
-	public ResponseEntity<Page<PostResponse>> getSearchPostLists(
+	public ResponseEntity<Page<PostListsResponse>> getSearchPostLists(
 		@Parameter(description = "게시글 구분 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "search") String word,
 		@Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page
 	) {
 
-		Page<PostResponse> postResponseDto = postService.getSearchPostLists(word, page);
+		Page<PostListsResponse> postResponseDto = postService.getSearchPostLists(word, page);
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "게시글 상세 내용 조회", description = "게시글 번호(id)를 파라미터로 받아 게시글을 상세 조회 할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 상세 내용 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 상세 내용 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/{id}")
-	public ResponseEntity<PostResponse> getPostDetail(
+	public ResponseEntity<PostDetailResponse> getPostDetail(
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
 		postService.updateViewCnt(id);
-		PostResponse postResponseDto = postService.getPostDetail(id);
+		PostDetailResponse postResponseDto = postService.getPostDetail(id);
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
@@ -165,13 +163,13 @@ public class PostController {
 
 	@Operation(summary = "오늘의 그리너스 인기글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/popularity")
-	public ResponseEntity<List<PostResponse>> getPopularPosts() {
+	public ResponseEntity<List<PostPopularityResponse>> getPopularPosts() {
 
-		List<PostResponse> postResponseDto = postService.getPopularPosts();
+		List<PostPopularityResponse> postResponseDto = postService.getPopularPosts();
 
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}

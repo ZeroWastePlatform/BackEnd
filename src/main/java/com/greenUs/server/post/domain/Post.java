@@ -95,6 +95,5 @@ public class Post extends BaseEntity {
 	public void prePersist() {
 		this.viewCnt = this.viewCnt == null ? 0 : this.viewCnt;
 		this.recommendCnt = this.recommendCnt == null ? 0 : this.recommendCnt;
-		this.fileAttached = this.fileAttached == null ? false : this.fileAttached;
 	}
 }
