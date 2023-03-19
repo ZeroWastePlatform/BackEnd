@@ -30,7 +30,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
         List<Product> productList = jpaQueryFactory.selectFrom(QProduct.product)
                 .where(
                         eqCategory(category),
-                        erBrand(brand),
+                        eqBrand(brand),
                         containPrice(price),
                         eqProductStatus(productStatus)
                 )
@@ -53,7 +53,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
         return QProduct.product.category.eq(category);
     }
 
-    private BooleanExpression erBrand(Brand brand) {
+    private BooleanExpression eqBrand(Brand brand) {
         if (brand == null)
             return null;
         return QProduct.product.brand.eq(brand);
