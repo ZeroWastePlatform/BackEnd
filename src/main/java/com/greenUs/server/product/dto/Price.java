@@ -1,5 +1,8 @@
 package com.greenUs.server.product.dto;
 
+import lombok.Getter;
+
+@Getter
 public enum Price {
 
     LT_10("10000원 미만"),
