@@ -25,7 +25,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-        public Page<Product> findWithSearchCondition(Category category, Brand brand, Price price, ProductStatus productStatus, Pageable pageable) {
+    public Page<Product> findWithSearchCondition(Category category, Brand brand, Price price, ProductStatus productStatus, Pageable pageable) {
 
         List<Product> productList = jpaQueryFactory.selectFrom(QProduct.product)
                 .where(
