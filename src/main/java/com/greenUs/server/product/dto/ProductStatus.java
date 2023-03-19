@@ -1,4 +1,4 @@
-package com.greenUs.server.product.domain;
+package com.greenUs.server.product.dto;
 
 import lombok.Getter;
 
@@ -6,15 +6,14 @@ import lombok.Getter;
 @Getter
 public enum ProductStatus {
 
-    SOLD_OUT("품절", "1"),
-    IN_STOCK("재고 있음", "2");
+    FREE_SHIPPING("무료배송"),
+    DISCOUNT_STOCK("할인상품"),
+    REMOVE_OUT_OF_STOCK("품절상품 제외");
 
 
     private String name;
-    private String code;
 
-    ProductStatus(String name, String code) {
+    ProductStatus(String name) {
         this.name = name;
-        this.code = code;
     }
 }
