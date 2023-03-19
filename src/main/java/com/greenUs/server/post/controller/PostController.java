@@ -22,10 +22,11 @@ import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.PostRequest;
+import com.greenUs.server.post.dto.request.PostRequest;
+import com.greenUs.server.post.dto.response.PostDetailResponse;
 import com.greenUs.server.post.dto.response.PostListsResponse;
+import com.greenUs.server.post.dto.response.PostPopularityResponse;
 import com.greenUs.server.post.dto.response.PostRecommendationResponse;
-import com.greenUs.server.post.dto.response.PostResponse;
 import com.greenUs.server.post.service.PostService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +50,7 @@ public class PostController {
 
 	@Operation(summary = "게시글 목록 조회", description = "게시글 구분(kind)값과 현재 페이지(page), 정렬 조건(orderby), 검색 조건(searchtype), 검색어(searchby)를 파라미터로 받아 목록을 불러올 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/lists/{kind}")
@@ -65,7 +66,7 @@ public class PostController {
 
 	@Operation(summary = "게시글 검색 조회", description = "게시글 검색 키워드를 파라미터로 받아 검색 목록을 불러올 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 검색 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 검색 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping
@@ -80,15 +81,15 @@ public class PostController {
 
 	@Operation(summary = "게시글 상세 내용 조회", description = "게시글 번호(id)를 파라미터로 받아 게시글을 상세 조회 할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "게시글 상세 내용 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "게시글 상세 내용 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/{id}")
-	public ResponseEntity<PostResponse> getPostDetail(
+	public ResponseEntity<PostDetailResponse> getPostDetail(
 		@Parameter(description = "게시글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
 		postService.updateViewCnt(id);
-		PostResponse postResponseDto = postService.getPostDetail(id);
+		PostDetailResponse postResponseDto = postService.getPostDetail(id);
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}
 
@@ -162,13 +163,13 @@ public class PostController {
 
 	@Operation(summary = "오늘의 그리너스 인기글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/popularity")
-	public ResponseEntity<List<PostResponse>> getPopularPosts() {
+	public ResponseEntity<List<PostPopularityResponse>> getPopularPosts() {
 
-		List<PostResponse> postResponseDto = postService.getPopularPosts();
+		List<PostPopularityResponse> postResponseDto = postService.getPopularPosts();
 
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}

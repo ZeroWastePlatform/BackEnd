@@ -36,9 +36,8 @@ public class CommentService {
 
 		PageRequest pageRequest = PageRequest.of(page, PAGE_COMMENT_COUNT, Sort.by(Sort.Direction.ASC, "createdAt"));
 
-		Page<Comment> comment = commentRepository.findByPostId(postId, pageRequest);
-
-		Page<CommentResponse> commentResponseDto = comment.map(CommentResponse::new);
+		Page<CommentResponse> commentResponseDto = commentRepository.findByPostId(postId, pageRequest)
+			.map(CommentResponse::new);
 
 		return commentResponseDto;
 	}
@@ -71,13 +70,16 @@ public class CommentService {
 			.build();
 
 		comment.confirmParent(commentRepository.findById(parentId)
-			.orElseThrow(() -> new IllegalArgumentException("ParentComment is not Existing")));
+			.orElseThrow(() -> new NotFoundCommentException()));
 
 		commentRepository.save(comment);
 	}
 
 	@Transactional
 	public void updateComment(Long id, CommentRequest commentRequestDto, Member member) {
+
+		postRepository.findById(commentRequestDto.getPostId())
+			.orElseThrow(NotFoundPostException::new);
 
 		Comment comment = commentRepository.findById(id)
 			.orElseThrow(NotFoundCommentException::new);

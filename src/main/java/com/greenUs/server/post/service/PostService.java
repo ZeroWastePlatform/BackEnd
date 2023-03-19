@@ -18,10 +18,11 @@ import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.domain.Recommend;
-import com.greenUs.server.post.dto.PostRequest;
+import com.greenUs.server.post.dto.request.PostRequest;
+import com.greenUs.server.post.dto.response.PostDetailResponse;
 import com.greenUs.server.post.dto.response.PostListsResponse;
+import com.greenUs.server.post.dto.response.PostPopularityResponse;
 import com.greenUs.server.post.dto.response.PostRecommendationResponse;
-import com.greenUs.server.post.dto.response.PostResponse;
 import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 import com.greenUs.server.post.repository.PostRepository;
@@ -58,11 +59,11 @@ public class PostService {
 			.map(PostListsResponse::new);
 	}
 
-	public PostResponse getPostDetail(Long id) {
+	public PostDetailResponse getPostDetail(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		PostResponse postResponseDto = new PostResponse(post);
+		PostDetailResponse postResponseDto = new PostDetailResponse(post);
 
 		return postResponseDto;
 	}
@@ -84,7 +85,7 @@ public class PostService {
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
-		return new PostResponse(post).getKind();
+		return new PostDetailResponse(post).getKind();
 	}
 
 	@Transactional
@@ -119,7 +120,7 @@ public class PostService {
 		if (!postRequestDto.getHashtag().isEmpty())
 			hashtagService.applyHashtag(post, postRequestDto.getHashtag());
 
-		return new PostResponse(post).getKind();
+		return new PostDetailResponse(post).getKind();
 	}
 
 	@Transactional
@@ -165,16 +166,16 @@ public class PostService {
 		recommendRepository.delete(recommend);
 	}
 
-	public List<PostResponse> getPopularPosts() {
+	public List<PostPopularityResponse> getPopularPosts() {
 
 		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
-		List<PostResponse> postResponseDto = new ArrayList<>();
+		List<PostPopularityResponse> postResponseDto = new ArrayList<>();
 
 		for (Post post : posts) {
-			postResponseDto.add(new PostResponse(post));
+			postResponseDto.add(new PostPopularityResponse(post));
 		}
 
 		return postResponseDto;

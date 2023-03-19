@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.greenUs.server.attachment.domain.Attachment;
-import com.greenUs.server.hashtag.domain.Hashtag;
-import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.global.Time;
+import com.greenUs.server.hashtag.domain.Hashtag;
+import com.greenUs.server.post.domain.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -19,7 +18,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class PostResponse {
+public class PostDetailResponse {
 
 	@Schema(description = "게시판 번호", nullable = false, example = "47")
 	private Long id;
@@ -30,8 +29,8 @@ public class PostResponse {
 	@Schema(description = "게시판 제목", nullable = false)
 	private String title;
 
-	@Schema(description = "게시판 작성자", nullable = false)
-	private Member member;
+	@Schema(description = "게시판 작성자 정보", nullable = false)
+	private CommunityMemberResponse postMember;
 
 	@Schema(description = "게시판 내용", nullable = false)
 	private String content;
@@ -60,11 +59,11 @@ public class PostResponse {
 	@Schema(description = "첨부파일 경로", nullable = false)
 	private List<String> serverFileUrls = new ArrayList<>();
 
-	public PostResponse(Post entity) {
+	public PostDetailResponse(Post entity) {
 		this.id = entity.getId();
 		this.kind = entity.getKind();
 		this.title = entity.getTitle();
-		this.member = entity.getMember();
+		this.postMember = new CommunityMemberResponse(entity);
 		this.content = entity.getContent();
 		this.price = entity.getPrice();
 		this.viewCnt = entity.getViewCnt();

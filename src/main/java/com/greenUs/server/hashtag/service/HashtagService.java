@@ -19,7 +19,6 @@ import com.greenUs.server.hashtag.repository.HashtagRepository;
 import com.greenUs.server.hashtag.repository.KeywordRepository;
 import com.greenUs.server.post.domain.Post;
 import com.greenUs.server.post.dto.response.PostListsResponse;
-import com.greenUs.server.post.dto.response.PostResponse;
 import com.greenUs.server.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;

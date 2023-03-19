@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.greenUs.server.hashtag.dto.HashtagResponse;
 import com.greenUs.server.hashtag.service.HashtagService;
 import com.greenUs.server.post.dto.response.PostListsResponse;
-import com.greenUs.server.post.dto.response.PostResponse;
+import com.greenUs.server.post.dto.response.PostDetailResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -46,7 +46,7 @@ public class HashtagController {
 
 	@Operation(summary = "해시태그 검색", description = "해시태그를 기반으로 게시글을 검색 할 수 있습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "해시태그 검색 성공", content = @Content(schema = @Schema(implementation = PostResponse.class))),
+		@ApiResponse(responseCode = "200", description = "해시태그 검색 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping

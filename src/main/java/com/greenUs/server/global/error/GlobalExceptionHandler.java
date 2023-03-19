@@ -7,6 +7,7 @@ import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
+import com.greenUs.server.comment.exception.NotFoundCommentException;
 import com.greenUs.server.infrastructure.oauth.exception.OAuthException;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
@@ -50,6 +51,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundPostException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundPost() {
         ErrorResponse response = new ErrorResponse(ErrorCode.POST_NOT_FOUND);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotFoundCommentException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundComment() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.COMMENT_NOT_FOUND);
         return ResponseEntity.badRequest().body(response);
     }
 

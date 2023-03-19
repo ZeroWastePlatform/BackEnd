@@ -5,10 +5,11 @@ import com.greenUs.server.post.domain.Post;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
-public class PostRecommendationResponse {
+public class PostPopularityResponse {
 
 	@Schema(description = "게시판 번호", nullable = false)
 	private Long id;
@@ -16,12 +17,12 @@ public class PostRecommendationResponse {
 	@Schema(description = "게시판 제목", nullable = false)
 	private String title;
 
-	@Schema(description = "게시판 내용", nullable = false)
-	private String content;
+	@Schema(description = "게시판 추천수", example = "17", nullable = false)
+	private Integer recommendCnt;
 
-	public PostRecommendationResponse(Post entity) {
+	public PostPopularityResponse(Post entity) {
 		this.id = entity.getId();
 		this.title = entity.getTitle();
-		this.content = entity.getContent();
+		this.recommendCnt = entity.getRecommendCnt();
 	}
 }

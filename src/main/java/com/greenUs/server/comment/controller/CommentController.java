@@ -62,7 +62,7 @@ public class CommentController {
 	})
 	@PostMapping
 	public ResponseEntity createComment(
-		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
 		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
@@ -78,7 +78,7 @@ public class CommentController {
 	})
 	@PostMapping("/{parent-id}")
 	public ResponseEntity createRecomment(
-		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "댓글 번호(parent-id)", in = ParameterIn.PATH) @PathVariable(value = "parent-id") Long parentId,
 		@Parameter(description = "게시글 번호(postId), 내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
@@ -95,7 +95,7 @@ public class CommentController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity updateComment(
-		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "댓글 번호(id)", in = ParameterIn.PATH) @PathVariable Long id,
 		@Parameter(description = "내용(content)", in = ParameterIn.PATH) @RequestBody CommentRequest commentRequestDto) {
 
@@ -112,7 +112,7 @@ public class CommentController {
 	})
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteComment(
-		@AuthenticationPrincipal LoginMember loginMember,
+		@Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
 		@Parameter(description = "댓글 번호", in = ParameterIn.PATH) @PathVariable Long id) {
 
 		Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
