@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.greenUs.server.comment.domain.Comment;
 import com.greenUs.server.comment.dto.CommentRequest;
 import com.greenUs.server.comment.dto.CommentResponse;
+import com.greenUs.server.comment.exception.NotEqualCommentAndPostComment;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
 import com.greenUs.server.comment.exception.NotFoundCommentException;
 import com.greenUs.server.comment.repository.CommentRepository;
@@ -63,6 +64,9 @@ public class CommentService {
 		Post post = postRepository.findById(commentRequestDto.getPostId())
 			.orElseThrow(NotFoundPostException::new);
 
+		commentRepository.findByIdAndPostId(parentId, commentRequestDto.getPostId())
+			.orElseThrow(NotEqualCommentAndPostComment::new);
+
 		Comment comment = Comment.builder()
 			.member(member)
 			.post(post)
@@ -70,7 +74,7 @@ public class CommentService {
 			.build();
 
 		comment.confirmParent(commentRepository.findById(parentId)
-			.orElseThrow(() -> new NotFoundCommentException()));
+			.orElseThrow(NotFoundCommentException::new));
 
 		commentRepository.save(comment);
 	}

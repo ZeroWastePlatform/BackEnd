@@ -1,5 +1,7 @@
 package com.greenUs.server.comment.repository;
 
+import java.util.Optional;
+
 import com.greenUs.server.comment.domain.Comment;
 
 import org.springframework.data.domain.Page;
@@ -16,4 +18,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
 	// 내가 작성한 댓글 반환
 	Page<Comment> findByMemberId(Long id, PageRequest pageRequest);
+
+	Optional<Comment> findByIdAndPostId(Long Id, Long postId);
 }

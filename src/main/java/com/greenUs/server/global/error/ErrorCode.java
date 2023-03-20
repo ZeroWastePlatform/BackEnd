@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_TOKEN(401, "잘못된 토큰입니다."),
     EXPIRED_TOKEN(401, "만료된 토큰입니다."),
     POST_MEMBER_NOT_EQUAL(403, "게시글의 작성자가 아닙니다."),
+    POST_COMMENT_NOT_EQUAL(403,"해당하는 게시글의 댓글 번호가 아닙니다."),
     POST_ATTACHMENT_NOT_EQUAL(403, "게시글의 첨부파일 이름이 아닙니다."),
     COMMENT_MEMBER_NOT_EQUAL(403, "댓글의 작성자가 아닙니다."),
     OBJECT_NOT_FOUND(404,"이미 삭제된 파일로 찾을 수 없습니다."),
