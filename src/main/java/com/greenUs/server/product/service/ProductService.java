@@ -80,6 +80,7 @@ public class ProductService {
                         .deliveryFee(product.getDeliveryFee())
                         .likeCount(product.getLikeCount())
                         .reviewCount(product.getReviewCount())
+                        .thumbnail(product.getThumbnail())
                         .build());
     }
 }

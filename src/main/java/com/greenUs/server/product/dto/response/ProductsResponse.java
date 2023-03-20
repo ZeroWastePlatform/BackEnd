@@ -36,4 +36,6 @@ public class ProductsResponse {
     private Integer likeCount;
 
     private Integer reviewCount;
+
+    private String thumbnail;
 }
