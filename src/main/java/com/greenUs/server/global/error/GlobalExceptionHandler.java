@@ -6,6 +6,7 @@ import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachme
 import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
+import com.greenUs.server.comment.exception.NotEqualCommentAndPostComment;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
 import com.greenUs.server.comment.exception.NotFoundCommentException;
 import com.greenUs.server.infrastructure.oauth.exception.OAuthException;
@@ -69,6 +70,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotEqualMemberAndCommentMember.class)
     public ResponseEntity<ErrorResponse> handleNotEqualMemberAndCommentMember() {
         ErrorResponse response = new ErrorResponse(ErrorCode.COMMENT_MEMBER_NOT_EQUAL);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotEqualCommentAndPostComment.class)
+    public ResponseEntity<ErrorResponse> handleNotEqualCommentAndPostComment() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.POST_COMMENT_NOT_EQUAL);
         return ResponseEntity.badRequest().body(response);
     }
 
