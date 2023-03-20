@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @Tag(name = "상품", description = "상품 API")
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
-@RestController
 public class ProductController {
 
     private final ProductService productService;

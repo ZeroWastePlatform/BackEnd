@@ -42,7 +42,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "커뮤니티", description = "커뮤니티 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 public class PostController {
 
 	private final PostService postService;
