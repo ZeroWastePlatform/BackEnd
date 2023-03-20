@@ -43,10 +43,6 @@ public class Attachment extends BaseEntity {
 
 	private String thumbnailFileUrl;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id")
-	private Product product;
-
 	@Builder
 	public Attachment(Post post, String originalFileName, String serverFileName, String thumbnailFileName,
 		String serverFileUrl, String thumbnailFileUrl) {

@@ -55,11 +55,10 @@ public class Product extends BaseEntity {
 
     private Integer askCount;
 
+    private String thumbnail;
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private List<Attachment> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
