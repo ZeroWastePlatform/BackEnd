@@ -50,12 +50,13 @@ public class MemberService {
 		Page<PurchaseResponse> purchaseResponses = purchaseRepository.findByMemberId(member.getId(), pageRequest);
 		return new MyPagePurchaseResponse(
 			new MyPageProfileResponse(
-				member.getName(),
-				member.getNickname(),
-				member.getLevel(),
-				0, // 찜은 추후 구현
-				member.getPoint(),
-				couponRepository.findCountByMemberId(member.getId())
+					member.getId(),
+					member.getName(),
+					member.getNickname(),
+					member.getLevel(),
+					0, // 찜은 추후 구현
+					member.getPoint(),
+					couponRepository.findCountByMemberId(member.getId())
 			),
 			purchaseResponses
 		);
@@ -66,12 +67,13 @@ public class MemberService {
 
 		MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse(
 			new MyPageProfileResponse(
-				member.getName(),
-				member.getNickname(),
-				member.getLevel(),
-				0, // 찜은 추후 구현
-				member.getPoint(),
-				couponRepository.findCountByMemberId(member.getId())
+					member.getId(),
+					member.getName(),
+					member.getNickname(),
+					member.getLevel(),
+					0, // 찜은 추후 구현
+					member.getPoint(),
+					couponRepository.findCountByMemberId(member.getId())
 			)
 		);
 
