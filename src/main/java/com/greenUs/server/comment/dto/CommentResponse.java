@@ -16,6 +16,9 @@ public class CommentResponse {
 	@Schema(description = "댓글 번호", nullable = false, example = "47")
 	private Long id;
 
+	@Schema(description = "부모 댓글 번호", nullable = false, example = "22")
+	private Long parentId;
+
 	@Schema(description = "댓글 작성자 닉네임", nullable = false)
 	private CommunityMemberResponse commentMember;
 
@@ -24,6 +27,7 @@ public class CommentResponse {
 
 	public CommentResponse(Comment entity) {
 		this.id = entity.getId();
+		this.parentId = entity.getParent() != null ? entity.getParent().getId() : null;
 		this.commentMember = new CommunityMemberResponse(entity);
 		this.content = entity.getContent();
 	}
