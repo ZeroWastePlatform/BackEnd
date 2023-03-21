@@ -1,24 +1,29 @@
 package com.greenUs.server.reviewAndAsk.controller;
 
-import com.greenUs.server.auth.controller.AuthenticationPrincipal;
-import com.greenUs.server.auth.dto.LoginMember;
-import com.greenUs.server.reviewAndAsk.dto.AskDto;
+import com.greenUs.server.product.dto.response.ProductDetailResponse;
+import com.greenUs.server.reviewAndAsk.dto.response.AskResponse;
 import com.greenUs.server.reviewAndAsk.service.AskService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/asks")
 public class AskController {
-    private AskService askService;
 
-    @PostMapping(value ="products/{productId}/asks")
-    public Long addAsk(@PathVariable("productId") Long productId, @AuthenticationPrincipal LoginMember loginMember, @RequestBody AskDto askDto){
-        return askService.addAsk(loginMember,productId,askDto);
-    }
-    @GetMapping(value ="products/{productId}/asks")
-    public JSONObject getAsk(@PathVariable("productId") Long productId, @AuthenticationPrincipal LoginMember loginMember){
-        return askService.getAsk(loginMember,productId);
+    private final AskService askService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Page<AskResponse>> getAsksByProductId(
+            @Parameter(description = "상품 번호", in = ParameterIn.PATH) @PathVariable Long id,
+            @Parameter(description = "현재 문 페이지 값", in = ParameterIn.QUERY) @RequestParam(required = false, defaultValue = "0") Integer page) {
+        {
+            Page<AskResponse> response = askService.getAskByProductId(id, page);
+            return ResponseEntity.ok(response);
+        }
     }
 }
