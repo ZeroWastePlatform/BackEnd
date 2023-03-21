@@ -17,20 +17,23 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Review extends BaseEntity {
 
-    @Id
+    @Id @GeneratedValue
+    @Column(name = "review_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    private String photoUrl;
+
+    private String content;
+
+    private Integer rate;
+
+    private Integer likedCount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="product_id")
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    private String photo;
-    private String content;
-    private int rate;
-    private int likedCount;
-    private String category;
 }

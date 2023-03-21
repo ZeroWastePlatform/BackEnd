@@ -6,8 +6,9 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ReviewResponse {
-    private int rate;
+    private Long id;
+    private String photoUrl;
     private String content;
-    private String photo;
-
+    private Integer rate;
+    private Integer likedCount;
 }
