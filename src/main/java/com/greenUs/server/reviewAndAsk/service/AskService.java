@@ -1,66 +1,37 @@
 package com.greenUs.server.reviewAndAsk.service;
 
-import com.greenUs.server.auth.dto.LoginMember;
-import com.greenUs.server.member.domain.Member;
-import com.greenUs.server.member.exception.NotFoundMemberException;
-import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.product.domain.Product;
-import com.greenUs.server.product.repository.ProductRepository;
 import com.greenUs.server.reviewAndAsk.domain.Ask;
-import com.greenUs.server.reviewAndAsk.dto.AskDto;
-import com.greenUs.server.reviewAndAsk.dto.GetAskDetailDto;
+import com.greenUs.server.reviewAndAsk.dto.response.AskResponse;
 import com.greenUs.server.reviewAndAsk.repository.AskRepository;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AskService {
-    private ProductRepository productRepository;
-    private MemberRepository memberRepository;
-    private AskRepository askRepository;
-    public Long addAsk(LoginMember loginMember, Long productId, AskDto askDto){
-        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
-        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException());
-        Ask ask = Ask.builder()
-                .answer("")
-                .content(askDto.getContent())
-                .member(member)
-                .product(product)
-                .secret(askDto.isSecret())
-                .title(askDto.getTitle())
 
-                .build();
-        askRepository.save(ask);
+    private static final int MAX_ASKS_COUNT = 5;
 
-        return ask.getId();
+    private final AskRepository askRepository;
+
+    public Page<AskResponse> getAskByProductId(Long id, int page) {
+        PageRequest pageRequest = PageRequest.of(page, MAX_ASKS_COUNT, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Ask> asks = askRepository.findByProductId(id, pageRequest);
+        return transformAsks(asks);
     }
-    public JSONObject getAsk(LoginMember loginMember,Long productId){
-        Product product = productRepository.findById(productId).orElseThrow(()->new IllegalArgumentException());
-        List<Ask> asks = product.getAsks();
-        int totalElement = asks.size();
-        List<GetAskDetailDto> getAskDetailDtos = new ArrayList<>();
-        for(Ask ask :asks){
-            GetAskDetailDto getAskDetailDto = GetAskDetailDto.builder()
-                    .title(ask.getTitle())
-                    .category(ask.getCategory())
-                    .answer(ask.getAnswer())
-                    .nickName(ask.getMember().getNickname())
-                    .content(ask.getContent())
-                    .secret(ask.isSecret())
-                    .date(ask.getCreatedAt())
-                    .build();
-            getAskDetailDtos.add(getAskDetailDto);
-        }
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("totalElement",totalElement);
-        jsonObject.put("content",getAskDetailDtos);
-        return jsonObject;
+
+    private Page<AskResponse> transformAsks(Page<Ask> asks) {
+        return asks.map(ask ->
+                AskResponse
+                        .builder()
+                        .id(ask.getId())
+                        .title(ask.getTitle())
+                        .content(ask.getContent())
+                        .secret(ask.getSecret())
+                        .answer(ask.getAnswer())
+                        .build());
     }
 }

@@ -19,4 +19,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product p where p.category = :category")
     Page<Product> findByCategory(Category category, Pageable pageable);
 
+    // 베스트 카테고리 카테고리별 상위 6개 항목 반환
+    @Query("select p from Product p where p.category = :category")
+    Page<Product> findTop6ByCategoryDesc(Category category, Pageable pageable);
+
 }

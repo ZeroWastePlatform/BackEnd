@@ -14,12 +14,12 @@ import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 
+import com.greenUs.server.product.exception.NotFoundProductException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.multipart.MultipartException;
 
 @RestControllerAdvice
 @Slf4j
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(NotFoundMemberException.class)
+    @ExceptionHandler({NotFoundMemberException.class, NotFoundProductException.class})
     public ResponseEntity<ErrorResponse> handleNotFound() {
         ErrorResponse response = new ErrorResponse(ErrorCode.ENTITY_NOT_FOUND);
         return ResponseEntity.badRequest().body(response);

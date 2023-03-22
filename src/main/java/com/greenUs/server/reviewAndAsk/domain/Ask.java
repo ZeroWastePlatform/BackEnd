@@ -17,20 +17,24 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Ask extends BaseEntity {
 
-    @Id
+    @Id @GeneratedValue
+    @Column(name = "ask_id")
     private Long id;
 
     private String content;
+
     private String title;
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="product_id")
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    private String answer = "";
-    private boolean secret;
-    private String category;
+
+    private String answer;
+
+    private Boolean secret;
 
 }

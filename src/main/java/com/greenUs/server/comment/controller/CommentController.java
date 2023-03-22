@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "커뮤니티 댓글", description = "커뮤니티 댓글 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts/comments")
+@RequestMapping("/api/posts/comments")
 public class CommentController {
 
 	private final CommentService commentService;

@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Order {
+    TOP6("top6"),
     POPULARITY("likeCount"),
     NEW("createdAt"),
     LOW_PRICE("price"),

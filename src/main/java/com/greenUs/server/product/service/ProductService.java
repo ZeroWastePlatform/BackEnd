@@ -1,9 +1,12 @@
 package com.greenUs.server.product.service;
 
+import com.greenUs.server.product.domain.Category;
 import com.greenUs.server.product.domain.Product;
 import com.greenUs.server.product.dto.Order;
 import com.greenUs.server.product.dto.request.ProductsRequest;
+import com.greenUs.server.product.dto.response.ProductDetailResponse;
 import com.greenUs.server.product.dto.response.ProductsResponse;
+import com.greenUs.server.product.exception.NotFoundProductException;
 import com.greenUs.server.product.repository.ProductRepository;
 import com.greenUs.server.product.repository.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
     private static final int MAX_PRODUCTS_COUNT = 9;
+    private static final int BEST_CATEGORY_COUNT = 6;
 
     private final ProductRepository productRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
@@ -24,32 +28,44 @@ public class ProductService {
 
     public Page<ProductsResponse> getProducts (ProductsRequest productsRequest) {
 
-        Page<ProductsResponse> productsResponses = null;
+        // 베스트 TOP 6 케이스 따로 관리
+        if (productsRequest.getOrder().equals(Order.TOP6)) {
+            PageRequest pageRequest = PageRequest.of(productsRequest.getPage(), BEST_CATEGORY_COUNT, Sort.by(Sort.Direction.DESC, Order.POPULARITY.getName()));
+            return transformProducts(productRepository.findTop6ByCategoryDesc(productsRequest.getCategory(), pageRequest));
+        }
 
         // 정렬조건을 반환해주는 함수
         PageRequest pageRequest = getPageRequest(productsRequest);
 
         // 전체 검색일 경우
         if (productsRequest.getCategory() == null) {
-            productsResponses = transformProducts(productRepository.findAll(pageRequest));
+            return transformProducts(productRepository.findAll(pageRequest));
         }
 
-        // 검색 및 필터 적용
-        else {
-            productsResponses = transformProducts(
-                    productRepositoryCustom.findWithSearchCondition(
-                            productsRequest.getCategory(),
-                            productsRequest.getBrand(),
-                            productsRequest.getPrice(),
-                            productsRequest.getProductStatus(),
-                            pageRequest
-                    )
-            );
-        }
+        // 카테고리별 검색 + 필터 적용
+        Page<ProductsResponse> productsResponses = transformProducts(
+                productRepositoryCustom.findWithSearchCondition(
+                        productsRequest.getCategory(),
+                        productsRequest.getBrand(),
+                        productsRequest.getPrice(),
+                        productsRequest.getProductStatus(),
+                        pageRequest
+                )
+        );
 
         return productsResponses;
     }
 
+    public ProductDetailResponse getProductDetail(Long id) {
+
+        Product product = productRepository.findById(id).orElseThrow(NotFoundProductException::new);
+
+        return transformProductDetail(product);
+    }
+
+    /**
+     * PageRequest 생성 (페이지번호, 페이지당 상품 수, 정렬 기준)
+     */
     private PageRequest getPageRequest(ProductsRequest productsRequest) {
 
         Order order = productsRequest.getOrder();
@@ -61,7 +77,9 @@ public class ProductService {
         return PageRequest.of(productsRequest.getPage(), MAX_PRODUCTS_COUNT, Sort.by(Sort.Direction.DESC, order.getName()));
     }
 
-    // 전체 검색: Product -> DTO 변환
+    /**
+     * Page<Product> -> Page<ProductsResponse> 로 변환
+     */
     private Page<ProductsResponse> transformProducts(Page<Product> products) {
 
         return products.map(product ->
@@ -82,5 +100,29 @@ public class ProductService {
                         .reviewCount(product.getReviewCount())
                         .thumbnail(product.getThumbnail())
                         .build());
+    }
+
+    /**
+     * Product -> ProductDetailResponse 로 변환
+     */
+    private ProductDetailResponse transformProductDetail(Product product) {
+
+        return ProductDetailResponse
+                .builder()
+                .id(product.getId())
+                .category(product.getCategory())
+                .discountRate(product.getDiscountRate())
+                .badges(product.getBadges())
+                .title(product.getTitle())
+                .description(product.getDescription())
+                .brand(product.getBrand())
+                .viewCount(product.getViewCount())
+                .stock(product.getStock())
+                .price(product.getPrice())
+                .deliveryFee(product.getDeliveryFee())
+                .likeCount(product.getLikeCount())
+                .reviewCount(product.getReviewCount())
+                .thumbnail(product.getThumbnail())
+                .build();
     }
 }

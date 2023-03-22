@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Tag(name = "인증", description = "인증 API")
-@RequestMapping("/api/auth")
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final OAuthUri oAuthUri;
