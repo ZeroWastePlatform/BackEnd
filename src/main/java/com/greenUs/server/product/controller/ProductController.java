@@ -1,5 +1,6 @@
 package com.greenUs.server.product.controller;
 
+import com.greenUs.server.product.domain.Category;
 import com.greenUs.server.product.dto.request.ProductsRequest;
 import com.greenUs.server.product.dto.response.ProductDetailResponse;
 import com.greenUs.server.product.dto.response.ProductsResponse;
