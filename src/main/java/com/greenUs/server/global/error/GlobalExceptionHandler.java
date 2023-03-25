@@ -14,6 +14,7 @@ import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.post.exception.NotEqualMemberAndPostMember;
 import com.greenUs.server.post.exception.NotFoundPostException;
 
+import com.greenUs.server.product.exception.LikeDuplicateException;
 import com.greenUs.server.product.exception.NotFoundProductException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -101,5 +102,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleFailResizeAttachment() {
         ErrorResponse response = new ErrorResponse(ErrorCode.RESIZE_SERVER_ERROR);
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(LikeDuplicateException.class)
+    public ResponseEntity<ErrorResponse> likeDuplicate() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.LIKE_DUPLICATE);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }
