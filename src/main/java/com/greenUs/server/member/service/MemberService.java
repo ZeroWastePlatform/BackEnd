@@ -1,5 +1,9 @@
 package com.greenUs.server.member.service;
 
+import com.greenUs.server.member.dto.response.*;
+import com.greenUs.server.product.domain.ProductLike;
+import com.greenUs.server.product.repository.ProductLikeRepository;
+import com.greenUs.server.product.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,11 +16,6 @@ import com.greenUs.server.coupon.repository.CouponRepository;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.request.SignUpRequest;
-import com.greenUs.server.member.dto.response.MemberResponse;
-import com.greenUs.server.member.dto.response.MyPageCommunityResponse;
-import com.greenUs.server.member.dto.response.MyPageContentResponse;
-import com.greenUs.server.member.dto.response.MyPageProfileResponse;
-import com.greenUs.server.member.dto.response.MyPagePurchaseResponse;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.post.dto.response.MyPageCommentResponse;
@@ -27,10 +26,15 @@ import com.greenUs.server.purchase.repository.PurchaseRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
+
+	private static final int PRODUCT_LIKE_COUNT = 8;
 
 	private final MemberRepository memberRepository;
 	private final PurchaseRepository purchaseRepository;
@@ -38,6 +42,9 @@ public class MemberService {
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
 	private final BookmarkRepository bookmarkRepository;
+
+	private final ProductRepository productRepository;
+	private final ProductLikeRepository productLikeRepository;
 
 	public MemberResponse findById(Long id) {
 		Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
@@ -115,5 +122,26 @@ public class MemberService {
 
 		member.changeNickName(signUpRequest.getNickName());
 		return new MemberResponse(memberRepository.save(member));
+	}
+
+    public Page<MyPageLikeProductResponse> findLikeProducts(Long id, int page) {
+		Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
+
+		PageRequest pageRequest = PageRequest.of(page, PRODUCT_LIKE_COUNT);
+		List<Long> productList = new ArrayList<>();
+		productLikeRepository.findByMember(member).stream().forEach(productLike -> {
+			productList.add(productLike.getProduct().getId());
+		});
+
+		return productRepository.findByIdList(productList, pageRequest).map(product ->
+				MyPageLikeProductResponse
+						.builder()
+						.id(product.getId())
+						.brand(product.getBrand())
+						.price(product.getPrice())
+						.title(product.getTitle())
+						.likeCount(product.getLikeCount())
+						.discountRate(product.getDiscountRate())
+						.build());
 	}
 }

@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -33,4 +35,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query("update Product p set p.likeCount = p.likeCount-1 where p.id = :id")
     void minusLikeCount(Long id);
+
+    // 아이디리스트 가지고 조회 (관심상품 조회)
+    @Query("select p from Product p where p.id in :ids")
+    Page<Product> findByIdList(List<Long> ids, Pageable pageable);
 }

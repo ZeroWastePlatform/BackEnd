@@ -5,10 +5,8 @@ import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.member.dto.request.SignUpRequest;
 import com.greenUs.server.global.error.ErrorResponse;
 import com.greenUs.server.member.dto.request.MemberRequest;
-import com.greenUs.server.member.dto.response.MemberResponse;
-import com.greenUs.server.member.dto.response.MyPageCommunityResponse;
-import com.greenUs.server.member.dto.response.MyPageContentResponse;
-import com.greenUs.server.member.dto.response.MyPagePurchaseResponse;
+import com.greenUs.server.member.dto.response.*;
+import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,7 +34,7 @@ public class MemberController {
     @Operation(summary = "마이페이지 나의 주문 조회", description = "마이페이지 나의 주문 조회")
     @ApiResponses(value =  {
             @ApiResponse(responseCode = "200", description = "마이페이지 나의 주문 조회 성공", content = @Content(schema = @Schema(implementation = MyPagePurchaseResponse.class))),
-            @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = NotFoundMemberException.class)))
     })
     @GetMapping("/me")
     public ResponseEntity<MyPagePurchaseResponse> getMyOrder(
@@ -47,11 +45,19 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    // 마이페이지 관심상품
+    @Operation(summary = "마이페이지 관심 상품 조회", description = "마이페이지 관심 상품 조회")
+    @ApiResponses(value =  {
+            @ApiResponse(responseCode = "200", description = "마이페이지 관심 상품 조회 성공", content = @Content(schema = @Schema(implementation = MyPageLikeProductResponse.class))),
+            @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = NotFoundMemberException.class)))
+    })
     @GetMapping("/me/products")
-    public ResponseEntity<MemberResponse> getMyProducts(@AuthenticationPrincipal LoginMember loginMember) {
-        // MemberResponse response = memberService.findById(loginMember.getId());
-        return ResponseEntity.ok(null);
+    public ResponseEntity<Page<MyPageLikeProductResponse>> getMyProducts(
+
+            @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
+            @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page
+    ) {
+        Page<MyPageLikeProductResponse> response = memberService.findLikeProducts(loginMember.getId(), page);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "마이페이지 내가 작성한 게시글/댓글 조회", description = "마이페이지 내가 작성한 게시글/댓글 조회")
