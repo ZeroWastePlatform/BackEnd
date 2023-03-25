@@ -1,5 +1,7 @@
 package com.greenUs.server.product.controller;
 
+import com.greenUs.server.auth.controller.AuthenticationPrincipal;
+import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.product.domain.Category;
 import com.greenUs.server.product.dto.request.ProductsRequest;
 import com.greenUs.server.product.dto.response.ProductDetailResponse;
@@ -17,10 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -56,6 +55,26 @@ public class ProductController {
         {
             ProductDetailResponse response = productService.getProductDetail(id);
             return ResponseEntity.ok(response);
+        }
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Void> likeProduct(
+            @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
+            @Parameter(description = "상품 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+        {
+            productService.likeProduct(loginMember.getId(), id);
+            return ResponseEntity.ok().build();
+        }
+    }
+
+    @DeleteMapping("/{id}/like")
+    public ResponseEntity<Void> likeCancelProduct(
+            @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
+            @Parameter(description = "상품 번호", in = ParameterIn.PATH) @PathVariable Long id) {
+        {
+            productService.likeCancelProduct(loginMember.getId(), id);
+            return ResponseEntity.ok().build();
         }
     }
 }
