@@ -59,11 +59,11 @@ public class MemberController {
         @ApiResponse(responseCode = "200", description = "마이페이지 내가 작성한 게시글/댓글 조회 성공", content = @Content(schema = @Schema(implementation = MyPageCommunityResponse.class))),
         @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/me/communities/{kind}")
+    @GetMapping("/me/communities")
     public ResponseEntity<MyPageCommunityResponse> getMyCommunity(
         @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
-        @Parameter(description = "게시글/댓글 조회 선택 (1:게시글, 2:댓글)", in = ParameterIn.PATH) @PathVariable Integer kind,
-        @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
+        @Parameter(description = "내가 작성한 게시글 / 내가 작성한 댓글", in = ParameterIn.PATH) @RequestParam(defaultValue = "내가 작성한 게시글") String kind,
+        @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(defaultValue = "0") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
         MyPageCommunityResponse response = memberService.getMyCommunity(memberResponse, kind, page);
         return ResponseEntity.ok(response);
