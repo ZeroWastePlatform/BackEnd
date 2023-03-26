@@ -128,7 +128,7 @@ public class PostService {
 
 		Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
 
-		if (!post.getId().equals(member.getId())) {
+		if (!post.getMember().getId().equals(member.getId())) {
 			throw new NotEqualMemberAndPostMember();
 		}
 

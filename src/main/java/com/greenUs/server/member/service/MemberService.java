@@ -69,7 +69,7 @@ public class MemberService {
 		);
 	}
 
-	public MyPageCommunityResponse getMyCommunity(MemberResponse member, Integer kind, int page) {
+	public MyPageCommunityResponse getMyCommunity(MemberResponse member, String kind, int page) {
 		PageRequest pageRequest = PageRequest.of(page, 8);
 
 		MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse(
@@ -84,11 +84,11 @@ public class MemberService {
 			)
 		);
 
-		if (kind == 1) {
+		if (kind.equals("내가 작성한 게시글")) {
 			myPageCommunityResponse.setPostResponses(postRepository.findByMemberId(member.getId(), pageRequest)
 				.map(MyPagePostResponse::new));
 			return myPageCommunityResponse;
-		} else if (kind == 2) {
+		} else if (kind.equals("내가 작성한 댓글")) {
 			myPageCommunityResponse.setCommentResponses(commentRepository.findByMemberId(member.getId(), pageRequest)
 				.map(MyPageCommentResponse::new));
 			return myPageCommunityResponse;
