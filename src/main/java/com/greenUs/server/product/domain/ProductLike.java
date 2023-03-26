@@ -24,5 +24,7 @@ public class ProductLike {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

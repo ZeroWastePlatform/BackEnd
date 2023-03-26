@@ -1,12 +1,17 @@
 package com.greenUs.server.product.service;
 
-import com.greenUs.server.product.domain.Category;
+import com.greenUs.server.member.domain.Member;
+import com.greenUs.server.member.exception.NotFoundMemberException;
+import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.product.domain.Product;
+import com.greenUs.server.product.domain.ProductLike;
 import com.greenUs.server.product.dto.Order;
 import com.greenUs.server.product.dto.request.ProductsRequest;
 import com.greenUs.server.product.dto.response.ProductDetailResponse;
 import com.greenUs.server.product.dto.response.ProductsResponse;
+import com.greenUs.server.product.exception.LikeDuplicateException;
 import com.greenUs.server.product.exception.NotFoundProductException;
+import com.greenUs.server.product.repository.ProductLikeRepository;
 import com.greenUs.server.product.repository.ProductRepository;
 import com.greenUs.server.product.repository.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +19,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -22,8 +31,10 @@ public class ProductService {
     private static final int MAX_PRODUCTS_COUNT = 9;
     private static final int BEST_CATEGORY_COUNT = 6;
 
+    private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
+    private final ProductLikeRepository productLikeRepository;
 
 
     public Page<ProductsResponse> getProducts (ProductsRequest productsRequest) {
@@ -124,5 +135,47 @@ public class ProductService {
                 .reviewCount(product.getReviewCount())
                 .thumbnail(product.getThumbnail())
                 .build();
+    }
+
+    @Transactional
+    public void likeProduct(Long memberId, Long productId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+        Product product = productRepository.findById(productId).orElseThrow(NotFoundProductException::new);
+        
+        // 이미 좋아요가 눌러져 있다면
+        if (productLikeRepository.findByMemberAndProduct(member, product).isPresent()) {
+            throw new LikeDuplicateException();
+        }
+
+        ProductLike productLike = ProductLike.builder()
+                .member(member)
+                .product(product)
+                .build();
+
+        updateLikeCnt(true, productId);
+        productLikeRepository.save(productLike);
+    }
+
+    @Transactional
+    public void likeCancelProduct(Long memberId, Long productId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+        Product product = productRepository.findById(productId).orElseThrow(NotFoundProductException::new);
+        ProductLike productLike = productLikeRepository.findByMemberAndProduct(member, product).orElseThrow(LikeDuplicateException::new);
+
+        updateLikeCnt(false, productId);
+        productLikeRepository.delete(productLike);
+    }
+
+    @Transactional
+    public void updateLikeCnt(boolean isLikeAdd, Long productId) {
+
+        // 좋아요 누른 경우
+        if (isLikeAdd) {
+            productRepository.addLikeCount(productId);
+        }
+        // 좋아요 취소한 경우
+        else {
+            productRepository.minusLikeCount(productId);
+        }
     }
 }

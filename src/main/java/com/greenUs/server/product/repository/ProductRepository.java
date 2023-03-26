@@ -5,8 +5,11 @@ import com.greenUs.server.product.domain.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 @Repository
@@ -23,4 +26,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product p where p.category = :category")
     Page<Product> findTop6ByCategoryDesc(Category category, Pageable pageable);
 
+    // 좋아요 개수 증가
+    @Modifying
+    @Query("update Product p set p.likeCount = p.likeCount+1 where p.id = :id")
+    void addLikeCount(Long id);
+
+    // 좋아요 개수 감소
+    @Modifying
+    @Query("update Product p set p.likeCount = p.likeCount-1 where p.id = :id")
+    void minusLikeCount(Long id);
+
+    // 아이디리스트 가지고 조회 (관심상품 조회)
+    @Query("select p from Product p where p.id in :ids")
+    Page<Product> findByIdList(List<Long> ids, Pageable pageable);
 }

@@ -59,18 +59,11 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Ask> asks = new ArrayList<>();
 
-
-    public void plusLikeCount() {
-        this.likeCount = this.likeCount+1;
-    }
-    public void minusLikeCount() {
-        this.likeCount = this.likeCount-1;
-    }
 }
-
