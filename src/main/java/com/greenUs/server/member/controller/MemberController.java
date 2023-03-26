@@ -62,7 +62,7 @@ public class MemberController {
     @GetMapping("/me/communities")
     public ResponseEntity<MyPageCommunityResponse> getMyCommunity(
         @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
-        @Parameter(description = "내가 작성한 게시글 / 내가 작성한 댓글", in = ParameterIn.PATH) @RequestParam(defaultValue = "내가 작성한 게시글") String kind,
+        @Parameter(description = "내가 작성한 게시글 / 내가 작성한 댓글", in = ParameterIn.QUERY) @RequestParam(defaultValue = "내가 작성한 게시글") String kind,
         @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(defaultValue = "0") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
         MyPageCommunityResponse response = memberService.getMyCommunity(memberResponse, kind, page);
