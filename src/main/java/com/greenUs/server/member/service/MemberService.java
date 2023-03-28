@@ -1,7 +1,6 @@
 package com.greenUs.server.member.service;
 
 import com.greenUs.server.member.dto.response.*;
-import com.greenUs.server.product.domain.ProductLike;
 import com.greenUs.server.product.repository.ProductLikeRepository;
 import com.greenUs.server.product.repository.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -18,8 +17,8 @@ import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.request.SignUpRequest;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.repository.MemberRepository;
-import com.greenUs.server.post.dto.response.MyPageCommentResponse;
-import com.greenUs.server.post.dto.response.MyPagePostResponse;
+import com.greenUs.server.member.dto.response.MyPageCommentResponse;
+import com.greenUs.server.member.dto.response.MyPagePostResponse;
 import com.greenUs.server.post.repository.PostRepository;
 import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import com.greenUs.server.purchase.repository.PurchaseRepository;

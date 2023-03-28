@@ -1,4 +1,4 @@
-package com.greenUs.server.post.dto.response;
+package com.greenUs.server.member.dto.response;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.greenUs.server.post.dto.response;
+package com.greenUs.server.member.dto.response;
 
 import com.greenUs.server.comment.domain.Comment;
 
@@ -19,6 +19,9 @@ public class MyPageCommentResponse {
 	@Schema(description = "게시판 구분(1: 자유게시판, 2: 정보 공유, 3: 중고 거래)", nullable = false, allowableValues = {"1", "2", "3"})
 	private Integer kind;
 
+	@Schema(description = "게시판 제목", nullable = false, example = "게시글 제목 입니다.")
+	private String postTitle;
+
 	@Schema(description = "댓글 내용", nullable = false)
 	private String content;
 
@@ -29,6 +32,7 @@ public class MyPageCommentResponse {
 		this.id = entity.getId();
 		this.postId = entity.getPost().getId();
 		this.kind = entity.getPost().getKind();
+		this.postTitle = entity.getPost().getTitle();
 		this.content = entity.getContent();
 		this.replyCnt = entity.getPost().getComments().size();
 	}
