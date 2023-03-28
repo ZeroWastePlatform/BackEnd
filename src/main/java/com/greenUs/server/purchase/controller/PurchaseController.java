@@ -3,6 +3,7 @@ package com.greenUs.server.purchase.controller;
 import com.greenUs.server.auth.controller.AuthenticationPrincipal;
 import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.purchase.dto.request.PurchaseRequest;
+import com.greenUs.server.purchase.dto.response.PurchaseProductResponse;
 import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import com.greenUs.server.purchase.service.PurchaseService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,9 +35,10 @@ public class PurchaseController {
 
     // 전체 주문 조회
     @GetMapping()
-    public ResponseEntity<Page<PurchaseResponse>> getPurchaseList(
+    public ResponseEntity<Page<PurchaseProductResponse>> getPurchaseList(
+            @Parameter(description = "내 주문 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
             @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember) {
-        Page<PurchaseResponse> purchaseList = purchaseService.getList(loginMember.getId());
+        Page<PurchaseProductResponse> purchaseList = purchaseService.getList(loginMember.getId(), page);
         return ResponseEntity.ok(purchaseList);
     }
 
