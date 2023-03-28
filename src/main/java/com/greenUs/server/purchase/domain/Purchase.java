@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @ToString
@@ -29,14 +27,11 @@ public class Purchase extends BaseEntity {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
-    @OneToMany(mappedBy = "purchase",cascade = CascadeType.ALL)
-    private List<PurchaseProduct> purchaseProducts = new ArrayList<>();
+    private Integer totalPrice;
 
-    private int totalPrice;
-
-    // 임시로 해둠
-    public Purchase(Member member, Delivery delivery) {
+    public Purchase(Member member, Delivery delivery, int totalPrice) {
         this.member = member;
         this.delivery = delivery;
+        this.totalPrice = totalPrice;
     }
 }

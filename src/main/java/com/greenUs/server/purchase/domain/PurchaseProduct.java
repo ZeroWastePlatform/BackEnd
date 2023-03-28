@@ -2,12 +2,13 @@ package com.greenUs.server.purchase.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.product.domain.Product;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
-@ToString
 @Entity
+@Getter
+@NoArgsConstructor
 public class PurchaseProduct extends BaseEntity {
 
     @Id
@@ -23,6 +24,8 @@ public class PurchaseProduct extends BaseEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private int price;
-    private int purchaseCount;
+    public PurchaseProduct(Purchase purchase, Product product) {
+        this.purchase = purchase;
+        this.product = product;
+    }
 }

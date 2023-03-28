@@ -1,8 +1,12 @@
 package com.greenUs.server.purchase.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ShippingAddress {
 
     private String addressName; // 배송지명 (ex. 우리집)
