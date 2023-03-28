@@ -1,10 +1,8 @@
 package com.greenUs.server.product.domain;
 
-import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.product.converter.BadgeConverter;
 import com.greenUs.server.product.converter.CategoryConverter;
-import com.greenUs.server.purchase.domain.PurchaseProduct;
 import com.greenUs.server.reviewAndAsk.domain.Ask;
 import com.greenUs.server.reviewAndAsk.domain.Review;
 import lombok.AllArgsConstructor;
@@ -56,9 +54,6 @@ public class Product extends BaseEntity {
     private Integer askCount;
 
     private String thumbnail;
-
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
