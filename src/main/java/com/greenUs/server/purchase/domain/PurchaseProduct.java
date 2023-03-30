@@ -26,6 +26,7 @@ public class PurchaseProduct extends BaseEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    private Long memberId;
     private int price=0;
     private int purchaseCount=0;
 }

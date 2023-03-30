@@ -25,7 +25,6 @@ public class Purchase extends BaseEntity {
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")
