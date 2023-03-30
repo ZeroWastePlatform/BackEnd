@@ -1,13 +1,17 @@
 package com.greenUs.server.member.dto.response;
 
-import com.greenUs.server.purchase.dto.response.PurchaseResponse;
-import lombok.AllArgsConstructor;
+import com.greenUs.server.product.domain.Brand;
+import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 
+// TODO: 아직 DTO 완성단계 아님
 @Getter
-@AllArgsConstructor
+@Builder
 public class MyPagePurchaseResponse {
-    private MyPageProfileResponse myPageProfileResponse;
-    private Page<PurchaseResponse> purchaseResponses;
+    private Long productId;
+    private Brand brand;
+    private String title;
+    private String thumbnail;
+    private int price;
+    private int count;
 }

@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "유저", description = "유저 API")
 @RestController
@@ -32,18 +33,27 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // TODO: 구매 관련 상품 로직 구현
+    @Operation(summary = "마이페이지 나의 프로필 조회", description = "마이페이지 나의 프로필 조회")
+    @ApiResponses(value =  {
+            @ApiResponse(responseCode = "200", description = "마이페이지 나의 프로필 조회 성공", content = @Content(schema = @Schema(implementation = MyPageProfileResponse.class))),
+            @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = NotFoundMemberException.class)))
+    })
+    @GetMapping("/profile")
+    public ResponseEntity<MyPageProfileResponse> getMyProfile(
+            @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember) {
+        MyPageProfileResponse response = memberService.getMyProfile(loginMember.getId());
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "마이페이지 나의 주문 조회", description = "마이페이지 나의 주문 조회")
     @ApiResponses(value =  {
             @ApiResponse(responseCode = "200", description = "마이페이지 나의 주문 조회 성공", content = @Content(schema = @Schema(implementation = MyPagePurchaseResponse.class))),
             @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = NotFoundMemberException.class)))
     })
     @GetMapping("/me")
-    public ResponseEntity<Page<PurchaseResponse>> getMyOrder(
-            @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
-            @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
-        MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        Page<PurchaseResponse> response = memberService.getMyOrder(memberResponse, page);
+    public ResponseEntity<List<MyPagePurchaseResponse>> getMyPurchase(
+            @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember) {
+        List<MyPagePurchaseResponse> response = memberService.getMyPurchase(loginMember.getId());
         return ResponseEntity.ok(response);
     }
 
@@ -72,8 +82,7 @@ public class MemberController {
         @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
         @Parameter(description = "내가 작성한 게시글 / 내가 작성한 댓글", in = ParameterIn.QUERY) @RequestParam(defaultValue = "내가 작성한 게시글") String kind,
         @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(defaultValue = "0") Integer page) {
-        MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        MyPageCommunityResponse response = memberService.getMyCommunity(memberResponse, kind, page);
+        MyPageCommunityResponse response = memberService.getMyCommunity(loginMember.getId(), kind, page);
         return ResponseEntity.ok(response);
     }
 
@@ -86,8 +95,7 @@ public class MemberController {
     public ResponseEntity<Page<MyPageContentResponse>> getMyContents(
             @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
             @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
-        MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        Page<MyPageContentResponse> response = memberService.getMyContents(memberResponse, page);
+        Page<MyPageContentResponse> response = memberService.getMyContents(loginMember.getId(), page);
         return ResponseEntity.ok(response);
     }
 

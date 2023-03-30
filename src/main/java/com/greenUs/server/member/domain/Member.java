@@ -55,15 +55,6 @@ public class Member extends BaseEntity {
 	@ColumnDefault("0")
 	private int point;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member",cascade = CascadeType.REMOVE)
-	private List<Basket> baskets = new ArrayList<>();
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member",cascade = CascadeType.REMOVE)
-	private List<ProductLike> ProductLikes = new ArrayList<>();
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
-	private List<Coupon> coupons = new ArrayList<>();
-
 	@Builder
 	protected Member(String email, String nickName, SocialType socialType, String token) {
 		this.email = email;
