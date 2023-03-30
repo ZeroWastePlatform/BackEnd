@@ -8,6 +8,7 @@ import com.greenUs.server.member.dto.request.MemberRequest;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.member.exception.NotFoundMemberException;
 import com.greenUs.server.member.service.MemberService;
+import com.greenUs.server.purchase.dto.response.PurchaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -31,17 +32,18 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    // TODO: 구매 관련 상품 로직 구현
     @Operation(summary = "마이페이지 나의 주문 조회", description = "마이페이지 나의 주문 조회")
     @ApiResponses(value =  {
             @ApiResponse(responseCode = "200", description = "마이페이지 나의 주문 조회 성공", content = @Content(schema = @Schema(implementation = MyPagePurchaseResponse.class))),
             @ApiResponse(responseCode = "400", description = "유저가 존재하지 않음", content = @Content(schema = @Schema(implementation = NotFoundMemberException.class)))
     })
     @GetMapping("/me")
-    public ResponseEntity<MyPagePurchaseResponse> getMyOrder(
+    public ResponseEntity<Page<PurchaseResponse>> getMyOrder(
             @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember,
             @Parameter(description = "현재 게시글 페이지 값", in = ParameterIn.PATH) @RequestParam(required = false, defaultValue = "0", value = "page") Integer page) {
         MemberResponse memberResponse = memberService.findById(loginMember.getId());
-        MyPagePurchaseResponse response = memberService.getMyOrder(memberResponse, page);
+        Page<PurchaseResponse> response = memberService.getMyOrder(memberResponse, page);
         return ResponseEntity.ok(response);
     }
 

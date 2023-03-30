@@ -23,7 +23,7 @@ public class AuthService {
     @Transactional
     public AccessRefreshTokenResponse generateAccessAndRefreshToken(OAuthMember oAuthMember) {
         Member foundMember = findMember(oAuthMember);
-        foundMember.change(oAuthMember.getRefreshToken());
+        foundMember.changeToken(oAuthMember.getRefreshToken());
         AuthToken authToken = tokenCreator.createAuthToken(foundMember.getId());
         return new AccessRefreshTokenResponse(authToken.getAccessToken(), authToken.getRefreshToken(), foundMember.getNickname() == null);
     }

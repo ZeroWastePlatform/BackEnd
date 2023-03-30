@@ -3,6 +3,8 @@ package com.greenUs.server.member.service;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.product.repository.ProductLikeRepository;
 import com.greenUs.server.product.repository.ProductRepository;
+import com.greenUs.server.purchase.domain.Purchase;
+import com.greenUs.server.purchase.domain.PurchaseProduct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -50,22 +52,37 @@ public class MemberService {
 		return new MemberResponse(member);
 	}
 
-	public MyPagePurchaseResponse getMyOrder(MemberResponse member, int page) {
+	public Page<PurchaseResponse> getMyOrder(MemberResponse member, int page) {
 
-		PageRequest pageRequest = PageRequest.of(page, 10);
-		Page<PurchaseResponse> purchaseResponses = purchaseRepository.findByMemberId(member.getId(), pageRequest);
-		return new MyPagePurchaseResponse(
-			new MyPageProfileResponse(
-					member.getId(),
-					member.getName(),
-					member.getNickname(),
-					member.getLevel(),
-					0, // 찜은 추후 구현
-					member.getPoint(),
-					couponRepository.findCountByMemberId(member.getId())
-			),
-			purchaseResponses
-		);
+		List<Purchase> purchases = purchaseRepository.findAllByMemberId(member.getId());
+
+		List<PurchaseProduct> purchaseProducts = new ArrayList<>();
+
+		for (Purchase purchase : purchases) {
+			purchaseProducts.addAll(purchase.getPurchaseProducts());
+		}
+
+		return null;
+
+//		return purchases.map(purchase ->
+//				PurchaseResponse
+//						.builder()
+//						.id(purchase.getId())
+//						.delivery(purchase.getDelivery())
+//						.totalPrice(purchase.getTotalPrice())
+//						.build());
+
+//		MyPageProfileResponse myPageProfileResponse = new MyPageProfileResponse(
+//				member.getId(),
+//				member.getName(),
+//				member.getNickname(),
+//				member.getLevel(),
+//				0, // 찜은 추후 구현
+//				member.getPoint(),
+//				couponRepository.findCountByMemberId(member.getId())
+//		);
+
+		//return new MyPagePurchaseResponse(myPageProfileResponse, purchaseResponses);
 	}
 
 	public MyPageCommunityResponse getMyCommunity(MemberResponse member, String kind, int page) {
