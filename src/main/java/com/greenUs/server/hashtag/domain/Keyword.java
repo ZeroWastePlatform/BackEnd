@@ -2,15 +2,11 @@ package com.greenUs.server.hashtag.domain;
 
 import javax.persistence.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-@ToString
-@Getter
-@NoArgsConstructor
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Keyword {
 
     @Id @GeneratedValue
@@ -23,7 +19,7 @@ public class Keyword {
     private Integer count;
 
     @Builder
-    public Keyword(String content, Integer count) {
+    protected Keyword(String content, Integer count) {
         this.content = content;
         this.count = count;
     }

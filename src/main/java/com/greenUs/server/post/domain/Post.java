@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.greenUs.server.attachment.domain.Attachment;
@@ -22,16 +23,10 @@ import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.hashtag.domain.Hashtag;
 import com.greenUs.server.member.domain.Member;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-@ToString
-@NoArgsConstructor
-@Getter
 @DynamicUpdate
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
 	@Id
@@ -70,7 +65,7 @@ public class Post extends BaseEntity {
 	private List<Attachment> attachments = new ArrayList<>();
 
 	@Builder
-	public Post(Member member, Integer kind, String title, String content, Integer price, Boolean fileAttached) {
+	protected Post(Member member, Integer kind, String title, String content, Integer price, Boolean fileAttached) {
 		this.member = member;
 		this.kind = kind;
 		this.title = title;

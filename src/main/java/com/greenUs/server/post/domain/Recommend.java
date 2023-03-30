@@ -12,12 +12,13 @@ import javax.persistence.ManyToOne;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@Getter
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recommend extends BaseEntity {
 
 	@Id

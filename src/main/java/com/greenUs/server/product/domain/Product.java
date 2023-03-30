@@ -1,16 +1,11 @@
 package com.greenUs.server.product.domain;
 
-import com.greenUs.server.attachment.domain.Attachment;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.product.converter.BadgeConverter;
 import com.greenUs.server.product.converter.CategoryConverter;
-import com.greenUs.server.purchase.domain.PurchaseProduct;
 import com.greenUs.server.reviewAndAsk.domain.Ask;
 import com.greenUs.server.reviewAndAsk.domain.Review;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,9 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
 
     @Id @GeneratedValue
@@ -56,9 +49,6 @@ public class Product extends BaseEntity {
     private Integer askCount;
 
     private String thumbnail;
-
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    private List<PurchaseProduct> purchaseProducts =new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();

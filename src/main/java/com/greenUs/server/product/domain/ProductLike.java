@@ -2,18 +2,13 @@ package com.greenUs.server.product.domain;
 
 
 import com.greenUs.server.member.domain.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductLike {
 
     @Id
@@ -27,4 +22,10 @@ public class ProductLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @Builder
+    protected ProductLike(Member member, Product product) {
+        this.member = member;
+        this.product = product;
+    }
 }

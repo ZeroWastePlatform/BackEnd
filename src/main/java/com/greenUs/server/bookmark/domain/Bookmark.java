@@ -3,12 +3,15 @@ package com.greenUs.server.bookmark.domain;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.post.domain.Post;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Bookmark extends BaseEntity {
 
     @Id @GeneratedValue
