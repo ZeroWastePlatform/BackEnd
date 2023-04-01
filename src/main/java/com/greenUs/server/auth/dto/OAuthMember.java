@@ -3,6 +3,7 @@ package com.greenUs.server.auth.dto;
 import com.greenUs.server.member.domain.Member;
 import com.greenUs.server.member.domain.SocialType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -15,6 +16,11 @@ public class OAuthMember {
     private final String refreshToken;
 
     public Member toMember() {
-        return new Member(email, displayName, SocialType.GOOGLE, refreshToken);
+        return Member.builder()
+                .email(email)
+                .nickName(displayName)
+                .socialType(SocialType.GOOGLE)
+                .token(refreshToken)
+                .build();
     }
 }

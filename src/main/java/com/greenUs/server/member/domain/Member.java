@@ -5,9 +5,9 @@ import com.greenUs.server.common.BaseEntity;
 
 import javax.persistence.*;
 
+import com.greenUs.server.coupon.domain.Coupon;
 import com.greenUs.server.product.domain.ProductLike;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
 	@Id @GeneratedValue
@@ -38,12 +38,6 @@ public class Member extends BaseEntity {
 	@Column(name = "nickname")
 	private String nickname;
 
-	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
-	private List<Basket> baskets = new ArrayList<>();
-
-	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
-	private List<ProductLike> ProductLikes = new ArrayList<>();
-
 	@Embedded
 	private Address address;
 
@@ -61,21 +55,25 @@ public class Member extends BaseEntity {
 	@ColumnDefault("0")
 	private int point;
 
-	public Member() {}
-	public Member(String email, String name, SocialType socialType, String token ) {
+	@Builder
+	protected Member(String email, String nickName, SocialType socialType, String token) {
 		this.email = email;
-		this.name = name;
+		this.nickname = nickName;
 		this.socialType = socialType;
 		this.token = token;
 	}
 
-	public void change(String token) {
+	public void changeToken(String token) {
 		this.token = token;
 	}
 
 	public void changeInfo(String nickname, Address address, String phoneNum, String interestArea) {
 		this.nickname = nickname;
-		this.address = new Address(address.getZipCode(), address.getAddress(), address.getAddressDetail());
+		this.address = Address.builder()
+				.zipCode(address.getZipCode())
+				.address(address.getAddress())
+				.addressDetail(address.getAddressDetail())
+				.build();
 		this.phoneNum = phoneNum;
 		this.interestArea = interestArea;
 	}

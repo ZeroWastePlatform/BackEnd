@@ -1,16 +1,14 @@
 package com.greenUs.server.delivery.domain;
 
 import com.greenUs.server.common.BaseEntity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.greenUs.server.purchase.domain.Purchase;
+import lombok.*;
 
 import javax.persistence.*;
 
-@ToString
-@NoArgsConstructor
-@Getter
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Delivery extends BaseEntity {
 
     @Id @GeneratedValue
@@ -24,7 +22,11 @@ public class Delivery extends BaseEntity {
     private String addressDetail; // 상세 정보 (ex. 501호)
     private String deliverDate;
 
-    public Delivery (String addressName, String recipient, String recipientPhone, String zipCode, String address, String addressDetail, String deliverDate) {
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "delivery")
+    private Purchase purchase;
+
+    @Builder
+    protected Delivery (String addressName, String recipient, String recipientPhone, String zipCode, String address, String addressDetail, String deliverDate) {
         this.addressName = addressName;
         this.recipient = recipient;
         this.recipientPhone = recipientPhone;

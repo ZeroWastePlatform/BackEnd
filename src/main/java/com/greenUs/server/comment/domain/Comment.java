@@ -10,20 +10,21 @@ import com.greenUs.server.post.domain.Post;
 
 import javax.persistence.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-@ToString
-@NoArgsConstructor
-@Getter
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "comment_id")
     private Long id;
+
+    @Column(length = 1000, nullable = false)
+    private String content;
+
+    private boolean isRemoved= false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -31,17 +32,11 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @ToString.Exclude
     private Post post;
-
-    @Column(length = 1000, nullable = false)
-    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
-
-    private boolean isRemoved= false;
 
     @OneToMany(mappedBy = "parent")
     private List<Comment> childList = new ArrayList<>();
@@ -66,7 +61,7 @@ public class Comment extends BaseEntity {
     }
 
     @Builder
-    public Comment(Member member, Post post, Comment parent, String content) {
+    protected Comment(Member member, Post post, Comment parent, String content) {
         this.member = member;
         this.post = post;
         this.parent = parent;

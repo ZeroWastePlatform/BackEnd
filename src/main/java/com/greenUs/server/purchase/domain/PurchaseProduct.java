@@ -2,12 +2,15 @@ package com.greenUs.server.purchase.domain;
 
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.product.domain.Product;
-import lombok.ToString;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@ToString
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PurchaseProduct extends BaseEntity {
 
     @Id
@@ -23,6 +26,7 @@ public class PurchaseProduct extends BaseEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private int price;
-    private int purchaseCount;
+    private Long memberId;
+    private int price=0;
+    private int purchaseCount=0;
 }

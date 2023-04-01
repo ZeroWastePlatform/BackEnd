@@ -3,18 +3,17 @@ package com.greenUs.server.purchase.domain;
 import com.greenUs.server.common.BaseEntity;
 import com.greenUs.server.delivery.domain.Delivery;
 import com.greenUs.server.member.domain.Member;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
-@ToString
-@Getter
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Purchase extends BaseEntity {
 
     @Id @GeneratedValue
@@ -25,11 +24,10 @@ public class Purchase extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne()
-    @JoinColumn(name = "delivery_id")
+    @OneToOne(fetch = FetchType.LAZY)
     private Delivery delivery;
 
-    @OneToMany(mappedBy = "purchase",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")
     private List<PurchaseProduct> purchaseProducts = new ArrayList<>();
 
     private int totalPrice;

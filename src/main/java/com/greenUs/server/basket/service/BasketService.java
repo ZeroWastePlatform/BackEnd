@@ -23,13 +23,6 @@ public class BasketService {
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     public Long putProductToBasket(LoginMember loginMember, BasketDto basketDto){
-        Member member = memberRepository.findByIdFetchBaskets(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
-        Product findProduct = productRepository.findById(basketDto.getProductId()).orElseThrow(()->new IllegalArgumentException("제품이 없습니다"));
-        Basket basketProduct = Basket.builder().
-                member(member).
-                product(findProduct).
-                build();
-        member.getBaskets().add(basketProduct);
-        return basketDto.getProductId();
+        return null;
     }
 }

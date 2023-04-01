@@ -31,20 +31,25 @@ public class PurchaseService {
 
         ShippingAddress address = purchaseRequest.getAddress();
         // delivery 부터 저장
-        Delivery delivery = new Delivery(
-                address.getAddressName(),
-                address.getRecipient(),
-                address.getRecipientPhone(),
-                address.getZipCode(),
-                address.getAddress(),
-                address.getAddressDetail(),
-                "2023-02-20" // 임의로 해둔 배송 출발일
-        );
+        Delivery delivery = Delivery.builder()
+                        .addressName(address.getAddressName())
+                        .recipient(address.getRecipient())
+                        .recipientPhone(address.getRecipientPhone())
+                        .zipCode(address.getZipCode())
+                        .address(address.getAddress())
+                        .addressDetail(address.getAddressDetail())
+                        .deliverDate("2023-02-20") // 임의로 해둔 배송 출발일
+                        .build();
 
         deliveryRepository.save(delivery);
 
         Purchase purchase = purchaseRepository.save(new Purchase(member, delivery));
-        return new PurchaseResponse(purchase);
+        return PurchaseResponse.builder()
+                .id(purchase.getId())
+                .delivery(purchase.getDelivery())
+                .purchaseProducts(purchase.getPurchaseProducts())
+                .totalPrice(purchase.getTotalPrice())
+                .build();
     }
 
     public Page<PurchaseResponse> getList() {

@@ -3,6 +3,9 @@ package com.greenUs.server.member.service;
 import com.greenUs.server.member.dto.response.*;
 import com.greenUs.server.product.repository.ProductLikeRepository;
 import com.greenUs.server.product.repository.ProductRepository;
+import com.greenUs.server.purchase.domain.Purchase;
+import com.greenUs.server.purchase.domain.PurchaseProduct;
+import com.greenUs.server.purchase.repository.PurchaseProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -20,8 +23,6 @@ import com.greenUs.server.member.repository.MemberRepository;
 import com.greenUs.server.member.dto.response.MyPageCommentResponse;
 import com.greenUs.server.member.dto.response.MyPagePostResponse;
 import com.greenUs.server.post.repository.PostRepository;
-import com.greenUs.server.purchase.dto.response.PurchaseResponse;
-import com.greenUs.server.purchase.repository.PurchaseRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,39 +37,50 @@ public class MemberService {
 	private static final int PRODUCT_LIKE_COUNT = 8;
 
 	private final MemberRepository memberRepository;
-	private final PurchaseRepository purchaseRepository;
 	private final CouponRepository couponRepository;
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
 	private final BookmarkRepository bookmarkRepository;
-
 	private final ProductRepository productRepository;
+	private final PurchaseProductRepository purchaseProductRepository;
 	private final ProductLikeRepository productLikeRepository;
 
-	public MemberResponse findById(Long id) {
+	public MyPageProfileResponse getMyProfile(Long id) {
 		Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
-		return new MemberResponse(member);
-	}
-
-	public MyPagePurchaseResponse getMyOrder(MemberResponse member, int page) {
-
-		PageRequest pageRequest = PageRequest.of(page, 10);
-		Page<PurchaseResponse> purchaseResponses = purchaseRepository.findByMemberId(member.getId(), pageRequest);
-		return new MyPagePurchaseResponse(
-			new MyPageProfileResponse(
-					member.getId(),
-					member.getName(),
-					member.getNickname(),
-					member.getLevel(),
-					0, // 찜은 추후 구현
-					member.getPoint(),
-					couponRepository.findCountByMemberId(member.getId())
-			),
-			purchaseResponses
+		return new MyPageProfileResponse(
+				member.getId(),
+				member.getName(),
+				member.getNickname(),
+				member.getLevel(),
+				0, // 찜은 추후 구현
+				member.getPoint(),
+				couponRepository.findCountByMemberId(member.getId())
 		);
 	}
 
-	public MyPageCommunityResponse getMyCommunity(MemberResponse member, String kind, int page) {
+	public List<MyPagePurchaseResponse> getMyPurchase(Long memberId) {
+		Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+		List<MyPagePurchaseResponse> responses = new ArrayList<>();
+
+		List<PurchaseProduct> purchaseProducts = purchaseProductRepository.findAllByMemberId(memberId);
+
+		for (PurchaseProduct purchaseProduct : purchaseProducts) {
+
+			MyPagePurchaseResponse product = MyPagePurchaseResponse.builder()
+					.productId(purchaseProduct.getProduct().getId())
+					.brand(purchaseProduct.getProduct().getBrand())
+					.title(purchaseProduct.getProduct().getTitle())
+					.thumbnail(purchaseProduct.getProduct().getThumbnail())
+					.price(purchaseProduct.getProduct().getPrice())
+					.count(purchaseProduct.getPurchaseCount())
+					.build();
+			responses.add(product);
+		}
+		return responses;
+	}
+
+	public MyPageCommunityResponse getMyCommunity(Long memberId, String kind, int page) {
+		Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
 		PageRequest pageRequest = PageRequest.of(page, 8);
 
 		MyPageCommunityResponse myPageCommunityResponse = new MyPageCommunityResponse(
@@ -95,7 +107,8 @@ public class MemberService {
 		return null;
 	}
 
-	public Page<MyPageContentResponse> getMyContents(MemberResponse member, int page) {
+	public Page<MyPageContentResponse> getMyContents(Long memberId, int page) {
+		Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
 		PageRequest pageRequest = PageRequest.of(page, 10);
 		Page<Bookmark> bookmarks = bookmarkRepository.findByMemberId(member.getId(), pageRequest);
 
