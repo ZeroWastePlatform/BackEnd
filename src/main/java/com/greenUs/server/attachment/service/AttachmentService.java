@@ -33,6 +33,8 @@ public class AttachmentService {
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
+	@Value("${cloud.aws.cloudfront.domain}")
+	private String cloudfrontDomain;
 	private final AmazonS3 amazonS3;
 	private final AttachmentRepository attachmentRepository;
 	private static final int FREE_INFO_POST_WIDTH = 100;
@@ -124,7 +126,7 @@ public class AttachmentService {
 	}
 
 	private String getAmazonS3Url(String fileName) {
-		return amazonS3.getUrl(bucket, fileName).toString();
+		return cloudfrontDomain + amazonS3.getUrl(bucket, fileName).getPath();
 	}
 
 	private void putAmazonS3Object(String fileName, MultipartFile file, ObjectMetadata objMeta) {
