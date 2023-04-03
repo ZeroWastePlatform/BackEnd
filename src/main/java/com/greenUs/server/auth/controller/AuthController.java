@@ -10,6 +10,7 @@ import com.greenUs.server.auth.dto.request.TokenRequest;
 import com.greenUs.server.auth.dto.response.AccessRefreshTokenResponse;
 import com.greenUs.server.auth.dto.response.AccessTokenResponse;
 import com.greenUs.server.auth.dto.response.OAuthUriResponse;
+import com.greenUs.server.auth.exception.RefreshTokenNotExistException;
 import com.greenUs.server.global.error.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,10 +21,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.greenUs.server.auth.controller.CookieProvider.REFRESH_TOKEN;
 
 @Tag(name = "인증", description = "인증 API")
 @RestController
@@ -34,6 +39,7 @@ public class AuthController {
     private final OAuthUri oAuthUri;
     private final OAuthClient oAuthClient;
     private final AuthService authService;
+    private final CookieProvider cookieProvider;
 
     @Operation(summary = "로그인 화면으로 가기 위한 url 반환", description = "로그인 화면으로 가기 위한 url 반환 로그인에 성공하면 지정된 redirect uri 로 인가 코드 발급")
     @ApiResponse(responseCode = "200", description = "로그인 화면으로 가능 url 반환", content = @Content(schema = @Schema(implementation = OAuthUriResponse.class)))
@@ -58,7 +64,11 @@ public class AuthController {
 
         OAuthMember oAuthMember = oAuthClient.getOAuthMember(tokenRequest.getCode(), tokenRequest.getRedirectUri());
         AccessRefreshTokenResponse accessRefreshTokenResponse = authService.generateAccessAndRefreshToken(oAuthMember);
-        return ResponseEntity.ok(accessRefreshTokenResponse);
+        ResponseCookie cookie = cookieProvider.createCookie(accessRefreshTokenResponse.getRefreshToken());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(accessRefreshTokenResponse);
     }
 
     @Operation(summary = "accessToken 발급", description = "refreshToken 으로 accessToken 재발급")
@@ -83,5 +93,17 @@ public class AuthController {
     public ResponseEntity<Void> validateToken(
             @Parameter(description = "accessToken 값", in = ParameterIn.HEADER) @AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken
+    ) {
+        if (refreshToken == null)
+            throw new RefreshTokenNotExistException();
+        ResponseCookie cookie = cookieProvider.deleteCookie(refreshToken);
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
     }
 }

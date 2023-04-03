@@ -6,6 +6,7 @@ import com.greenUs.server.attachment.exception.NotEqualAttachmentAndPostAttachme
 import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
+import com.greenUs.server.auth.exception.RefreshTokenNotExistException;
 import com.greenUs.server.comment.exception.NotEqualCommentAndPostComment;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
 import com.greenUs.server.comment.exception.NotFoundCommentException;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidTokenException.class)
+    @ExceptionHandler({InvalidTokenException.class, RefreshTokenNotExistException.class})
     public ResponseEntity<ErrorResponse> handleInvalidAuthorization(RuntimeException e) {
         ErrorResponse response = new ErrorResponse(ErrorCode.INVALID_TOKEN);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
