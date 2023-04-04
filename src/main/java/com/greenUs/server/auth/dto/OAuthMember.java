@@ -18,9 +18,8 @@ public class OAuthMember {
     public Member toMember() {
         return Member.builder()
                 .email(email)
-                .nickName(displayName)
+                .name(displayName)
                 .socialType(SocialType.GOOGLE)
-                .token(refreshToken)
                 .build();
     }
 }

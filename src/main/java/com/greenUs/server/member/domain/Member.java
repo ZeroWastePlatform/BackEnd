@@ -1,17 +1,11 @@
 package com.greenUs.server.member.domain;
 
-import com.greenUs.server.basket.domain.Basket;
 import com.greenUs.server.common.BaseEntity;
 
 import javax.persistence.*;
 
-import com.greenUs.server.coupon.domain.Coupon;
-import com.greenUs.server.product.domain.ProductLike;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -25,9 +19,6 @@ public class Member extends BaseEntity {
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "social_type", nullable = false)
 	private SocialType socialType;
-
-	@Column(name = "token", nullable = false)
-	private String token;
 
 	@Column(name = "email", nullable = false)
 	private String email;
@@ -56,15 +47,10 @@ public class Member extends BaseEntity {
 	private int point;
 
 	@Builder
-	protected Member(String email, String nickName, SocialType socialType, String token) {
+	protected Member(String email, String name, SocialType socialType) {
 		this.email = email;
-		this.nickname = nickName;
+		this.name = name;
 		this.socialType = socialType;
-		this.token = token;
-	}
-
-	public void changeToken(String token) {
-		this.token = token;
 	}
 
 	public void changeInfo(String nickname, Address address, String phoneNum, String interestArea) {
