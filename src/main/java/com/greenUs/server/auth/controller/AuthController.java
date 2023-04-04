@@ -3,6 +3,7 @@ package com.greenUs.server.auth.controller;
 import com.greenUs.server.auth.application.AuthService;
 import com.greenUs.server.auth.application.OAuthClient;
 import com.greenUs.server.auth.application.OAuthUri;
+import com.greenUs.server.auth.application.TokenCreator;
 import com.greenUs.server.auth.dto.LoginMember;
 import com.greenUs.server.auth.dto.OAuthMember;
 import com.greenUs.server.auth.dto.request.TokenRenewalRequest;
@@ -10,7 +11,6 @@ import com.greenUs.server.auth.dto.request.TokenRequest;
 import com.greenUs.server.auth.dto.response.AccessRefreshTokenResponse;
 import com.greenUs.server.auth.dto.response.AccessTokenResponse;
 import com.greenUs.server.auth.dto.response.OAuthUriResponse;
-import com.greenUs.server.auth.exception.RefreshTokenNotExistException;
 import com.greenUs.server.global.error.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,6 +39,7 @@ public class AuthController {
     private final OAuthUri oAuthUri;
     private final OAuthClient oAuthClient;
     private final AuthService authService;
+    private final TokenCreator tokenCreator;
     private final CookieProvider cookieProvider;
 
     @Operation(summary = "로그인 화면으로 가기 위한 url 반환", description = "로그인 화면으로 가기 위한 url 반환 로그인에 성공하면 지정된 redirect uri 로 인가 코드 발급")
@@ -99,8 +100,7 @@ public class AuthController {
     public ResponseEntity<Void> logout(
             @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken
     ) {
-        if (refreshToken == null)
-            throw new RefreshTokenNotExistException();
+        tokenCreator.deleteRefreshToken(refreshToken);
         ResponseCookie cookie = cookieProvider.deleteCookie(refreshToken);
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
