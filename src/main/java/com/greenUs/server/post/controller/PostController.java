@@ -163,13 +163,13 @@ public class PostController {
 
 	@Operation(summary = "오늘의 그리너스 인기글", description = "오늘의 인기 게시글 목록을 조회 합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostDetailResponse.class))),
+		@ApiResponse(responseCode = "200", description = "오늘의 인기 게시글 조회 성공", content = @Content(schema = @Schema(implementation = PostListsResponse.class))),
 		@ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = Error.class)))
 	})
 	@GetMapping("/popularity")
-	public ResponseEntity<List<PostPopularityResponse>> getPopularPosts() {
+	public ResponseEntity<List<PostListsResponse>> getPopularPosts() {
 
-		List<PostPopularityResponse> postResponseDto = postService.getPopularPosts();
+		List<PostListsResponse> postResponseDto = postService.getPopularPosts();
 
 		return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
 	}

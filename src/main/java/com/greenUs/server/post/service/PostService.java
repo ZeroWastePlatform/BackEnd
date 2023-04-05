@@ -37,6 +37,7 @@ public class PostService {
 
 	private static final int PAGE_POST_COUNT = 6;
 	private static final int PAGE_SEARCH_POST_COUNT = 10;
+	private static final int POST_RENEW_PERIOD = 365;
 	private final PostRepository postRepository;
 	private final RecommendRepository recommendRepository;
 	private final HashtagService hashtagService;
@@ -166,16 +167,16 @@ public class PostService {
 		recommendRepository.delete(recommend);
 	}
 
-	public List<PostPopularityResponse> getPopularPosts() {
+	public List<PostListsResponse> getPopularPosts() {
 
-		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
+		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(POST_RENEW_PERIOD), LocalTime.of(0, 0, 0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
-		List<PostPopularityResponse> postResponseDto = new ArrayList<>();
+		List<PostListsResponse> postResponseDto = new ArrayList<>();
 
 		for (Post post : posts) {
-			postResponseDto.add(new PostPopularityResponse(post));
+			postResponseDto.add(new PostListsResponse(post));
 		}
 
 		return postResponseDto;
