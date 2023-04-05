@@ -166,16 +166,16 @@ public class PostService {
 		recommendRepository.delete(recommend);
 	}
 
-	public List<PostPopularityResponse> getPopularPosts() {
+	public List<PostListsResponse> getPopularPosts() {
 
-		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
+		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(365), LocalTime.of(0, 0, 0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
 		List<Post> posts = postRepository.findTop3ByCreatedAtBetweenOrderByRecommendCntDesc(startDatetime, endDatetime);
 
-		List<PostPopularityResponse> postResponseDto = new ArrayList<>();
+		List<PostListsResponse> postResponseDto = new ArrayList<>();
 
 		for (Post post : posts) {
-			postResponseDto.add(new PostPopularityResponse(post));
+			postResponseDto.add(new PostListsResponse(post));
 		}
 
 		return postResponseDto;
