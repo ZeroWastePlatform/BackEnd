@@ -1,3 +1,7 @@
 spring:
+  config:
+    import: .env.yml
   profiles:
     include: db,dev,local,security,bucket
+
+
