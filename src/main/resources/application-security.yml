@@ -1,8 +1,20 @@
 security:
   jwt:
     token:
-      secret-key: zero-waste-secret-key-made-by-sangwoo
+      secret-key: ${JWT_SECRET_KEY}
       access:
         expire-length: 1800000 # 30min
       refresh:
         expire-length: 2592000000 # 30 days
+
+oauth:
+  google:
+    client-id: ${CLIENT_ID}
+    client-secret: ${CLIENT_SECRET}
+    oauth-end-point: https://accounts.google.com/o/oauth2/v2/auth
+    response-type: code
+    scopes:
+      - https://www.googleapis.com/auth/userinfo.profile
+      - https://www.googleapis.com/auth/userinfo.email
+    token-uri: https://oauth2.googleapis.com/token
+    access-type: offline

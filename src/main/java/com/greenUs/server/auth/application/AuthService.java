@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -23,8 +24,8 @@ public class AuthService {
     @Transactional
     public AccessRefreshTokenResponse generateAccessAndRefreshToken(OAuthMember oAuthMember) {
         Member foundMember = findMember(oAuthMember);
-        foundMember.changeToken(oAuthMember.getRefreshToken());
         AuthToken authToken = tokenCreator.createAuthToken(foundMember.getId());
+
         return new AccessRefreshTokenResponse(authToken.getAccessToken(), authToken.getRefreshToken(), foundMember.getNickname() == null);
     }
 
@@ -37,8 +38,8 @@ public class AuthService {
 
     public AccessTokenResponse generateAccessToken(TokenRenewalRequest tokenRenewalRequest) {
         String refreshToken = tokenRenewalRequest.getRefreshToken();
-        AuthToken authToken = tokenCreator.renewAuthToken(refreshToken);
-        return new AccessTokenResponse(authToken.getAccessToken());
+        String accessToken = tokenCreator.renewAccessToken(refreshToken);
+        return new AccessTokenResponse(accessToken);
     }
 
     public Long extractMemberId(String accessToken) {

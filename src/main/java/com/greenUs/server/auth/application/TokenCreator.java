@@ -5,7 +5,7 @@ import com.greenUs.server.auth.domain.AuthToken;
 public interface TokenCreator {
 
     AuthToken createAuthToken(Long memberId);
-    AuthToken renewAuthToken(String refreshToken);
-
+    String renewAccessToken(String refreshToken);
     Long extractPayload(String accessToken);
+    void deleteRefreshToken(String refreshToken);
 }

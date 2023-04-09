@@ -43,6 +43,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'mysql:mysql-connector-java'
 
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	// configuration
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 

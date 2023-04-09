@@ -11,6 +11,7 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(400, "엔티티를 찾을 수 없습니다."),
     INVALID_TOKEN(401, "잘못된 토큰입니다."),
     EXPIRED_TOKEN(401, "만료된 토큰입니다."),
+    REFRESH_TOKEN_NOT_FOUND(401, "리프레시 토큰이 없습니다."),
     POST_MEMBER_NOT_EQUAL(403, "게시글의 작성자가 아닙니다."),
     POST_COMMENT_NOT_EQUAL(403,"해당하는 게시글의 댓글 번호가 아닙니다."),
     POST_ATTACHMENT_NOT_EQUAL(403, "게시글의 첨부파일 이름이 아닙니다."),
