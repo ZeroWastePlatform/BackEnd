@@ -7,6 +7,8 @@ import com.greenUs.server.attachment.exception.NotFoundObjectException;
 import com.greenUs.server.auth.exception.EmptyAuthorizationHeaderException;
 import com.greenUs.server.auth.exception.InvalidTokenException;
 import com.greenUs.server.auth.exception.RefreshTokenNotExistException;
+import com.greenUs.server.basket.exception.NotEqualMemberAndBasketMember;
+import com.greenUs.server.basket.exception.NotFoundBasketException;
 import com.greenUs.server.comment.exception.NotEqualCommentAndPostComment;
 import com.greenUs.server.comment.exception.NotEqualMemberAndCommentMember;
 import com.greenUs.server.comment.exception.NotFoundCommentException;
@@ -109,5 +111,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> likeDuplicate() {
         ErrorResponse response = new ErrorResponse(ErrorCode.LIKE_DUPLICATE);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(NotEqualMemberAndBasketMember.class)
+    public ResponseEntity<ErrorResponse> handleNotEqualMemberAndBasketMember() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.BASKET_MEMBER_NOT_EQUAL);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(NotFoundBasketException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundBasketException() {
+        ErrorResponse response = new ErrorResponse(ErrorCode.BASKET_NOT_FOUND);
+        return ResponseEntity.badRequest().body(response);
     }
 }
