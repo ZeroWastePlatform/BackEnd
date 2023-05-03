@@ -24,6 +24,13 @@ repositories {
 	mavenCentral()
 }
 
+bootJar {
+	archiveBaseName = "greenus"
+	archiveFileName = "greenus.jar"
+	archiveVersion = "0.0.1"
+}
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
